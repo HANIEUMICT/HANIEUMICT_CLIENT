@@ -1,6 +1,12 @@
-const CompanyInfoCard = () => {
+interface CompanyInfoCardProps {
+  onClick: () => void
+}
+const CompanyInfoCard = ({ onClick }: CompanyInfoCardProps) => {
   return (
-    <div className="gap-y-2xs border-gray-20 p-s flex w-[600px] flex-col rounded-[24px] border bg-white">
+    <div
+      onClick={onClick}
+      className="hover:border-conic-orange-30 gap-y-2xs border-gray-20 p-s flex w-[600px] flex-col rounded-[24px] border bg-white"
+    >
       <div className="gap-y-4xs flex flex-col">
         <p className="sub1">기업명</p>
         <p className="sub1 text-gray-50">업종</p>

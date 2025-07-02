@@ -1,4 +1,5 @@
 import { AlarmIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
+import { useRouter } from 'next/navigation'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -7,6 +8,7 @@ interface HeaderProps {
 }
 
 const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
+  const router = useRouter()
   const renderHeaderType = (headerType: HeaderType) => {
     switch (headerType) {
       case 'DEFAULT':
@@ -26,9 +28,23 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
                 <AlarmIcon width={20} height={24} />
               </div>
               <div className="button-lg gap-x-4xs flex items-center">
-                <button className="text-gray-40">로그인</button>
+                <button
+                  onClick={() => {
+                    router.push('/login')
+                  }}
+                  className="text-gray-40"
+                >
+                  로그인
+                </button>
                 <div className="text-gray-50">|</div>
-                <button className="text-gray-40">회원가입</button>
+                <button
+                  onClick={() => {
+                    router.push('/sign-up')
+                  }}
+                  className="text-gray-40"
+                >
+                  회원가입
+                </button>
               </div>
             </section>
           </header>

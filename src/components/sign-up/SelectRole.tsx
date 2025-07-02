@@ -19,7 +19,7 @@ const SelectRole = ({ selectedRole, setSelectedRole, onClick }: SelectRoleProps)
   ]
   return (
     <main className="bg-gray-10 flex min-h-screen flex-col items-center justify-center">
-      <Header />
+      <Header headerType={'SIGNUP'} />
       <h1 className="h2">회원가입 유형</h1>
       <div className="gap-x-s mt-[32px] flex w-[600px]">
         {roleContents.map((roleContent) => {

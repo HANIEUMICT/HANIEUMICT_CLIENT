@@ -64,7 +64,7 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
           </Modal.BottomButton>
         </Modal>
       ) : null}
-      <Header />
+      <Header headerType={'SIGNUP'} />
       <div className="mt-[40px] w-[1218px]">
         <div className="h-[80px]"></div>
         <section className="gap-y-3xs flex w-full flex-col">

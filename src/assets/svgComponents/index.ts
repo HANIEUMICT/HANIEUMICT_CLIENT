@@ -1,6 +1,8 @@
 export { default as CheckboxFillIcon } from './CheckboxFillIcon'
 export { default as LogoIcon } from './LogoIcon'
 export { default as UnCheckboxIcon } from './UnCheckboxIcon'
+export { default as AlarmIcon } from './AlarmIcon'
 export { default as DropDownIcon } from './DropDownIcon'
 export { default as GrayRightArrowIcon } from './GrayRightArrowIcon'
 export { default as SearchIcon } from './SearchIcon'
+export { default as TranslateIcon } from './TranslateIcon'

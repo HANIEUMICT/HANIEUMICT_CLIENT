@@ -54,7 +54,7 @@ export default function InputCompanyInfoPage({ setStep }: InputCompanyInfoPagePr
           </Modal.BottomButton>
         </Modal>
       ) : null}
-      <Header />
+      <Header headerType={'SIGNUP'} />
       <div className="mt-[200px] flex w-[600px] flex-col items-center justify-center">
         <section className="gap-y-2xs flex flex-col items-center">
           <h2 className="h2">회원가입 유형</h2>

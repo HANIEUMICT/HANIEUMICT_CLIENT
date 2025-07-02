@@ -1,103 +1,103 @@
-import Image from "next/image";
+'use client'
+
+import Button1 from '@/components/common/Button1'
+import Header from '@/components/common/Header'
+import { useState } from 'react'
+import Input from '@/components/common/Input'
+import { UnCheckboxIcon } from '@/assets/svgComponents'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [signupType, setSignupType] = useState<'개인회원' | '기업회원'>('개인회원')
+  const router = useRouter()
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <main className="bg-gray-10 flex min-h-screen items-center justify-center">
+      <Header />
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-[600px]">
+          <section className="gap-y-2xs flex flex-col items-center justify-center">
+            <h1 className="h2">로그인</h1>
+            <div className="rounded-[12px] bg-white">
+              <Button1
+                onClick={() => {
+                  setSignupType('개인회원')
+                }}
+                styleType={signupType === '개인회원' ? 'secondary' : 'ghost'}
+                styleStatus={'click'}
+                styleSize={'md'}
+                customClassName="h-[48px] w-[120px]"
+              >
+                개인회원
+              </Button1>
+              <Button1
+                onClick={() => {
+                  setSignupType('기업회원')
+                }}
+                styleType={signupType === '기업회원' ? 'secondary' : 'ghost'}
+                styleStatus={'click'}
+                styleSize={'md'}
+                customClassName="h-[48px] w-[120px]"
+              >
+                기업회원
+              </Button1>
+            </div>
+          </section>
+
+          <section className="gap-y-2xs mt-[40px] flex flex-col">
+            <section className="gap-y-4xs flex flex-col">
+              <h2 className="sub2">이메일</h2>
+              <Input type={'email'} inputBoxStyle={'focus'} placeholder={'이메일을 입력해주세요.'} />
+              {/*<p className="body1 text-conic-red-40">이메일을 찾을 수 없습니다. 다시 입력해주세요.</p>*/}
+            </section>
+            <section className="gap-y-4xs flex flex-col">
+              <h2 className="sub2">비밀번호</h2>
+              <Input type={'password'} inputBoxStyle={'focus'} placeholder={'비밀번호를 입력해주세요.'} />
+              {/*<p className="body1 text-conic-red-40">비밀번호가 일치하지 않습니다. 다시 입력해주세요.</p>*/}
+            </section>
+
+            <section className="flex justify-between">
+              <div className="gap-x-4xs flex cursor-pointer items-center">
+                <UnCheckboxIcon width={24} height={24} />
+                <p className="button-lg text-gray-50">아이디 저장</p>
+              </div>
+              <div className="mt-m flex items-center justify-center">
+                <Button1 onClick={() => {}} styleSize={'sm'} styleStatus={'default'} styleType={'ghost'}>
+                  아이디 찾기
+                </Button1>
+                <div className="border-gray-30 h-[13.5px] border-r" />
+                <Button1 onClick={() => {}} styleSize={'sm'} styleStatus={'default'} styleType={'ghost'}>
+                  비밀번호 찾기
+                </Button1>
+              </div>
+            </section>
+          </section>
+
+          <Button1
+            styleType={'primary'}
+            styleStatus={'hover'}
+            styleSize={'lg'}
+            onClick={() => {}}
+            customClassName={'mt-[40px] w-full'}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            로그인
+          </Button1>
+
+          <section className="mt-l gap-x-3xs flex items-center justify-center">
+            <p className="body-sm text-gray-50">아직 Conic의 회원이 아닌가요?</p>
+            <Button1
+              onClick={() => {
+                router.push('/sign-up')
+              }}
+              styleSize={'sm'}
+              styleStatus={'click'}
+              styleType={'outline2'}
+            >
+              회원가입
+            </Button1>
+          </section>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      </div>
+    </main>
+  )
 }

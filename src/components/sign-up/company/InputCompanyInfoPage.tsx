@@ -1,18 +1,20 @@
-import Header from '@/components/common/Header'
-import EmailField from '@/components/sign-up/EmailField'
-import PasswordField from '@/components/sign-up/PasswordField'
-import AddressField from '@/components/sign-up/AddressField'
-import TermsOfServiceField from '@/components/sign-up/TermsOfServiceField'
-import Button1 from '@/components/common/Button1'
-import CompanyInfoField from '@/components/sign-up/company/CompanyInfoField'
 import { Dispatch, SetStateAction, useState } from 'react'
-import PhoneNumberField from '@/components/sign-up/PhoneNumberField'
-import Modal from '@/components/common/Modal'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
+import Header from '@/components/common/Header'
+import EmailField from '@/components/sign-up/field/EmailField'
+import PasswordField from '@/components/sign-up/field/PasswordField'
+import AddressField from '@/components/sign-up/field/AddressField'
+import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
+import Button1 from '@/components/common/Button1'
+import CompanyInfoField from '@/components/sign-up/company/CompanyInfoField'
+import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
+import Modal from '@/components/common/Modal'
+import Image from 'next/image'
+import { CompanySignUpPageStepType } from '@/type/sign-up'
+
 interface InputCompanyInfoPageProps {
-  setStep: Dispatch<SetStateAction<'SearchCompanyInfoPage' | 'InputCompanyInfoPage'>>
+  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 
 export default function InputCompanyInfoPage({ setStep }: InputCompanyInfoPageProps) {

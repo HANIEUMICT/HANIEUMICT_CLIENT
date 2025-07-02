@@ -1,8 +1,9 @@
 import Button1 from '@/components/common/Button1'
 import { Dispatch, SetStateAction } from 'react'
+import { CompanySignUpPageStepType } from '@/type/sign-up'
 
 interface CompanyInfoFieldProps {
-  setStep: Dispatch<SetStateAction<'SearchCompanyInfoPage' | 'InputCompanyInfoPage'>>
+  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 
 export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {

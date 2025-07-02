@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'conic',
-  description: '중국 공장과 소상공인을 연결해주는 중개 플렛폼, conic',
+  description: '중국 공장과 소상공인을 연결해주는 중개 플랫폼, conic',
 }
 
 export default function RootLayout({

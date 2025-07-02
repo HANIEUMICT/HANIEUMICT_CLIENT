@@ -5,7 +5,7 @@ import InputCompanyInfoPage from '@/components/sign-up/company/InputCompanyInfoP
 type StepType = 'SearchCompanyInfoPage' | 'InputCompanyInfoPage'
 
 export default function CompanySignUpPage() {
-  const [step, setStep] = useState<StepType>('InputCompanyInfoPage')
+  const [step, setStep] = useState<StepType>('SearchCompanyInfoPage')
   return (
     <main>
       {step === 'SearchCompanyInfoPage' && <SearchCompanyInfoPage setStep={setStep} />}

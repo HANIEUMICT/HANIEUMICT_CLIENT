@@ -16,7 +16,7 @@ interface InputCompanyInfoPageProps {
 }
 
 export default function InputCompanyInfoPage({ setStep }: InputCompanyInfoPageProps) {
-  const [isModalOpen, setIsModalOpen] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const router = useRouter()
   return (
     <div className="flex flex-col items-center justify-center">

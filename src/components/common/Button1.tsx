@@ -6,18 +6,21 @@ const variantStyles = {
     hover: 'bg-conic-red-30 hover:bg-conic-red-40 text-white',
     click: 'bg-conic-red-30 hover:bg-conic-red-40 active:bg-conic-red-50 text-white',
     disabled: 'bg-gray-20 text-gray-40 cursor-not-allowed',
+    selected: '',
   },
   secondary: {
     default: 'bg-conic-orange-30 text-white',
     hover: 'bg-conic-orange-30 hover:bg-conic-orange-40 text-white',
     click: 'bg-conic-orange-30 hover:bg-conic-orange-40 active:bg-conic-orange-50 text-white',
     disabled: 'bg-gray-20 text-gray-40 cursor-not-allowed',
+    selected: '',
   },
   outline: {
     default: 'bg-white border border-gray-20 text-gray-50',
     hover: 'bg-white border border-gray-20 hover:border-gray-40 text-gray-50',
     click: 'bg-white border border-gray-50 hover:border-gray-40 hover:border-gray-50 text-gray-50',
     disabled: 'bg-white border border-gray-20 text-gray-30 cursor-not-allowed',
+    selected: 'bg-gray-10 border border-gray-20 text-gray-50',
   },
   outline2: {
     default: 'bg-white border border-gray-20 text-conic-orange-30',
@@ -25,12 +28,14 @@ const variantStyles = {
     click:
       'bg-white border border-gray-20 hover:border-gray-30 hover:text-conic-orange-40 active:text-conic-orange-50 active:border-gray-40 text-conic-orange-30',
     disabled: 'bg-gray-20 border border-gray-40 text-gray-40 cursor-not-allowed',
+    selected: '',
   },
   ghost: {
     default: 'bg-transparent text-gray-50',
     hover: 'hover:bg-gray-20 text-gray-50',
     click: 'hover:bg-gray-20 active:bg-gray-40 text-gray-50',
     disabled: 'bg-transparent text-gray-30 cursor-not-allowed',
+    selected: '',
   },
 }
 const sizeStyles = {
@@ -41,7 +46,7 @@ const sizeStyles = {
 
 export interface Button1Props {
   styleType?: 'primary' | 'secondary' | 'outline' | 'outline2' | 'ghost'
-  styleStatus?: 'default' | 'hover' | 'click' | 'disabled'
+  styleStatus?: 'default' | 'hover' | 'click' | 'disabled' | 'selected'
   styleSize?: 'lg' | 'md' | 'sm'
   children: ReactNode
   customClassName?: string

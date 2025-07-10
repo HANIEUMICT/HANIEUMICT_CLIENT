@@ -44,7 +44,7 @@ export default function ProjectInfo({ setCurrentStep }: ProjectInfoProps) {
           </Button1>
           <Button1
             onClick={() => {
-              setCurrentStep(4)
+              setCurrentStep(5)
             }}
             customClassName={'h-[52px] w-[260px]'}
             styleStatus={'disabled'}

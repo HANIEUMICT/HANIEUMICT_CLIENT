@@ -1,5 +1,3 @@
-import Input from '@/components/common/Input'
-
 interface RequestDetailFieldProps {}
 export default function RequestDetailField({}: RequestDetailFieldProps) {
   return (

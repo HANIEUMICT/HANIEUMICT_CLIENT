@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgStarIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 16 16" {...props}><path fill="#FF8345" d="M7.138.93a.694.694 0 0 1 1.224 0l1.906 3.555c.096.18.267.31.467.352l3.858.818c.518.11.727.737.378 1.136l-2.7 3.089a.7.7 0 0 0-.168.533l.454 4.131c.06.542-.5.939-.99.702L8.05 13.555a.7.7 0 0 0-.602 0l-3.515 1.691a.694.694 0 0 1-.991-.702l.454-4.131a.7.7 0 0 0-.168-.533L.53 6.79a.694.694 0 0 1 .379-1.136l3.857-.818a.7.7 0 0 0 .467-.352z" /></svg>;
+export default SvgStarIcon;

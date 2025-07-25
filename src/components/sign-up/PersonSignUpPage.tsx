@@ -10,12 +10,19 @@ import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
+import SearchAddressModal from '@/components/common/SearchAddressModal'
+import { useModalStore } from '@/store/modalStore'
 
 interface PersonSignUpPageProps {}
 
 const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
+
   const router = useRouter()
+  const setState = useAuthStore((state) => state.setState)
+  const setModalState = useModalStore((state) => state.setState)
+
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const isIndividualPasswordValid = useAuthStore((state) => state.isIndividualPasswordValid)
   const isIndividualPasswordMatch = useAuthStore((state) => state.isIndividualPasswordMatch)
@@ -29,8 +36,33 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
     isIndividualPasswordMatch === true
   )
 
+  const handleComplete = async (data: any) => {
+    let fullAddress = data.address
+    let extraAddress = ''
+
+    const { addressType, bname, buildingName, zonecode } = data
+    console.log('data', data)
+
+    if (addressType === 'R') {
+      if (bname !== '') {
+        extraAddress += bname
+      }
+      if (buildingName !== '') {
+        extraAddress += `${extraAddress !== '' && ', '}${buildingName}`
+      }
+      fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
+    }
+    setState({
+      ...individualSignUpData,
+      individualSignUpData: { ...individualSignUpData, zipcode: zonecode, address1: fullAddress },
+    })
+
+    setModalState({ isSearchAddressModalOpen: false })
+  }
+
   return (
     <div className="flex flex-col items-center justify-center">
+      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
       {isModalOpen ? (
         <Modal>
           <Modal.Content>

@@ -7,6 +7,7 @@ export default function BiddingDueDateSelect({}: BiddingDueDateSelectProps) {
     <div className="gap-y-4xs flex flex-col">
       <p className="sub2">입찰 마감일 선택</p>
       <Input
+        value={''}
         customClassName={'h-[52px]'}
         placeholder={'입찰 마감일 입력'}
         inputBoxStyle={'default'}

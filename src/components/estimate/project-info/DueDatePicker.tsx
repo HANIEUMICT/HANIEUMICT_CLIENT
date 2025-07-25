@@ -6,6 +6,7 @@ export default function DueDatePicker() {
     <div className="gap-y-4xs flex flex-col">
       <p className="sub2">납기일 선택</p>
       <Input
+        value={''}
         customClassName={'h-[52px]'}
         placeholder={'납기일 입력'}
         inputBoxStyle={'default'}

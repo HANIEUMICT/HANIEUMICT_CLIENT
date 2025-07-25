@@ -6,7 +6,12 @@ export default function BusinessTypeField() {
       <section className="gap-x-5xs sub2 flex">
         업태명 <span className="text-conic-red-30">*</span>
       </section>
-      <Input inputBoxStyle={'default'} placeholder={'업태명을 입력해주세요.'} customClassName={'w-full'}></Input>
+      <Input
+        value={''}
+        inputBoxStyle={'default'}
+        placeholder={'업태명을 입력해주세요.'}
+        customClassName={'w-full'}
+      ></Input>
     </div>
   )
 }

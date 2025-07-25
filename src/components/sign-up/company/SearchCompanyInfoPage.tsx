@@ -72,6 +72,7 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
           <h1 className="h2">기업 정보 검색</h1>
           <div className="flex gap-x-2">
             <Input
+              value={''}
               customClassName={'h-[52px] w-full'}
               type={'text'}
               inputBoxStyle={'default'}
@@ -116,6 +117,7 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
                 전체 업종
               </Button1>
               <Input
+                value={''}
                 customClassName={'h-[48px] w-[365px]'}
                 type={'text'}
                 inputBoxStyle={'default'}

@@ -47,12 +47,12 @@ export default function LoginPage() {
           <section className="gap-y-2xs mt-[40px] flex flex-col">
             <section className="gap-y-4xs flex flex-col">
               <h2 className="sub2">이메일</h2>
-              <Input type={'email'} inputBoxStyle={'focus'} placeholder={'이메일을 입력해주세요.'} />
+              <Input value={''} type={'email'} inputBoxStyle={'focus'} placeholder={'이메일을 입력해주세요.'} />
               {/*<p className="body1 text-conic-red-40">이메일을 찾을 수 없습니다. 다시 입력해주세요.</p>*/}
             </section>
             <section className="gap-y-4xs flex flex-col">
               <h2 className="sub2">비밀번호</h2>
-              <Input type={'password'} inputBoxStyle={'focus'} placeholder={'비밀번호를 입력해주세요.'} />
+              <Input value={''} type={'password'} inputBoxStyle={'focus'} placeholder={'비밀번호를 입력해주세요.'} />
               {/*<p className="body1 text-conic-red-40">비밀번호가 일치하지 않습니다. 다시 입력해주세요.</p>*/}
             </section>
 

@@ -18,7 +18,12 @@ export default function EstimatedBudgetField({}: EstimatedBudgetFieldProps) {
           <p className="button-lg text-gray-50">AI 예산 추정</p>
         </div>
       </section>
-      <Input customClassName={'h-[52px]'} placeholder={'예산을 입력해주세요.(원 단위)'} inputBoxStyle={'default'} />
+      <Input
+        value={''}
+        customClassName={'h-[52px]'}
+        placeholder={'예산을 입력해주세요.(원 단위)'}
+        inputBoxStyle={'default'}
+      />
       <section className="flex items-center gap-x-2">
         <UnCheckboxIcon width={24} height={24} />
         <p className="button-lg text-gray-50">추정 예산을 공개하지 않고 협의합니다.</p>

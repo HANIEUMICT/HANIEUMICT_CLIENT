@@ -7,14 +7,28 @@ import PasswordField from '@/components/sign-up/field/PasswordField'
 import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
 import AddressField from '@/components/sign-up/field/AddressField'
 import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 
 interface PersonSignUpPageProps {}
 
 const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const router = useRouter()
+  const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
+  const isIndividualPasswordValid = useAuthStore((state) => state.isIndividualPasswordValid)
+  const isIndividualPasswordMatch = useAuthStore((state) => state.isIndividualPasswordMatch)
+
+  const isSignUpEnabled = !!(
+    individualSignUpData?.email &&
+    individualSignUpData?.password &&
+    individualSignUpData?.phoneNumber &&
+    individualSignUpData?.termsOfServiceAgreed === true &&
+    isIndividualPasswordValid === true &&
+    isIndividualPasswordMatch === true
+  )
+
   return (
     <div className="flex flex-col items-center justify-center">
       {isModalOpen ? (
@@ -85,6 +99,7 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
         <Button1
           styleSize="lg"
           styleType="primary"
+          styleStatus={isSignUpEnabled ? 'default' : 'disabled'}
           customClassName="mt-3xs w-full mb-[252px]"
           onClick={() => {
             setIsModalOpen(true)

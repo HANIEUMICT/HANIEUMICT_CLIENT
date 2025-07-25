@@ -1,3 +1,5 @@
+import { ChangeEvent } from 'react'
+
 const inputBoxStyles = {
   default: 'border-gray-20 placeholder:text-gray-50 text-black',
   hover: 'border-gray-20 hover:border-conic-orange-20 placeholder:text-gray-50 text-black',
@@ -16,6 +18,8 @@ interface InputProps {
   placeholder?: string
   type?: 'text' | 'password' | 'email' | 'tel'
   customClassName?: string
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  value: string
 }
 
 const Input = ({
@@ -26,6 +30,8 @@ const Input = ({
   leftIcon,
   placeholder,
   type = 'text',
+  onChange,
+  value,
   customClassName,
 }: InputProps) => {
   const inputBoxBase = 'border flex gap-x-5xs p-2xs rounded-[16px] items-center bg-white'
@@ -38,6 +44,8 @@ const Input = ({
       {leftIcon ? leftIcon : null}
       <div className="flex w-full justify-between">
         <input
+          value={value}
+          onChange={onChange}
           type={type}
           disabled={inputBoxStyle === 'disabled'}
           className={`${inputFieldBase} ${inputBoxStyle === 'disabled' ? 'cursor-not-allowed' : ''}`}

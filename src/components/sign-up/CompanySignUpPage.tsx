@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CompanySignUpPageStepType } from '@/type/sign-up'
+import { CompanySignUpPageStepType } from '@/type/auth'
 import SearchCompanyInfoPage from '@/components/sign-up/company/SearchCompanyInfoPage'
 import InputCompanyInfoPage from '@/components/sign-up/company/InputCompanyInfoPage'
 import InputRegisterCompanyInfoPage from '@/components/sign-up/company/InputRegisterCompanyInfoPage'

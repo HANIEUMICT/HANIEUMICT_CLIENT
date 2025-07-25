@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { CompanySignUpPageStepType } from '@/type/sign-up'
+import { CompanySignUpPageStepType } from '@/type/auth'
 import AddressField from '@/components/sign-up/field/AddressField'
 import Header from '@/components/common/Header'
 import CompanyName from '@/components/sign-up/field/CompanyName'

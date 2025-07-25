@@ -5,7 +5,7 @@ import Header from '@/components/common/Header'
 import Input from '@/components/common/Input'
 import { DropDownIcon, SearchIcon } from '@/assets/svgComponents'
 import CompanyInfoCard from '@/components/sign-up/company/CompanyInfoCard'
-import { CompanySignUpPageStepType } from '@/type/sign-up'
+import { CompanySignUpPageStepType } from '@/type/auth'
 
 interface SearchCompanyInfoPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>

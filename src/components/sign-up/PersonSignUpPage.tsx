@@ -7,11 +7,12 @@ import PasswordField from '@/components/sign-up/field/PasswordField'
 import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
 import AddressField from '@/components/sign-up/field/AddressField'
 import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useModalStore } from '@/store/modalStore'
+import { postAuthSignUp } from '@/lib/auth'
 
 interface PersonSignUpPageProps {}
 
@@ -59,6 +60,10 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
 
     setModalState({ isSearchAddressModalOpen: false })
   }
+
+  useEffect(() => {
+    console.log('individualSignUpData', individualSignUpData)
+  }, [individualSignUpData])
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -134,7 +139,11 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
           styleStatus={isSignUpEnabled ? 'default' : 'disabled'}
           customClassName="mt-3xs w-full mb-[252px]"
           onClick={() => {
-            setIsModalOpen(true)
+            if (individualSignUpData) {
+              const response = postAuthSignUp(individualSignUpData)
+              console.log('회원가입 완료', response)
+              setIsModalOpen(true)
+            }
           }}
         >
           회원가입

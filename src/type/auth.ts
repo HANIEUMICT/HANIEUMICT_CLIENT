@@ -19,3 +19,13 @@ export interface SignUpResponseType {
   refreshToken: string
   memberId: number
 }
+export interface LoginType {
+  email?: string
+  password?: string
+}
+export interface LoginResponseType {
+  accessToken: string
+  refreshToken: string
+  accessTokenExpiresIn: number
+  refreshTokenExpiresIn: number
+}

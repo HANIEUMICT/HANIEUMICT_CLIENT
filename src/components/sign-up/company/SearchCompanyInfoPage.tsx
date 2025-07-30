@@ -128,7 +128,9 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
             <div className="gap-x-2xs flex items-center">
               <p className="sub1 text-gray-50">찾으시는 기업이 없나요?</p>
               <Button1
-                onClick={() => {}}
+                onClick={() => {
+                  setStep('RegisterCompanyPage')
+                }}
                 styleType={'outline2'}
                 styleSize={'sm'}
                 styleStatus={'default'}

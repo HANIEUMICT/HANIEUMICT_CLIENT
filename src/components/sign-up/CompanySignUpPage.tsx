@@ -6,7 +6,7 @@ import InputRegisterCompanyInfoPage from '@/components/sign-up/company/InputRegi
 import RegisterCompanyPage from '@/components/sign-up/company/RegisterCompanyPage'
 
 export default function CompanySignUpPage() {
-  const [step, setStep] = useState<CompanySignUpPageStepType>('RegisterCompanyPage')
+  const [step, setStep] = useState<CompanySignUpPageStepType>('SearchCompanyInfoPage')
   return (
     <main>
       {/* 회사를 이미 등록한 경우 */}

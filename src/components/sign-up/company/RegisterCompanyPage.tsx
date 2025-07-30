@@ -14,7 +14,7 @@ interface RegisterCompanyPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProps) {
-  const [isModalOpen, setIsModalOpen] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   return (
     <div className="flex flex-col items-center justify-center">
       {isModalOpen ? (
@@ -80,7 +80,9 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
         </div>
         <div className="flex w-full gap-x-3">
           <Button1
-            onClick={() => {}}
+            onClick={() => {
+              setStep('SearchCompanyInfoPage')
+            }}
             styleSize={'lg'}
             styleType={'outline'}
             styleStatus={'default'}

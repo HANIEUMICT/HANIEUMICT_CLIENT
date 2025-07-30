@@ -11,7 +11,7 @@ import CompanyInfoField from '@/components/sign-up/company/CompanyInfoField'
 import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
 import Modal from '@/components/common/Modal'
 import Image from 'next/image'
-import { CompanySignUpPageStepType } from '@/type/sign-up'
+import { CompanySignUpPageStepType } from '@/type/auth'
 
 interface InputCompanyInfoPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>

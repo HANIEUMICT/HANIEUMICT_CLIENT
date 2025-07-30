@@ -105,6 +105,7 @@ export default function RequestedServiceSelect({}: RequestedServiceSelectProps) 
             <p className="button-lg text-gray-50">기타제조</p>
           </div>
           <Input
+            value={''}
             placeholder={'요청할 제조 서비스를 작성해주세요.'}
             customClassName={'h-[52px] w-full'}
             inputBoxStyle={'default'}

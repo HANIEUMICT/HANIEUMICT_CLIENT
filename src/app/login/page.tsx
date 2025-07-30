@@ -6,10 +6,15 @@ import Header from '@/components/common/Header'
 import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
 import { UnCheckboxIcon } from '@/assets/svgComponents'
+import { useAuthStore } from '@/store/authStore'
+import { postAuthLogin } from '@/lib/auth'
+import Cookies from 'js-cookie'
 
 export default function LoginPage() {
   const [signupType, setSignupType] = useState<'개인회원' | '기업회원'>('개인회원')
   const router = useRouter()
+  const setState = useAuthStore((state) => state.setState)
+  const loginData = useAuthStore((state) => state.loginData)
 
   return (
     <main className="bg-gray-10 flex min-h-screen items-center justify-center">
@@ -47,12 +52,38 @@ export default function LoginPage() {
           <section className="gap-y-2xs mt-[40px] flex flex-col">
             <section className="gap-y-4xs flex flex-col">
               <h2 className="sub2">이메일</h2>
-              <Input type={'email'} inputBoxStyle={'focus'} placeholder={'이메일을 입력해주세요.'} />
+              <Input
+                value={loginData?.email ?? ''}
+                onChange={(e) => {
+                  setState({
+                    loginData: {
+                      ...loginData,
+                      email: e.target.value,
+                    },
+                  })
+                }}
+                type={'email'}
+                inputBoxStyle={'focus'}
+                placeholder={'이메일을 입력해주세요.'}
+              />
               {/*<p className="body1 text-conic-red-40">이메일을 찾을 수 없습니다. 다시 입력해주세요.</p>*/}
             </section>
             <section className="gap-y-4xs flex flex-col">
               <h2 className="sub2">비밀번호</h2>
-              <Input type={'password'} inputBoxStyle={'focus'} placeholder={'비밀번호를 입력해주세요.'} />
+              <Input
+                value={loginData?.password ?? ''}
+                onChange={(e) => {
+                  setState({
+                    loginData: {
+                      ...loginData,
+                      password: e.target.value,
+                    },
+                  })
+                }}
+                type={'password'}
+                inputBoxStyle={'focus'}
+                placeholder={'비밀번호를 입력해주세요.'}
+              />
               {/*<p className="body1 text-conic-red-40">비밀번호가 일치하지 않습니다. 다시 입력해주세요.</p>*/}
             </section>
 
@@ -77,7 +108,27 @@ export default function LoginPage() {
             styleType={'primary'}
             styleStatus={'hover'}
             styleSize={'lg'}
-            onClick={() => {}}
+            onClick={async () => {
+              if (loginData) {
+                const response = await postAuthLogin(loginData)
+                console.log('response', response)
+                if (response.data) {
+                  Cookies.set('accessToken', response.data.accessToken)
+                  Cookies.set('refreshToken', response.data.accessToken)
+                  router.push('/')
+
+                  // const userData: UserDataType = {
+                  //   name: result.data.name,
+                  //   userId: result.data.userId,
+                  //   role: result.data.role,
+                  // }
+                  // // localStorage 는 브라우저 환경에서만 접근 가능
+                  // if (typeof window !== 'undefined') {
+                  //   localStorage.setItem('userData', JSON.stringify(userData))
+                  // }
+                }
+              }
+            }}
             customClassName={'mt-[40px] w-full'}
           >
             로그인

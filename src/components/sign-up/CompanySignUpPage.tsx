@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { CompanySignUpPageStepType } from '@/type/sign-up'
+import { CompanySignUpPageStepType } from '@/type/auth'
 import SearchCompanyInfoPage from '@/components/sign-up/company/SearchCompanyInfoPage'
 import InputCompanyInfoPage from '@/components/sign-up/company/InputCompanyInfoPage'
 import InputRegisterCompanyInfoPage from '@/components/sign-up/company/InputRegisterCompanyInfoPage'
 import RegisterCompanyPage from '@/components/sign-up/company/RegisterCompanyPage'
 
 export default function CompanySignUpPage() {
-  const [step, setStep] = useState<CompanySignUpPageStepType>('RegisterCompanyPage')
+  const [step, setStep] = useState<CompanySignUpPageStepType>('SearchCompanyInfoPage')
   return (
     <main>
       {/* 회사를 이미 등록한 경우 */}

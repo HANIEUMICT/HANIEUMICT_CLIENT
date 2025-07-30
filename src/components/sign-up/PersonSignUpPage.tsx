@@ -7,16 +7,67 @@ import PasswordField from '@/components/sign-up/field/PasswordField'
 import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
 import AddressField from '@/components/sign-up/field/AddressField'
 import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
+import SearchAddressModal from '@/components/common/SearchAddressModal'
+import { useModalStore } from '@/store/modalStore'
+import { postAuthSignUp } from '@/lib/auth'
 
 interface PersonSignUpPageProps {}
 
 const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
+
   const router = useRouter()
+  const setState = useAuthStore((state) => state.setState)
+  const setModalState = useModalStore((state) => state.setState)
+
+  const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
+  const isIndividualPasswordValid = useAuthStore((state) => state.isIndividualPasswordValid)
+  const isIndividualPasswordMatch = useAuthStore((state) => state.isIndividualPasswordMatch)
+
+  const isSignUpEnabled = !!(
+    individualSignUpData?.email &&
+    individualSignUpData?.password &&
+    individualSignUpData?.phoneNumber &&
+    individualSignUpData?.termsOfServiceAgreed === true &&
+    isIndividualPasswordValid === true &&
+    isIndividualPasswordMatch === true
+  )
+
+  const handleComplete = async (data: any) => {
+    let fullAddress = data.address
+    let extraAddress = ''
+
+    const { addressType, bname, buildingName, zonecode } = data
+    console.log('data', data)
+
+    if (addressType === 'R') {
+      if (bname !== '') {
+        extraAddress += bname
+      }
+      if (buildingName !== '') {
+        extraAddress += `${extraAddress !== '' && ', '}${buildingName}`
+      }
+      fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
+    }
+    setState({
+      ...individualSignUpData,
+      individualSignUpData: { ...individualSignUpData, zipcode: zonecode, address1: fullAddress },
+    })
+
+    setModalState({ isSearchAddressModalOpen: false })
+  }
+
+  useEffect(() => {
+    console.log('individualSignUpData', individualSignUpData)
+  }, [individualSignUpData])
+
   return (
     <div className="flex flex-col items-center justify-center">
+      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
       {isModalOpen ? (
         <Modal>
           <Modal.Content>
@@ -85,9 +136,14 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
         <Button1
           styleSize="lg"
           styleType="primary"
+          styleStatus={isSignUpEnabled ? 'default' : 'disabled'}
           customClassName="mt-3xs w-full mb-[252px]"
           onClick={() => {
-            setIsModalOpen(true)
+            if (individualSignUpData) {
+              const response = postAuthSignUp(individualSignUpData)
+              console.log('회원가입 완료', response)
+              setIsModalOpen(true)
+            }
           }}
         >
           회원가입

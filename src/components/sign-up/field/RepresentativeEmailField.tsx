@@ -6,7 +6,12 @@ export default function RepresentativeEmailField() {
       <section className="gap-x-5xs sub2 flex">
         대표자 이메일 <span className="text-conic-red-30">*</span>
       </section>
-      <Input inputBoxStyle={'default'} placeholder={'대표자 이메일을 입력해주세요.'} customClassName={'w-full'}></Input>
+      <Input
+        value={''}
+        inputBoxStyle={'default'}
+        placeholder={'대표자 이메일을 입력해주세요.'}
+        customClassName={'w-full'}
+      ></Input>
     </div>
   )
 }

@@ -117,15 +117,13 @@ export default function LoginPage() {
                   Cookies.set('refreshToken', response.data.accessToken)
                   router.push('/')
 
-                  // const userData: UserDataType = {
-                  //   name: result.data.name,
-                  //   userId: result.data.userId,
-                  //   role: result.data.role,
-                  // }
-                  // // localStorage 는 브라우저 환경에서만 접근 가능
-                  // if (typeof window !== 'undefined') {
-                  //   localStorage.setItem('userData', JSON.stringify(userData))
-                  // }
+                  const userData: { memberId: number } = {
+                    memberId: response.data.memberId,
+                  }
+                  // localStorage 는 브라우저 환경에서만 접근 가능
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                  }
                 }
               }
             }}

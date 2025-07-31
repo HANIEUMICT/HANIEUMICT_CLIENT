@@ -1,9 +1,20 @@
+import { useProjectStore } from '@/store/projectStore'
+
 interface RequestDetailFieldProps {}
 export default function RequestDetailField({}: RequestDetailFieldProps) {
+  const projectData = useProjectStore((state) => state.projectData)
+  const setState = useProjectStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
       <p className="sub2">세부 요청사항 입력</p>
       <textarea
+        value={projectData?.requests ?? ''}
+        onChange={(e) => {
+          setState({
+            ...projectData,
+            projectData: { ...projectData, requests: e.target.value },
+          })
+        }}
         className={
           'p-2xs placeholder:body1 border-gray-20 h-[148px] rounded-[16px] border outline-none placeholder:text-gray-50'
         }

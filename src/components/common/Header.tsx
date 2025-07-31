@@ -1,5 +1,6 @@
 import { AlarmIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
+import Button1 from '@/components/common/Button1'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -23,6 +24,17 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
               </div>
             </section>
             <section className="gap-x-l flex">
+              <Button1
+                onClick={() => {
+                  router.push('/project')
+                }}
+                styleType="primary"
+                styleStatus={'default'}
+                styleSize={'sm'}
+                customClassName={'rounded-full h-[36px]'}
+              >
+                견적서 작성하기
+              </Button1>
               <div className="flex items-center gap-x-2">
                 <TranslateIcon width={32} height={32} />
                 <AlarmIcon width={20} height={24} />

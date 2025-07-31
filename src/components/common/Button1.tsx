@@ -28,7 +28,7 @@ const variantStyles = {
     click:
       'bg-white border border-gray-20 hover:border-gray-30 hover:text-conic-orange-40 active:text-conic-orange-50 active:border-gray-40 text-conic-orange-30',
     disabled: 'bg-gray-20 border border-gray-40 text-gray-40 cursor-not-allowed',
-    selected: '',
+    selected: 'bg-conic-orange-10 border-conic-orange-30 border text-conic-orange-30',
   },
   ghost: {
     default: 'bg-transparent text-gray-50',

@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgAshbnIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 16 16" {...props}><path fill="#6F717C" d="M15.333 1.752a.668.668 0 0 1 0 1.335H2.667v8.241A3.335 3.335 0 0 0 6 14.665h4a3.336 3.336 0 0 0 3.334-3.337V4.534a.667.667 0 1 1 1.333 0v6.794A4.67 4.67 0 0 1 10 16H6a4.67 4.67 0 0 1-4.666-4.672V3.087H.667a.667.667 0 0 1 0-1.335zM6 4.922c.368.001.666.3.666.669v5.704a.667.667 0 1 1-1.333 0V5.59c0-.369.299-.668.667-.668m4 0c.368.001.666.3.666.669v5.704a.667.667 0 1 1-1.333 0V5.59c0-.369.299-.668.667-.668M10.666 0a.667.667 0 0 1 0 1.335H5.333a.668.668 0 0 1 0-1.335z" /></svg>;
+export default SvgAshbnIcon;

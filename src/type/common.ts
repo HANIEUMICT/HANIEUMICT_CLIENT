@@ -6,3 +6,6 @@ export interface ApiResponse<T> {
     message: string
   }
 }
+export interface UserDataType {
+  memberId: number
+}

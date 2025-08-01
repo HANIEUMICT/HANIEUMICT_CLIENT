@@ -10,6 +10,7 @@ export interface ApiResponse<T> {
 export interface UserDataType {
   memberId: number
   memberName: string
+  memberRole: 'INDIVIDUAL' | 'OWNER'
 }
 
 export interface FileInfoType {

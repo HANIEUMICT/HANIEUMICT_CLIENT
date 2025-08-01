@@ -44,17 +44,31 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
               </div>
             </section>
             <section className="gap-x-l flex items-center">
-              <Button1
-                onClick={() => {
-                  router.push('/project')
-                }}
-                styleType="primary"
-                styleStatus={'default'}
-                styleSize={'sm'}
-                customClassName={'rounded-full h-[36px]'}
-              >
-                견적서 작성하기
-              </Button1>
+              {userData?.memberRole === 'INDIVIDUAL' ? (
+                <Button1
+                  onClick={() => {
+                    router.push('/project')
+                  }}
+                  styleType="primary"
+                  styleStatus={'default'}
+                  styleSize={'sm'}
+                  customClassName={'rounded-full h-[36px]'}
+                >
+                  견적서 작성하기
+                </Button1>
+              ) : userData?.memberRole === 'OWNER' ? (
+                <Button1
+                  onClick={() => {
+                    router.push('/project')
+                  }}
+                  styleType="primary"
+                  styleStatus={'default'}
+                  styleSize={'sm'}
+                  customClassName={'rounded-full h-[36px]'}
+                >
+                  내 공장 등록하기
+                </Button1>
+              ) : null}
               <div className="flex items-center gap-x-2">
                 <TranslateIcon width={32} height={32} />
                 <AlarmIcon width={20} height={24} />

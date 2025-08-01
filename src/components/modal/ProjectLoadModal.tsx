@@ -8,6 +8,8 @@ import { getProject } from '@/lib/project'
 import { ProjectResponseType } from '@/type/project'
 import { useProjectStore } from '@/store/projectStore'
 import { useModalStore } from '@/store/modalStore'
+import { extractImageInfo, formatDate } from '@/utils/project'
+import DownloadItem from '@/components/common/DownloadItem'
 
 interface ProjectLoadModalProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -38,8 +40,8 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
   }, [])
   // 기존에 저장된 견적서 불러오기
   const [status, setStatus] = useState<'TEMPORARY_SAVE' | 'INITIALIZE' | 'SUBMIT' | null>('TEMPORARY_SAVE')
-  const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = 20 // 예시로 총 20페이지
+  const [currentPage, setCurrentPage] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -49,15 +51,16 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
 
   useEffect(() => {
     if (userData?.memberId && status) {
-      getProject(userData.memberId, status)
-        .then((response: any) => {
+      getProject(userData.memberId, status, currentPage, 4)
+        .then((response) => {
           // 일단 any로 받아서 구조 파악
-          console.log('API 전체 응답:', response)
+          console.log('API 전체 응답:', response.data)
 
           // 안전한 타입 체크
-          if (response && response.data && Array.isArray(response.data)) {
-            const projectList: ProjectResponseType[] = response.data
+          if (response && response.data && Array.isArray(response.data.content)) {
+            const projectList: ProjectResponseType[] = response.data.content
             setProjectData(projectList)
+            setTotalPages(response.data.totalPages)
 
             if (projectList.length > 0 && selectedProjectId === null) {
               setSelectedProjectId(projectList[0].projectId)
@@ -116,7 +119,7 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                 }}
                 className={`${status === 'TEMPORARY_SAVE' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
               >
-                임시 저장된 견적 요청서<span>({projectData?.length || 0})</span>
+                임시 저장된 견적 요청서
               </button>
               <button
                 onClick={() => {
@@ -126,7 +129,6 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                 className={`${status === 'SUBMIT' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
               >
                 작성 완료된 견적 요청서
-                <span>({projectData?.length || 0})</span>
               </button>
             </section>
           </section>
@@ -144,7 +146,7 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                         <p className="sub1">{project.projectRegisterRequest.projectTitle}</p>
                         <div className="gap-x-4xs flex text-gray-50">
                           <p className="body1">최종 작성일</p>
-                          <p className="sub2">2025.04.19</p>
+                          <p className="sub2">{formatDate(project.modifiedAt)}</p>
                         </div>
                       </section>
                     )
@@ -169,19 +171,27 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                   </div>
                   <div className="flex flex-col gap-y-2">
                     <p className="body1 text-gray-50">도면</p>
-                    <UploadItem
-                      customClassName={'w-[440px]'}
-                      ImageUrlName={'/test.png'}
-                      ImageUrl={'/test.png'}
-                      imageSize={'123KB'}
-                      onRemove={() => {}}
-                    />
+                    {selectedProject.drawingUrls.map((drawingUrl, index) => {
+                      return (
+                        <DownloadItem
+                          key={index}
+                          customClassName={'w-[440px]'}
+                          ImageUrlName={extractImageInfo(drawingUrl).imageName}
+                          ImageUrl={drawingUrl}
+                        />
+                      )
+                    })}
                   </div>
                 </>
               ) : null}
             </section>
           </section>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} showPages={5} />
+          <Pagination
+            currentPage={currentPage + 1}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            showPages={5}
+          />
         </div>
       </Modal.Content>
       <Modal.BottomButton>

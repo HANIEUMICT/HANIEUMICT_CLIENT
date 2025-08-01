@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/type/common'
+import { ApiResponse, PaginationResultType } from '@/type/common'
 import { ProjectResponseType, ProjectType } from '@/type/project'
 import { authorizedFetch } from '@/lib/common'
 
@@ -67,14 +67,16 @@ export const postProjectImageUpload = async (
 }
 
 /**
- * 사용자 프로젝(공고) 조회 API
+ * 사용자 프로젝트(공고) 조회 API
  */
 export const getProject = async (
   memberId: number,
-  status: 'TEMPORARY_SAVE' | 'INITIALIZE' | 'SUBMIT' | null
-): Promise<ApiResponse<ProjectResponseType[]>> => {
+  status: 'TEMPORARY_SAVE' | 'INITIALIZE' | 'SUBMIT' | null,
+  page: number,
+  size: number
+): Promise<ApiResponse<PaginationResultType<ProjectResponseType>>> => {
   const response = await authorizedFetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project/${memberId}${status === null ? '' : `?status=${status}`}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project/${memberId}${status === null ? '' : `?status=${status}`}&page=${page}&size=${size}`,
     {
       method: 'GET',
       headers: {

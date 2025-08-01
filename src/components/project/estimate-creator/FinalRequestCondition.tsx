@@ -2,6 +2,8 @@ import Button1 from '@/components/common/Button1'
 import UploadItem from '@/components/common/UploadItem'
 import { useProjectStore } from '@/store/projectStore'
 import { Dispatch, SetStateAction } from 'react'
+import DownloadItem from '@/components/common/DownloadItem'
+import { extractImageInfo } from '@/utils/project'
 
 interface FinalRequestConditionProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -22,11 +24,10 @@ export default function FinalRequestCondition({ setCurrentStep }: FinalRequestCo
           <div className="flex flex-col gap-y-2">
             {finalProjectData?.drawingUrls.map((drawingUrl) => {
               return (
-                <UploadItem
+                <DownloadItem
+                  key={drawingUrl}
+                  ImageUrlName={extractImageInfo(drawingUrl).imageName}
                   ImageUrl={drawingUrl}
-                  ImageUrlName={drawingUrl}
-                  imageSize={drawingUrl}
-                  onRemove={() => {}}
                 />
               )
             })}

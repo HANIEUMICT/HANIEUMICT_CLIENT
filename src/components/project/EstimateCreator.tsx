@@ -4,20 +4,13 @@ import FinalBasicInfo from '@/components/project/estimate-creator/FinalBasicInfo
 import FinalRequestCondition from '@/components/project/estimate-creator/FinalRequestCondition'
 import FinalShippingAndExtraInfo from '@/components/project/estimate-creator/FinalShippingAndExtraInfo'
 import { useProjectStore } from '@/store/projectStore'
+import { formatDate } from '@/utils/project'
 
 interface EstimateCreatorProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
 }
 export default function EstimateCreator({ setCurrentStep }: EstimateCreatorProps) {
   const finalProjectData = useProjectStore((state) => state.finalProjectData)
-
-  function formatDate(isoString: string): string {
-    const date = new Date(isoString)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 +1
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}.${month}.${day}`
-  }
 
   return (
     <div className="gap-y-l flex flex-col">

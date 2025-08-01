@@ -1,11 +1,11 @@
 import Image from 'next/image'
-import { AshbnIcon } from '@/assets/svgComponents'
+import { AshbnIcon, DownloadIcon } from '@/assets/svgComponents'
 
 interface UploadItemProps {
   ImageUrl: string | ArrayBuffer | null
   ImageUrlName: string
-  imageSize: string
-  onRemove: () => void
+  imageSize?: string
+  onRemove?: () => void
   customClassName?: string
 }
 
@@ -45,10 +45,9 @@ export default function UploadItem({
         </div>
         <div className="flex flex-col gap-y-2">
           <p className="body1">{ImageUrlName}</p>
-          <p className="caption text-gray-50">{imageSize}</p>
+          {imageSize ? <p className="caption text-gray-50">{imageSize}</p> : null}
         </div>
       </div>
-
       <AshbnIcon onClick={onRemove} width={20} height={20} />
     </div>
   )

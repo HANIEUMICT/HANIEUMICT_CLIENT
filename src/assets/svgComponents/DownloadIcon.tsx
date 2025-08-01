@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgDownloadIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 20" {...props}><path fill="#6F717C" d="M18.523 12.345a.8.8 0 0 1 .8.8v4.008a2.8 2.8 0 0 1-2.8 2.8H3.191a2.8 2.8 0 0 1-2.8-2.8v-4.008a.8.8 0 1 1 1.6 0v4.008a1.2 1.2 0 0 0 1.2 1.2h13.332a1.2 1.2 0 0 0 1.2-1.2v-4.008a.8.8 0 0 1 .8-.8M9.838.422a.8.8 0 0 1 .796.718l.004.082.005 11.364 3.703-3.567a.8.8 0 0 1 1.11 1.152l-4.35 4.191a1.8 1.8 0 0 1-2.498 0l-4.35-4.191a.8.8 0 0 1 1.11-1.152l3.675 3.54-.005-11.336.004-.081a.8.8 0 0 1 .796-.72" /></svg>;
+export default SvgDownloadIcon;

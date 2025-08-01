@@ -1,9 +1,7 @@
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true, // ✅ 빌드 중 ESLint 오류/경고 무시
+const nextConfig = {
+  images: {
+    domains: ['conik-bucket.s3.ap-northeast-2.amazonaws.com'],
   },
 }
 
-export default nextConfig
+module.exports = nextConfig

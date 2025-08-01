@@ -178,11 +178,7 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                     />
                   </div>
                 </>
-              ) : (
-                <div className="flex h-32 items-center justify-center">
-                  <p className="body1 text-gray-50">프로젝트를 선택해주세요</p>
-                </div>
-              )}
+              ) : null}
             </section>
           </section>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} showPages={5} />

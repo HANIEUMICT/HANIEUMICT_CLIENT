@@ -22,6 +22,10 @@ export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
 
   const { uploadFiles } = useFileUpload()
 
+  useEffect(() => {
+    console.log('projectId', projectId)
+  }, [])
+
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -53,7 +57,9 @@ export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
         const res = await postProjectFinal(projectId, {
           ...projectData,
           memberId: userData.memberId,
+          projectBidStatus: 'PRE_BID',
         })
+        console.log('완성된 견적서', res)
         setState({ finalProjectData: res.data })
         console.log('프로젝트(공고) 생성 완료', res)
       } else {

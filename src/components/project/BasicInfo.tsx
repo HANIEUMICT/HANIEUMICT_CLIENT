@@ -30,6 +30,7 @@ export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
       }
     }
   }, [])
+
   const basicInfoContents: { title: string; content: string; type: 'new' | 'before'; img: string }[] = [
     {
       title: '새 견적서 작성하기',
@@ -79,13 +80,16 @@ export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
             if (selectedType === 'new') {
               if (userData?.memberId) {
                 const response = await postProjectInit(userData.memberId)
+                console.log('init 성공', response)
 
                 if (!response.data) {
                   console.error('프로젝트 초기화 실패')
                   return
                 }
 
-                setState({ projectId: response.data })
+                console.log('projectId', response.data.projectId)
+
+                setState({ projectId: response.data.projectId })
                 console.log('response:', response)
                 setCurrentStep(3)
               }
@@ -105,13 +109,13 @@ export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
                   requestEstimate: null,
                   publicUntil: null,
                   projectStatus: null,
-                  canPhoneConsult: null,
+                  canPhoneConsult: false,
                   deliveryAddress: null,
                   submitStatus: 'SUBMIT',
+                  projectBidStatus: 'PRE_BID',
                   canDeadlineChange: false,
                 },
                 finalProjectData: undefined,
-                projectId: undefined,
               })
             } else {
               setModalState({ isEstimateModalOpen: true })

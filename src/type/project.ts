@@ -9,16 +9,19 @@ export interface ProjectType {
   projectQuantity?: number | null
   requests?: string | null
   deadline?: string | null
-  canDeadlineChange?: boolean | null
+  canDeadlineChange?: boolean
   requestEstimate?: number | null
   publicUntil?: string | null
   projectStatus?: string | null
-  canPhoneConsult?: boolean | null
+  canPhoneConsult?: boolean
   deliveryAddress?: string | null
+  projectBidStatus: 'PRE_BID' | 'BID_CLOSED' | 'BIDDING' | null
   submitStatus?: string | null
 }
 
 export interface ProjectResponseType {
   projectId: number
+  modifiedAt: string
   projectRegisterRequest: ProjectType
+  drawingUrls: string[]
 }

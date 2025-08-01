@@ -19,12 +19,18 @@ export default function FinalRequestCondition({ setCurrentStep }: FinalRequestCo
             <p className="sub2">도면 소유 여부</p>
             <p className="body1 text-gray-40">프로젝트명</p>
           </div>
-          {/*<div className="flex flex-col gap-y-2">*/}
-          {/*  <UploadItem />*/}
-          {/*  <UploadItem />*/}
-          {/*  <UploadItem />*/}
-          {/*  <UploadItem />*/}
-          {/*</div>*/}
+          <div className="flex flex-col gap-y-2">
+            {finalProjectData?.drawingUrls.map((drawingUrl) => {
+              return (
+                <UploadItem
+                  ImageUrl={drawingUrl}
+                  ImageUrlName={drawingUrl}
+                  imageSize={drawingUrl}
+                  onRemove={() => {}}
+                />
+              )
+            })}
+          </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">제조 수량</p>
             <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.projectQuantity}</p>
@@ -56,7 +62,9 @@ export default function FinalRequestCondition({ setCurrentStep }: FinalRequestCo
       </section>
       <div className="flex w-full justify-end">
         <Button1
-          onClick={() => {}}
+          onClick={() => {
+            setCurrentStep(4)
+          }}
           styleType={'outline'}
           styleStatus={'default'}
           styleSize={'md'}

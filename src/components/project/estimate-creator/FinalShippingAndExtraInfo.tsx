@@ -51,7 +51,9 @@ export default function FinalShippingAndExtraInfo({ setCurrentStep }: FinalShipp
       </section>
       <div className="flex w-full justify-end">
         <Button1
-          onClick={() => {}}
+          onClick={() => {
+            setCurrentStep(5)
+          }}
           styleType={'outline'}
           styleStatus={'default'}
           styleSize={'md'}

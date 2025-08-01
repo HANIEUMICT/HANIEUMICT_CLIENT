@@ -33,6 +33,10 @@ export default function DrawingRegistration({ setCurrentStep }: DrawingRegistrat
     }
   }, [])
 
+  useEffect(() => {
+    console.log('projectId', projectId)
+  }, [projectId])
+
   return (
     <div className="gap-y-l flex flex-col">
       <section className="border-gray-20 flex flex-col gap-y-[16px] rounded-[24px] border bg-white p-6">

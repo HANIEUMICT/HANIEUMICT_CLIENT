@@ -15,9 +15,15 @@ export interface IndividualSignUpType {
   address2?: string
 }
 export interface SignUpResponseType {
-  accessToken: string
-  refreshToken: string
-  memberId: number
+  memberInfo: {
+    memberId: number
+    memberName: string
+    memberRole: 'INDIVIDUAL' | 'OWNER'
+  }
+  tokenInfo: {
+    accessToken: string
+    refreshToken: string
+  }
 }
 export interface LoginType {
   email?: string

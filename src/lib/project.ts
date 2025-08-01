@@ -5,7 +5,7 @@ import { authorizedFetch } from '@/lib/common'
 /**
  * 초기 프로젝트(공고) 생성 API
  */
-export const postProjectInit = async (memberId: number): Promise<ApiResponse<number>> => {
+export const postProjectInit = async (memberId: number): Promise<ApiResponse<ProjectResponseType>> => {
   const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/project/${memberId}/init`, {
     method: 'POST',
     headers: {

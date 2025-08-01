@@ -45,7 +45,9 @@ export default function FinalBasicInfo({ setCurrentStep }: FinalBasicInfoProps) 
       </section>
       <div className="flex w-full justify-end">
         <Button1
-          onClick={() => {}}
+          onClick={() => {
+            setCurrentStep(3)
+          }}
           styleType={'outline'}
           styleStatus={'default'}
           styleSize={'md'}

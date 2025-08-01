@@ -8,6 +8,7 @@ export interface ApiResponse<T> {
 }
 export interface UserDataType {
   memberId: number
+  memberName: string
 }
 
 export interface FileInfoType {

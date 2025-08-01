@@ -121,3 +121,58 @@ export const purposeList = [
   '유리 / 세라믹 / 광물',
   '기타 제조',
 ]
+/**
+ * 파일 크기를 포맷팅 (bytes -> KB, MB 등)
+ */
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes'
+
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+/**
+ * S3 URL에서 파일명과 크기 정보를 추출
+ * @param imageUrl - S3 이미지 URL
+ * @returns 파일명과 크기 정보
+ */
+export const extractImageInfo = (
+  imageUrl: string
+): {
+  imageName: string
+  imageSize: string | null
+} => {
+  try {
+    // URL을 파싱하여 pathname 추출
+    const url = new URL(imageUrl)
+    const pathname = url.pathname
+
+    // 마지막 '/' 이후의 파일명 추출
+    const fileName = pathname.split('/').pop() || ''
+
+    // URL 디코딩 (예: %2520 -> %20 -> 공백)
+    const decodedFileName = decodeURIComponent(fileName)
+
+    return {
+      imageName: decodedFileName,
+      imageSize: null, // URL에서는 크기 정보를 알 수 없음
+    }
+  } catch (error) {
+    console.error('URL 파싱 실패:', error)
+    return {
+      imageName: imageUrl,
+      imageSize: null,
+    }
+  }
+}
+
+export function formatDate(isoString: string): string {
+  const date = new Date(isoString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 +1
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}.${month}.${day}`
+}

@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgGrayFavoriteIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 21 19" {...props}><path stroke="#C5C6CD" d="M15 .613c1.442 0 2.62.478 3.571 1.429.95.95 1.429 2.13 1.429 3.571q0 1.064-.36 2.084c-.236.672-.66 1.431-1.291 2.28q-.945 1.274-2.578 2.908-1.636 1.636-4.155 3.906l-1.116 1-1.116-1q-2.52-2.27-4.155-3.906Q3.596 11.25 2.65 9.978c-.63-.85-1.055-1.61-1.292-2.28A6.2 6.2 0 0 1 1 5.612c0-1.442.478-2.62 1.429-3.571C3.379 1.092 4.558.613 6 .613q1.189 0 2.263.503a5.4 5.4 0 0 1 1.856 1.421l.381.448.38-.448a5.4 5.4 0 0 1 1.857-1.42A5.3 5.3 0 0 1 15 .612Z" /></svg>;
+export default SvgGrayFavoriteIcon;

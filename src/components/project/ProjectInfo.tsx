@@ -10,6 +10,7 @@ import EstimatedBudgetField from '@/components/project/project-info/EstimatedBud
 import DrawingUploadField from '@/components/project/project-info/DrawingUploadField'
 import { postProjectDraft } from '@/lib/project'
 import { UserDataType } from '@/type/common'
+import { useFileUpload } from '@/hooks/useFileUpload'
 
 interface ProjectInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -27,6 +28,7 @@ export default function ProjectInfo({
   const projectId = useProjectStore((state) => state.projectId)
 
   const [userData, setUserData] = useState<UserDataType | null>(null)
+  const { uploadFiles } = useFileUpload()
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -84,6 +86,10 @@ export default function ProjectInfo({
                   memberId: userData?.memberId,
                 })
                 console.log('임시저장 성공', response)
+
+                // 3. 파일 업로드 실행
+                const uploadSuccess = await uploadFiles(projectId)
+                console.log(uploadSuccess)
               }
             }}
             customClassName={'h-[52px] w-[260px]'}

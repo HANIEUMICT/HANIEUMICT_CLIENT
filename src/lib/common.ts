@@ -114,7 +114,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
 export const postImageUrl = async (data: {
   prefix: string
   originalFilename: string
-}): Promise<ApiResponse<boolean>> => {
+}): Promise<ApiResponse<{ preSignedUrl: string; objectUrl: string }>> => {
   const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/bucket/presigned`, {
     method: 'POST',
     headers: {

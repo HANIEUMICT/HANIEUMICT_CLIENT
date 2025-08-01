@@ -1,6 +1,11 @@
 import { AlarmIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
 import Button1 from '@/components/common/Button1'
+import { useProjectStore } from '@/store/projectStore'
+import { postProjectInit } from '@/lib/project'
+import { useEffect, useState } from 'react'
+import { UserDataType } from '@/type/common'
+import { useFileUpload } from '@/hooks/useFileUpload'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -10,6 +15,7 @@ interface HeaderProps {
 
 const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
   const router = useRouter()
+
   const renderHeaderType = (headerType: HeaderType) => {
     switch (headerType) {
       case 'DEFAULT':

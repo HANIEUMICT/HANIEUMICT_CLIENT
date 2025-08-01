@@ -1,12 +1,35 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Button1 from '@/components/common/Button1'
+import { postProjectInit } from '@/lib/project'
+import { useProjectStore } from '@/store/projectStore'
+import { UserDataType } from '@/type/common'
+import { useModalStore } from '@/store/modalStore'
 
 interface BasicInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
 }
 export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
   const [selectedType, setSelectedType] = useState<'new' | 'before' | undefined>(undefined)
+  const setState = useProjectStore((state) => state.setState)
+  const setModalState = useModalStore((state) => state.setState)
+
+  const [userData, setUserData] = useState<UserDataType | null>(null)
+
+  // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedUserData = localStorage.getItem('userData')
+      if (storedUserData) {
+        try {
+          const parsedUserData: UserDataType = JSON.parse(storedUserData)
+          setUserData(parsedUserData)
+        } catch (error) {
+          console.error('userData 파싱 실패:', error)
+        }
+      }
+    }
+  }, [])
   const basicInfoContents: { title: string; content: string; type: 'new' | 'before'; img: string }[] = [
     {
       title: '새 견적서 작성하기',
@@ -52,8 +75,47 @@ export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
         <Button1
           styleType={'primary'}
           styleStatus={selectedType === undefined ? 'disabled' : 'default'}
-          onClick={() => {
-            setCurrentStep(3)
+          onClick={async () => {
+            if (selectedType === 'new') {
+              if (userData?.memberId) {
+                const response = await postProjectInit(userData.memberId)
+
+                if (!response.data) {
+                  console.error('프로젝트 초기화 실패')
+                  return
+                }
+
+                setState({ projectId: response.data })
+                console.log('response:', response)
+                setCurrentStep(3)
+              }
+              // zustand store에 선택된 프로젝트 데이터 저장
+              setState({
+                projectData: {
+                  memberId: null,
+                  projectTitle: null,
+                  category: null,
+                  categoryDetail: null,
+                  categoryDetailEtc: null,
+                  purpose: null,
+                  purposeEtc: null,
+                  projectQuantity: null,
+                  requests: null,
+                  deadline: null,
+                  requestEstimate: null,
+                  publicUntil: null,
+                  projectStatus: null,
+                  canPhoneConsult: null,
+                  deliveryAddress: null,
+                  submitStatus: 'SUBMIT',
+                  canDeadlineChange: false,
+                },
+                finalProjectData: undefined,
+                projectId: undefined,
+              })
+            } else {
+              setModalState({ isEstimateModalOpen: true })
+            }
           }}
           styleSize={'lg'}
           customClassName={'w-[260px]'}

@@ -9,7 +9,9 @@ export default function ManufacturingCategorySelect({}: ManufacturingCategorySel
   const setState = useProjectStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">제조 분류 선택</p>
+      <p className="sub2">
+        제조 분류 선택 <span className="text-conic-orange-30">*</span>
+      </p>
       <div className="grid w-full grid-cols-4 gap-[12px]">
         {Object.keys(manufacturingCategoryList).map((manufacturingCategory) => {
           return (
@@ -18,7 +20,10 @@ export default function ManufacturingCategorySelect({}: ManufacturingCategorySel
               onClick={() => {
                 setState({
                   ...projectData,
-                  projectData: { ...projectData, category: manufacturingCategory },
+                  projectData: {
+                    ...projectData,
+                    category: manufacturingCategory === projectData.category ? undefined : manufacturingCategory,
+                  },
                 })
               }}
               styleType={projectData?.category === manufacturingCategory ? 'outline2' : 'outline'}

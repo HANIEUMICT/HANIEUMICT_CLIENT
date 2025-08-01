@@ -1,21 +1,21 @@
 export interface ProjectType {
-  memberId?: number
-  projectTitle?: string
-  category?: string
-  categoryDetail?: string
-  categoryDetailEtc?: string
-  purpose?: string
-  purposeEtc?: string
-  projectQuantity?: number
-  requests?: string
-  deadline?: string
-  canDeadlineChange?: boolean
-  requestEstimate?: number
+  memberId?: number | null
+  projectTitle?: string | null
+  category?: string | null
+  categoryDetail?: string | null
+  categoryDetailEtc?: string | null
+  purpose?: string | null
+  purposeEtc?: string | null
+  projectQuantity?: number | null
+  requests?: string | null
+  deadline?: string | null
+  canDeadlineChange?: boolean | null
+  requestEstimate?: number | null
   publicUntil?: string | null
-  projectStatus?: string
-  canPhoneConsult?: boolean
-  deliveryAddress?: string
-  submitStatus?: string
+  projectStatus?: string | null
+  canPhoneConsult?: boolean | null
+  deliveryAddress?: string | null
+  submitStatus?: string | null
 }
 
 export interface ProjectResponseType {

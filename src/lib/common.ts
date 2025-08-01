@@ -107,3 +107,20 @@ const refreshAccessToken = async (): Promise<boolean> => {
     return false
   }
 }
+
+/**
+ * 이미지 업로드
+ */
+export const postImageUrl = async (data: {
+  prefix: string
+  originalFilename: string
+}): Promise<ApiResponse<boolean>> => {
+  const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/bucket/presigned`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return await response.json()
+}

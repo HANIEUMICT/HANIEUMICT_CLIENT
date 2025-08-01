@@ -9,3 +9,10 @@ export interface ApiResponse<T> {
 export interface UserDataType {
   memberId: number
 }
+
+export interface FileInfoType {
+  name: string
+  size: number
+  url: string | ArrayBuffer | null
+  id: string // 고유 식별자 추가
+}

@@ -9,11 +9,16 @@ interface EstimateCreatorProps {
 }
 export default function EstimateCreator({ setCurrentStep }: EstimateCreatorProps) {
   return (
-    <div>
+    <div className="gap-y-l flex flex-col">
       <div className="flex flex-col gap-y-[16px]">
-        <FinalBasicInfo />
-        <FinalRequestCondition />
-        <FinalShippingAndExtraInfo />
+        <FinalBasicInfo setCurrentStep={setCurrentStep} />
+        <FinalRequestCondition setCurrentStep={setCurrentStep} />
+        <FinalShippingAndExtraInfo setCurrentStep={setCurrentStep} />
+      </div>
+
+      <div className="flex w-full items-center justify-center gap-x-2">
+        <p className="body1">견적서 작성 일자</p>
+        <p className="sub2">2025.04.05</p>
       </div>
 
       <section className="flex justify-between">

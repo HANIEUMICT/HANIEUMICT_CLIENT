@@ -32,9 +32,9 @@ export default function VisibilitySelect() {
                 },
               })
             }}
-            styleType={!isPublic ? 'outline2' : 'outline'}
+            styleType={isPublic === false ? 'outline2' : 'outline'}
             styleSize={'lg'}
-            styleStatus={!isPublic ? 'selected' : 'default'}
+            styleStatus={isPublic === false ? 'selected' : 'default'}
             customClassName={'w-full'}
           >
             비공개

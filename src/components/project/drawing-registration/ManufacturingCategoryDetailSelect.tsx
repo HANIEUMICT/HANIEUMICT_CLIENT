@@ -15,7 +15,9 @@ export default function ManufacturingCategoryDetailSelect({}: ManufacturingCateg
 
   return detailCategories.length === 0 ? null : (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">제조 분류 - 세부 항목 선택</p>
+      <p className="sub2">
+        제조 분류 - 세부 항목 선택 <span className="text-conic-orange-30">*</span>
+      </p>
       <div className="grid w-full grid-cols-4 gap-[12px]">
         {detailCategories.map((detailCategory) => {
           const isSelected = projectData?.categoryDetail === detailCategory
@@ -27,7 +29,7 @@ export default function ManufacturingCategoryDetailSelect({}: ManufacturingCateg
                 setState({
                   projectData: {
                     ...projectData,
-                    categoryDetail: detailCategory,
+                    categoryDetail: detailCategory === projectData.categoryDetail ? undefined : detailCategory,
                   },
                 })
               }}

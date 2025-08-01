@@ -2,14 +2,24 @@ import Image from 'next/image'
 import { AshbnIcon } from '@/assets/svgComponents'
 
 interface UploadItemProps {
-  ImageUrl: string
+  ImageUrl: string | ArrayBuffer | null
   ImageUrlName: string
   imageSize: string
+  onRemove: () => void
+  customClassName?: string
 }
 
-export default function UploadItem({ ImageUrl, ImageUrlName, imageSize }: UploadItemProps) {
+export default function UploadItem({
+  ImageUrl,
+  ImageUrlName,
+  imageSize,
+  onRemove,
+  customClassName = 'w-[624px]',
+}: UploadItemProps) {
   return (
-    <div className="border-gray-20 flex h-[80px] w-[624px] items-center justify-between rounded-[16px] border px-5">
+    <div
+      className={`${customClassName} border-gray-20 flex h-[80px] items-center justify-between rounded-[16px] border px-5`}
+    >
       <div className="flex items-center gap-x-2">
         <div className="relative h-[44px] w-[44px]">
           <Image alt={ImageUrl} src={ImageUrl} fill className="rounded-[3px] object-cover" />
@@ -20,7 +30,7 @@ export default function UploadItem({ ImageUrl, ImageUrlName, imageSize }: Upload
         </div>
       </div>
 
-      <AshbnIcon width={20} height={20} />
+      <AshbnIcon onClick={onRemove} width={20} height={20} />
     </div>
   )
 }

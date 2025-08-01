@@ -9,7 +9,9 @@ export default function ProjectNameField({}: ProjectNameFieldProps) {
 
   return (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">프로젝트 이름</p>
+      <p className="sub2">
+        프로젝트 이름 <span className="text-conic-orange-30">*</span>
+      </p>
       <Input
         value={projectData?.projectTitle ?? ''}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {

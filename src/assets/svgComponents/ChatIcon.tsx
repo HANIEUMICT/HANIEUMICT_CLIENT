@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgChatIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 25 21" {...props}><path fill="#FFAEB1" d="M19.703.54H5.282C2.644.54.5 2.72.5 5.402v6.954c0 1.296.495 2.47 1.32 3.339.449.488.674 1.144.539 1.8l-.165.823c-.255 1.25 1.094 2.18 2.144 1.479l3.387-2.257c.315-.213.69-.32 1.065-.32h10.928c2.638 0 4.782-2.18 4.782-4.864V5.403C24.5 2.72 22.356.54 19.718.54z" /><path fill="#FF363C" d="M7.85 10.74a1.35 1.35 0 1 0 0-2.7 1.35 1.35 0 0 0 0 2.7M12.845 10.74a1.35 1.35 0 1 0 0-2.7 1.35 1.35 0 0 0 0 2.7M17.84 10.74a1.35 1.35 0 1 0 0-2.7 1.35 1.35 0 0 0 0 2.7" /></svg>;
+export default SvgChatIcon;

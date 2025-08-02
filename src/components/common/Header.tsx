@@ -1,5 +1,8 @@
-import { AlarmIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
+import { AlarmIcon, DropDownIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
+import Button1 from '@/components/common/Button1'
+import { useEffect, useState } from 'react'
+import { UserDataType } from '@/type/common'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -9,6 +12,24 @@ interface HeaderProps {
 
 const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
   const router = useRouter()
+
+  const [userData, setUserData] = useState<UserDataType | null>(null)
+
+  // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedUserData = localStorage.getItem('userData')
+      if (storedUserData) {
+        try {
+          const parsedUserData: UserDataType = JSON.parse(storedUserData)
+          setUserData(parsedUserData)
+        } catch (error) {
+          console.error('userData 파싱 실패:', error)
+        }
+      }
+    }
+  }, [])
+
   const renderHeaderType = (headerType: HeaderType) => {
     switch (headerType) {
       case 'DEFAULT':
@@ -22,30 +43,62 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
                 <button className="text-gray-30">공급업체</button>
               </div>
             </section>
-            <section className="gap-x-l flex">
+            <section className="gap-x-l flex items-center">
+              {userData?.memberRole === 'INDIVIDUAL' ? (
+                <Button1
+                  onClick={() => {
+                    router.push('/project')
+                  }}
+                  styleType="primary"
+                  styleStatus={'default'}
+                  styleSize={'sm'}
+                  customClassName={'rounded-full h-[36px]'}
+                >
+                  견적서 작성하기
+                </Button1>
+              ) : userData?.memberRole === 'OWNER' ? (
+                <Button1
+                  onClick={() => {
+                    router.push('/project')
+                  }}
+                  styleType="primary"
+                  styleStatus={'default'}
+                  styleSize={'sm'}
+                  customClassName={'rounded-full h-[36px]'}
+                >
+                  내 공장 등록하기
+                </Button1>
+              ) : null}
               <div className="flex items-center gap-x-2">
                 <TranslateIcon width={32} height={32} />
                 <AlarmIcon width={20} height={24} />
               </div>
-              <div className="button-lg gap-x-4xs flex items-center">
-                <button
-                  onClick={() => {
-                    router.push('/login')
-                  }}
-                  className="text-gray-40"
-                >
-                  로그인
-                </button>
-                <div className="text-gray-50">|</div>
-                <button
-                  onClick={() => {
-                    router.push('/sign-up')
-                  }}
-                  className="text-gray-40"
-                >
-                  회원가입
-                </button>
-              </div>
+              {userData ? (
+                <div className="flex gap-x-1">
+                  <p className="button-lg">{userData.memberName}</p>
+                  <DropDownIcon width={16} height={12} />
+                </div>
+              ) : (
+                <div className="button-lg gap-x-4xs flex items-center">
+                  <button
+                    onClick={() => {
+                      router.push('/login')
+                    }}
+                    className="text-gray-40"
+                  >
+                    로그인
+                  </button>
+                  <div className="text-gray-50">|</div>
+                  <button
+                    onClick={() => {
+                      router.push('/sign-up')
+                    }}
+                    className="text-gray-40"
+                  >
+                    회원가입
+                  </button>
+                </div>
+              )}
             </section>
           </header>
         )

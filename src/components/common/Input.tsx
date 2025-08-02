@@ -16,7 +16,7 @@ interface InputProps {
   rightIcon?: React.ReactNode
   leftIcon?: React.ReactNode
   placeholder?: string
-  type?: 'text' | 'password' | 'email' | 'tel'
+  type?: 'text' | 'password' | 'email' | 'tel' | 'number' | 'date'
   customClassName?: string
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onClick?: () => void

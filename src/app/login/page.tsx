@@ -113,19 +113,20 @@ export default function LoginPage() {
                 const response = await postAuthLogin(loginData)
                 console.log('response', response)
                 if (response.data) {
-                  Cookies.set('accessToken', response.data.accessToken)
-                  Cookies.set('refreshToken', response.data.accessToken)
+                  Cookies.set('accessToken', response.data.tokenInfo.accessToken)
+                  Cookies.set('refreshToken', response.data.tokenInfo.accessToken)
                   router.push('/')
+                  console.log(response)
 
-                  // const userData: UserDataType = {
-                  //   name: result.data.name,
-                  //   userId: result.data.userId,
-                  //   role: result.data.role,
-                  // }
-                  // // localStorage 는 브라우저 환경에서만 접근 가능
-                  // if (typeof window !== 'undefined') {
-                  //   localStorage.setItem('userData', JSON.stringify(userData))
-                  // }
+                  const userData: { memberId: number; memberName: string; memberRole: 'INDIVIDUAL' | 'OWNER' } = {
+                    memberId: response.data.memberInfo.memberId,
+                    memberName: response.data.memberInfo.memberName,
+                    memberRole: response.data.memberInfo.memberRole,
+                  }
+                  // localStorage 는 브라우저 환경에서만 접근 가능
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                  }
                 }
               }
             }}

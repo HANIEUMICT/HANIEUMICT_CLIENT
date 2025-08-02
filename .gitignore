@@ -42,3 +42,4 @@ next-env.d.ts
 
 *.xml
 *.iml
+!/src/components/project/shipping-info/VisibilitySelect.tsx

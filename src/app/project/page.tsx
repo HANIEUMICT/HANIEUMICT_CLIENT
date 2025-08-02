@@ -13,6 +13,8 @@ import { useProjectStore } from '@/store/projectStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import ProjectLoadModal from '@/components/modal/ProjectLoadModal'
 
+const steps = ['로그인', '기본정보', '도면등록', '프로젝트 정보', '배송 정보 입력', '견적서 생성']
+
 export default function EstimatePage() {
   const [currentStep, setCurrentStep] = useState<number>(2)
 
@@ -61,7 +63,7 @@ export default function EstimatePage() {
       <Header headerType={'DEFAULT'} />
       <div className="mt-[180px] mb-[120px] flex w-[1280px] flex-col gap-y-[32px]">
         <h2 className="h2">견적서 작성하기</h2>
-        <ProcessingBar currentStep={currentStep} />
+        <ProcessingBar steps={steps} currentStep={currentStep} />
         {currentStep === 2 && <BasicInfo setCurrentStep={setCurrentStep} />}
         {currentStep === 3 && <DrawingRegistration setCurrentStep={setCurrentStep} />}
         {currentStep === 4 && (

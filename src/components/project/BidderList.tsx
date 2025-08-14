@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 export default function BidderList() {
   const router = useRouter()
   return (
-    <div className="border-gray-20 fixed top-[200px] right-[40px] h-[763px] w-[442px] rounded-[24px] border bg-white">
+    <div className="border-gray-20 relative h-[763px] w-[442px] rounded-[24px] border bg-white">
       <div className="gap-y-xs p-s flex flex-col">
         <section className="flex flex-col gap-y-3">
           <p className="sub1">입찰 현황(3)</p>

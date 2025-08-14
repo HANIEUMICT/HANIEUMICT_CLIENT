@@ -10,6 +10,8 @@ import ProposalContent from '@/components/proposal/ProposalContent'
 import AdditionalInfo from '@/components/proposal/AdditionalInfo'
 import DrawingUploader from '@/components/proposal/DrawingUploader'
 import FinalProposalPreview from '@/components/proposal/FinalProposalPreview'
+import ProjectSummaryCard from '@/components/project/ProjectSummaryCard'
+import TotalPriceCard from '@/components/proposal/proposal-content/TotalPriceCard'
 
 const steps = ['사업자 정보', '견적 내용 입력', '기타 내용 입력', '도면 입력', '견적서 생성']
 
@@ -18,9 +20,9 @@ export default function ProposalPage() {
   const router = useRouter()
 
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex flex-col">
       <Header headerType={'DEFAULT'} />
-      <div className="gap-y-l mt-[120px] flex h-[80px] w-[1063px] flex-col">
+      <div className="gap-y-l mx-auto mt-[120px] flex h-[80px] flex-col">
         <div className="flex w-full items-center justify-between">
           <h2 className="h2">견적서 작성하기</h2>
           <Button1
@@ -36,13 +38,19 @@ export default function ProposalPage() {
           </Button1>
         </div>
 
-        <div className="flex flex-col gap-y-[16px]">
-          <ProcessingBar steps={steps} currentStep={currentStep} width={'65px'} />
-          {currentStep === 1 && <BusinessInfo />}
-          {currentStep === 2 && <ProposalContent />}
-          {currentStep === 3 && <AdditionalInfo />}
-          {currentStep === 4 && <DrawingUploader />}
-          {currentStep === 5 && <FinalProposalPreview />}
+        <div className="flex gap-x-[24px]">
+          <div className="flex flex-col gap-y-[16px]">
+            <ProcessingBar steps={steps} currentStep={currentStep} width={'65px'} />
+            {currentStep === 1 && <BusinessInfo setCurrentStep={setCurrentStep} />}
+            {currentStep === 2 && <ProposalContent setCurrentStep={setCurrentStep} />}
+            {currentStep === 3 && <AdditionalInfo setCurrentStep={setCurrentStep} />}
+            {currentStep === 4 && <DrawingUploader setCurrentStep={setCurrentStep} />}
+            {currentStep === 5 && <FinalProposalPreview setCurrentStep={setCurrentStep} />}
+          </div>
+          <div className="gap-y-s flex flex-col">
+            <ProjectSummaryCard />
+            {currentStep === 2 && <TotalPriceCard />}
+          </div>
         </div>
       </div>
     </main>

@@ -1,82 +1,40 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import ProcessingBar from '@/components/project/ProcessingBar'
 import Header from '@/components/common/Header'
-import BasicInfo from '@/components/project/BasicInfo'
-import DrawingRegistration from '@/components/project/DrawingRegistration'
-import ProjectInfo from '@/components/project/ProjectInfo'
-import ShippingInfo from '@/components/project/ShippingInfo'
-import EstimateCreator from '@/components/project/EstimateCreator'
-import { useModalStore } from '@/store/modalStore'
-import { useProjectStore } from '@/store/projectStore'
-import SearchAddressModal from '@/components/common/SearchAddressModal'
-import ProjectLoadModal from '@/components/modal/ProjectLoadModal'
+import ProjectCard from '@/components/project/ProjectCard'
+import Pagination from '@/components/common/Pagination'
+import Input from '@/components/common/Input'
+import Filter from '@/components/common/Filter'
 
-const steps = ['로그인', '기본정보', '도면등록', '프로젝트 정보', '배송 정보 입력', '견적서 생성']
-
-export default function EstimatePage() {
-  const [currentStep, setCurrentStep] = useState<number>(2)
-
-  const posterImgRef = useRef<HTMLInputElement | null>(null)
-
-  const [hasDrawingSelected, setHasDrawingSelected] = useState<boolean | undefined>(undefined)
-  const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
-  const isEstimateModalOpen = useModalStore((state) => state.isEstimateModalOpen)
-
-  const setModalState = useModalStore((state) => state.setState)
-  const projectData = useProjectStore((state) => state.projectData)
-  const setState = useProjectStore((state) => state.setState)
-
-  /**
-   * 카카오 주소 데이터 불러오기
-   * @param data
-   */
-  const handleComplete = async (data: any) => {
-    let fullAddress = data.address
-    let extraAddress = ''
-
-    const { addressType, bname, buildingName, zonecode } = data
-    console.log('data', data)
-
-    if (addressType === 'R') {
-      if (bname !== '') {
-        extraAddress += bname
-      }
-      if (buildingName !== '') {
-        extraAddress += `${extraAddress !== '' && ', '}${buildingName}`
-      }
-      fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
-    }
-    setState({
-      ...projectData,
-      projectData: { ...projectData, deliveryAddress: zonecode },
-    })
-
-    setModalState({ isSearchAddressModalOpen: false })
-  }
-
+export default function ProjectPage() {
   return (
     <main className="flex flex-col items-center justify-center">
-      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
-      {isEstimateModalOpen && <ProjectLoadModal setCurrentStep={setCurrentStep} />}
       <Header headerType={'DEFAULT'} />
-      <div className="mt-[180px] mb-[120px] flex w-[1280px] flex-col gap-y-[32px]">
-        <h2 className="h2">견적서 작성하기</h2>
-        <ProcessingBar steps={steps} currentStep={currentStep} />
-        {currentStep === 2 && <BasicInfo setCurrentStep={setCurrentStep} />}
-        {currentStep === 3 && <DrawingRegistration setCurrentStep={setCurrentStep} />}
-        {currentStep === 4 && (
-          <ProjectInfo
-            hasDrawingSelected={hasDrawingSelected}
-            setHasDrawingSelected={setHasDrawingSelected}
-            posterImgRef={posterImgRef}
-            setCurrentStep={setCurrentStep}
-          />
-        )}
-        {currentStep === 5 && <ShippingInfo setCurrentStep={setCurrentStep} />}
-        {currentStep === 6 && <EstimateCreator setCurrentStep={setCurrentStep} />}
-      </div>
+      <section className="mt-[100px] flex w-[1218px] flex-col gap-y-[40px] border">
+        <Input
+          value={''}
+          inputBoxStyle={'default'}
+          placeholder={"‘공급업체' 또는 ‘카테고리' 검색어를 입력해보세요."}
+        ></Input>
+        <section className="flex flex-col gap-y-4">
+          <h1 className="h2">견적서 전체보기</h1>
+          <section className="flex gap-x-2">
+            <Filter title={'카테고리'} />
+            <Filter title={'제조 분류'} />
+            <Filter title={'평균 응답 시간'} />
+            <Filter title={'입찰 여부'} />
+          </section>
+          <section className="gap-s grid grid-cols-3">
+            <ProjectCard />
+            <ProjectCard />
+            <ProjectCard />
+            <ProjectCard />
+            <ProjectCard />
+          </section>
+        </section>
+      </section>
+
+      <Pagination />
     </main>
   )
 }

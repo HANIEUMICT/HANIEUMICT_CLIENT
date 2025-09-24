@@ -1,0 +1,6 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgGrayDistanceIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 20" {...props}><mask id="gray-distance-icon_svg__a" width={20} height={20} x={0} y={0} maskUnits="userSpaceOnUse" style={{
+    maskType: "alpha"
+  }}><path fill="#FFAA35" d="M0 0h20v20H0z" /></mask><g mask="url(#gray-distance-icon_svg__a)"><path fill="#E9EBEF" d="M10 18.333q-.29 0-.58-.102a1.9 1.9 0 0 1-.538-.296q-2.943-2.371-4.393-4.63-1.45-2.256-1.45-4.435 0-1.788.631-3.132.632-1.345 1.63-2.253a6.8 6.8 0 0 1 2.24-1.363A7.1 7.1 0 0 1 10 1.666a7.1 7.1 0 0 1 2.46.456 6.8 6.8 0 0 1 2.24 1.363q.997.907 1.63 2.253.63 1.344.63 3.132 0 2.177-1.45 4.436-1.449 2.257-4.392 4.63-.247.193-.537.295a1.7 1.7 0 0 1-.581.102m0-7.678q.801 0 1.368-.562a1.86 1.86 0 0 0 .568-1.374q0-.801-.568-1.368A1.86 1.86 0 0 0 10 6.783q-.791 0-1.363.568a1.86 1.86 0 0 0-.573 1.368q0 .812.573 1.374.572.562 1.363.562" /></g></svg>;
+export default SvgGrayDistanceIcon;

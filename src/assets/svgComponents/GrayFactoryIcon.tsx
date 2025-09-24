@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgGrayFactoryIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 20" {...props}><path fill="#E9EBEF" d="M0 8.537v9.796C0 19.253.746 20 1.667 20h16.666c.92 0 1.667-.746 1.667-1.667V1.645a.833.833 0 0 0-1.326-.672L11.51 6.227a.833.833 0 0 1-1.326-.672v-2.31a.833.833 0 0 0-1.243-.726L.848 7.085C.324 7.381 0 7.935 0 8.537" /><rect width={3.333} height={3.333} x={3.15} y={10.828} fill="#C5C6CD" rx={0.833} /><rect width={3.333} height={3.333} x={8.332} y={10.828} fill="#C5C6CD" rx={0.833} /><rect width={3.333} height={3.333} x={13.516} y={10.828} fill="#C5C6CD" rx={0.833} /></svg>;
+export default SvgGrayFactoryIcon;

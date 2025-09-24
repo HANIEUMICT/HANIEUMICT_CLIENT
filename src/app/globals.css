@@ -43,7 +43,7 @@
 
   --text-5xs: 0.25rem; /* 4px */
   --text-4xs: 0.5rem; /* 8px */
-  --text-3xs: 0.5rem; /* 12px */
+  --text-3xs: 0.75rem; /* 12px */
   --text-2xs: 1rem; /* 16px */
   --text-xs: 1.25rem; /* 20px */
   --text-s: 1.5rem; /* 24px */
@@ -57,7 +57,7 @@
 
   --spacing-5xs: 0.25rem; /* 4px */
   --spacing-4xs: 0.5rem; /* 8px */
-  --spacing-3xs: 0.5rem; /* 12px */
+  --spacing-3xs: 0.75rem; /* 12px */
   --spacing-2xs: 1rem; /* 16px */
   --spacing-xs: 1.25rem; /* 20px */
   --spacing-s: 1.5rem; /* 24px */

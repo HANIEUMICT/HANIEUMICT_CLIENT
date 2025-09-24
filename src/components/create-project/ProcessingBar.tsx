@@ -1,12 +1,12 @@
 import { WhiteCheckIcon } from '@/assets/svgComponents'
 
-const steps = ['로그인', '기본정보', '도면등록', '프로젝트 정보', '배송 정보 입력', '견적서 생성']
-
 interface ProcessingBarProps {
   currentStep: number // 1부터 시작 ~ 6
+  width?: string
+  steps: string[]
 }
 
-export default function ProcessingBar({ currentStep = 2 }: ProcessingBarProps) {
+export default function ProcessingBar({ currentStep = 2, width = '80px', steps }: ProcessingBarProps) {
   return (
     <div className="p-s border-gray-20 flex items-center rounded-[24px] border bg-white">
       {steps.map((label, index) => {
@@ -41,7 +41,7 @@ export default function ProcessingBar({ currentStep = 2 }: ProcessingBarProps) {
             {!isLast && (
               <div
                 className={`mx-[12px] h-[2px] rounded-full ${isCompleted ? 'bg-conic-orange-30' : 'bg-gray-20'}`}
-                style={{ width: '80px' }} // ✅ 원하는 길이로 조절
+                style={{ width: width }} // ✅ 원하는 길이로 조절
               />
             )}
           </div>

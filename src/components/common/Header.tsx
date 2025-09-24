@@ -1,8 +1,9 @@
 import { AlarmIcon, DropDownIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Button1 from '@/components/common/Button1'
 import { useEffect, useState } from 'react'
 import { UserDataType } from '@/type/common'
+import Link from 'next/link'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
   const router = useRouter()
+  const pathName = usePathname()
 
   const [userData, setUserData] = useState<UserDataType | null>(null)
 
@@ -34,13 +36,19 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
     switch (headerType) {
       case 'DEFAULT':
         return (
-          <header className="py-s fixed top-0 flex h-[80px] w-full items-center justify-between bg-white px-[40px]">
+          <header className="py-s fixed top-0 z-50 flex h-[80px] w-full items-center justify-between bg-white px-[40px]">
             <section className="gap-x-2xl flex items-center">
               <LogoIcon width={105} height={32} />
               <div className="gap-x-l sub1 flex">
-                <button className="text-conic-red-30">홈</button>
-                <button className="text-gray-30">견적서</button>
-                <button className="text-gray-30">공급업체</button>
+                <Link href={'/'} className={pathName === '/' ? 'text-conic-red-30' : 'text-gray-30'}>
+                  공급업체
+                </Link>
+                <Link href={'/project'} className={pathName === '/project' ? 'text-conic-red-30' : 'text-gray-30'}>
+                  견적서
+                </Link>
+                <Link href={'/chat'} className={pathName === '/chat' ? 'text-conic-red-30' : 'text-gray-30'}>
+                  채팅
+                </Link>
               </div>
             </section>
             <section className="gap-x-l flex items-center">

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react'
 import Button1 from '@/components/common/Button1'
-import FinalBasicInfo from '@/components/project/estimate-creator/FinalBasicInfo'
-import FinalRequestCondition from '@/components/project/estimate-creator/FinalRequestCondition'
-import FinalShippingAndExtraInfo from '@/components/project/estimate-creator/FinalShippingAndExtraInfo'
+import FinalBasicInfo from '@/components/create-project/estimate-creator/FinalBasicInfo'
+import FinalRequestCondition from '@/components/create-project/estimate-creator/FinalRequestCondition'
+import FinalShippingAndExtraInfo from '@/components/create-project/estimate-creator/FinalShippingAndExtraInfo'
 import { useProjectStore } from '@/store/projectStore'
 import { formatDate } from '@/utils/project'
 

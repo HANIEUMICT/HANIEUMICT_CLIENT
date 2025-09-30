@@ -30,6 +30,13 @@ const variantStyles = {
     disabled: 'bg-gray-20 border border-gray-40 text-gray-40 cursor-not-allowed',
     selected: 'bg-conic-orange-10 border-conic-orange-30 border text-conic-orange-30',
   },
+  tertiary: {
+    default: 'bg-conic-blue-30 text-white',
+    hover: 'bg-conic-blue-30 hover:bg-blue-40 text-white',
+    click: 'bg-conic-blue-30 hover:bg-blue-40 active:bg-blue-50 text-white',
+    disabled: 'bg-gray-20 text-gray-40 cursor-not-allowed',
+    selected: '',
+  },
   ghost: {
     default: 'bg-transparent text-gray-50',
     hover: 'hover:bg-gray-20 text-gray-50',
@@ -39,9 +46,9 @@ const variantStyles = {
   },
 }
 const sizeStyles = {
-  lg: 'button-lg p-2xs rounded-[16px]',
-  md: 'button-lg py-3xs px-2xs rounded-[12px]',
-  sm: 'button-sm py-3xs px-2xs rounded-[12px]',
+  lg: 'button-lg h-[52px] px-2xs rounded-[16px]',
+  md: 'button-lg h-[48px] px-2xs rounded-[12px]',
+  sm: 'button-sm h-[36px] px-2xs rounded-full',
 }
 
 export interface Button1Props {

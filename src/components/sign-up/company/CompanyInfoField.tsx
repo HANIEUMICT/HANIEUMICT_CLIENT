@@ -1,12 +1,15 @@
 import Button1 from '@/components/common/Button1'
 import { Dispatch, SetStateAction } from 'react'
 import { CompanySignUpPageStepType } from '@/type/auth'
+import { useAuthStore } from '@/store/authStore'
 
 interface CompanyInfoFieldProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 
 export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
+  const setState = useAuthStore((state) => state.setState)
+  const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
   return (
     <div className="flex w-full flex-col gap-y-2">
       <section className="flex w-full items-center justify-between">
@@ -14,6 +17,9 @@ export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
         <Button1
           onClick={() => {
             setStep('SearchCompanyInfoPage')
+            setState({
+              summaryCompanyInfoData: undefined,
+            })
           }}
           styleSize="sm"
           styleType="outline2"
@@ -25,21 +31,24 @@ export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
       </section>
       <section className="gap-y-2xs p-s border-gray-20 flex flex-col rounded-[24px] border bg-white">
         <div className="gap-y-4xs flex flex-col">
-          <p className="sub1">기업명</p>
-          <p className="sub1 text-gray-50">업종</p>
+          <p className="sub1">{summaryCompanyInfoData?.name}</p>
+          <p className="sub1 text-gray-50">{summaryCompanyInfoData?.businessType}</p>
         </div>
         <div className="gap-y-4xs flex flex-col">
           <div className="gap-x-4xs flex items-center">
             <div className="body1 text-gray-40 w-[100px]">대표자</div>
-            <p className="button-lg">대표자명</p>
+            <p className="button-lg">{summaryCompanyInfoData?.owner}</p>
           </div>
           <div className="gap-x-4xs flex items-center">
             <div className="body1 text-gray-40 w-[100px]">사업자등록번호</div>
-            <p className="button-lg">000-00-00000</p>
+            <p className="button-lg">{summaryCompanyInfoData?.registrationNumber}</p>
           </div>
           <div className="gap-x-4xs flex items-center">
             <div className="body1 text-gray-40 w-[100px]">주소</div>
-            <p className="button-lg">서울특별시 금천구 벚꽃로 298</p>
+            <p className="button-lg">
+              {summaryCompanyInfoData?.addressRegisterRequest?.streetAddress}{' '}
+              {summaryCompanyInfoData?.addressRegisterRequest?.detailAddress}
+            </p>
           </div>
         </div>
       </section>

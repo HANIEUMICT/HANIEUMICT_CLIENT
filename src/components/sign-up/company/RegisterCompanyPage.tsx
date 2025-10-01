@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import { CompanySignUpPageStepType } from '@/type/auth'
-import IndividualAddressField from '@/components/sign-up/field/IndividualAddressField'
 import Header from '@/components/common/Header'
 import CompanyName from '@/components/sign-up/field/CompanyName'
 import BusinessNumber from '@/components/sign-up/field/BusinessNumber'
@@ -14,10 +13,7 @@ import BusinessRegistrationUpload from '@/components/sign-up/field/BusinessRegis
 import RepresentativePhoneNumberField from '@/components/sign-up/field/RepresentativePhoneNumberField'
 import RepresentativeEmailField from '@/components/sign-up/field/RepresentativeEmailField'
 import CompanyLogoImageUpload from '@/components/sign-up/field/CompanyLogoImageUpload'
-import { babel } from '@storybook/nextjs/preset'
 import CompanyAddressField from '@/components/sign-up/field/CompanyAddressField'
-import { UserDataType } from '@/type/common'
-import { postProjectFinal } from '@/lib/project'
 import { useFileUpload } from '@/hooks/useFileUpload'
 import { useAuthStore } from '@/store/authStore'
 
@@ -36,6 +32,8 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
   const companyLogoFile = useAuthStore((state) => state.companyLogoFile)
 
   const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
+  const setState = useAuthStore((state) => state.setState)
+  const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
 
   // 컴포넌트 내부에서
   const isFormValid = useMemo(() => {
@@ -204,7 +202,17 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
           </Button1>
           <Button1
             onClick={async () => {
-              setStep('InputRegisterCompanyInfoPage')
+              setStep('CompanyMemberSignUpPage')
+              setState({
+                summaryCompanyInfoData: {
+                  ...summaryCompanyInfoData,
+                  name: registerCompanyInfoData?.name,
+                  businessType: registerCompanyInfoData?.businessType,
+                  owner: registerCompanyInfoData?.owner,
+                  registrationNumber: registerCompanyInfoData?.registrationNumber,
+                  addressRegisterRequest: registerCompanyInfoData?.addressRegisterRequest,
+                },
+              })
               // const result = await uploadFiles(companyLogoFile)
               // console.log('result', result)
             }}

@@ -4,45 +4,46 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import NonEyeIcon from '@/assets/svgComponents/NonEyeIcon'
 import EyeIcon from '@/assets/svgComponents/EyeIcon'
 
-export default function IndividualPasswordField() {
-  const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
+export default function CompanyMemberPassword() {
+  const companySignUpData = useAuthStore((state) => state.companySignUpData)
   const setState = useAuthStore((state) => state.setState)
-  const isIndividualPasswordMatch = useAuthStore((state) => state.isIndividualPasswordMatch)
-  const isIndividualPasswordValid = useAuthStore((state) => state.isIndividualPasswordValid)
-  const checkPassWord = useAuthStore((state) => state.checkIndividualPassWord)
+  const isCompanyPasswordMatch = useAuthStore((state) => state.isCompanyPasswordMatch)
+  const isCompanyPasswordValid = useAuthStore((state) => state.isCompanyPasswordValid)
+  const checkCompanyPassWord = useAuthStore((state) => state.checkCompanyPassWord)
+
   const [showPassword, setShowPassword] = useState(false)
   const [showCheckPassword, setShowCheckPassword] = useState(false)
 
   //비밀번호 문구
   useEffect(() => {
-    if (individualSignUpData) {
-      if (individualSignUpData.password === undefined) {
-        setState({ isIndividualPasswordValid: undefined })
+    if (companySignUpData) {
+      if (companySignUpData.password === undefined) {
+        setState({ isCompanyPasswordValid: undefined })
         return
       }
       // 정규식을 사용하여 대소문자, 숫자, 기호, 길이 검증
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
 
-      if (!passwordRegex.test(individualSignUpData.password)) {
-        setState({ isIndividualPasswordValid: false })
+      if (!passwordRegex.test(companySignUpData.password)) {
+        setState({ isCompanyPasswordValid: false })
       } else {
-        setState({ isIndividualPasswordValid: true })
+        setState({ isCompanyPasswordValid: true })
       }
     }
-  }, [individualSignUpData?.password])
+  }, [companySignUpData?.password])
 
   //비밀번호 확인 문구
   useEffect(() => {
-    if (individualSignUpData === undefined) {
-      setState({ isIndividualPasswordMatch: undefined })
+    if (companySignUpData === undefined) {
+      setState({ isCompanyPasswordMatch: undefined })
       return
     }
-    if (checkPassWord === individualSignUpData?.password) {
-      setState({ isIndividualPasswordMatch: true })
+    if (checkCompanyPassWord === companySignUpData?.password) {
+      setState({ isCompanyPasswordMatch: true })
     } else {
-      setState({ isIndividualPasswordMatch: false })
+      setState({ isCompanyPasswordMatch: false })
     }
-  }, [checkPassWord])
+  }, [checkCompanyPassWord])
 
   return (
     <div className="gap-y-4xs flex flex-col">
@@ -51,15 +52,15 @@ export default function IndividualPasswordField() {
       </section>
       <section className="gap-y-4xs flex flex-col">
         <Input
-          value={individualSignUpData?.password ?? ''}
+          value={companySignUpData?.password ?? ''}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setState({
-              ...individualSignUpData,
-              individualSignUpData: { ...individualSignUpData, password: e.target.value },
+              ...companySignUpData,
+              companySignUpData: { ...companySignUpData, password: e.target.value },
             })
           }}
           inputBoxStyle={
-            isIndividualPasswordValid !== undefined ? (isIndividualPasswordValid ? 'default' : 'error') : 'default'
+            isCompanyPasswordValid !== undefined ? (isCompanyPasswordValid ? 'default' : 'error') : 'default'
           }
           type={showPassword ? 'text' : 'password'}
           placeholder={'영문, 숫자, 특수문자 조합하여 8-20자.'}
@@ -84,22 +85,22 @@ export default function IndividualPasswordField() {
             )
           }
         />
-        {isIndividualPasswordValid !== undefined ? (
+        {isCompanyPasswordValid !== undefined ? (
           <div className="badge-md">
-            {isIndividualPasswordValid ? null : (
+            {isCompanyPasswordValid ? null : (
               <p className="text-conic-red-40">비밀번호는 대소문자, 숫자, 기호 포함 8~15자를 만족해야 합니다.</p>
             )}
           </div>
         ) : null}
-        {isIndividualPasswordValid ? (
+        {isCompanyPasswordValid ? (
           <div>
             <Input
-              value={checkPassWord ?? ''}
+              value={checkCompanyPassWord ?? ''}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setState({ checkIndividualPassWord: e.target.value })
+                setState({ checkCompanyPassWord: e.target.value })
               }}
               inputBoxStyle={
-                isIndividualPasswordMatch !== undefined ? (isIndividualPasswordMatch ? 'default' : 'error') : 'default'
+                isCompanyPasswordMatch !== undefined ? (isCompanyPasswordMatch ? 'default' : 'error') : 'default'
               }
               type={showCheckPassword ? 'text' : 'password'}
               placeholder={'비밀번호 확인'}
@@ -124,9 +125,9 @@ export default function IndividualPasswordField() {
                 )
               }
             />
-            {isIndividualPasswordMatch !== undefined ? (
+            {isCompanyPasswordMatch !== undefined ? (
               <div className="badge-md">
-                {isIndividualPasswordMatch ? null : <p className="text-conic-red-40">비밀번호가 일치하지 않습니다.</p>}
+                {isCompanyPasswordMatch ? null : <p className="text-conic-red-40">비밀번호가 일치하지 않습니다.</p>}
               </div>
             ) : null}
           </div>

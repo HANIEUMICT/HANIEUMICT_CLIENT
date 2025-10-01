@@ -20,7 +20,7 @@ export interface CompanySignUpType {
   email?: string
   password?: string
   phoneNumber?: string
-  termsOfServiceAgreed?: true
+  termsOfServiceAgreed?: boolean
   addressRegisterRequest?: AddressRegisterRequestType
 }
 
@@ -37,6 +37,15 @@ export interface CompanyInfoType {
   bankbookCopy?: string
   profileUrl?: string
   addressRegisterRequest?: AddressRegisterRequestType
+}
+
+export interface SummaryCompanyInfoDataType {
+  companyId?: number
+  name?: string
+  owner?: string
+  addressRegisterRequest?: AddressRegisterRequestType
+  registrationNumber?: string
+  businessType?: string
 }
 
 export interface SignUpResponseType {

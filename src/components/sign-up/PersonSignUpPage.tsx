@@ -13,6 +13,7 @@ import { useAuthStore } from '@/store/authStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useModalStore } from '@/store/modalStore'
 import { postAuthSignUp } from '@/lib/auth'
+import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
 
 interface PersonSignUpPageProps {}
 
@@ -71,51 +72,7 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
   return (
     <div className="flex flex-col items-center justify-center">
       {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
-      {isModalOpen ? (
-        <Modal>
-          <Modal.Content>
-            <div className="flex flex-col">
-              <div className="gap-y-4xs flex flex-col">
-                <h2 className="h2">
-                  환영합니다!
-                  <br />
-                  <span className={'text-conic-red-30'}>회원등록</span>이 완료되었어요.
-                </h2>
-                <p className="body1 text-gray-50">견적서를 바로 작성하시겠어요?</p>
-              </div>
-              <div className="mt-[24px] flex w-full items-center justify-center">
-                <Image src={'/success-graphic.svg'} width={336} height={240} alt={'회원가입 성공'} />
-              </div>
-            </div>
-          </Modal.Content>
-          <Modal.BottomButton>
-            <div className="flex gap-x-3">
-              <Button1
-                onClick={() => {
-                  setIsModalOpen(false)
-                  router.push('/')
-                }}
-                styleType={'outline'}
-                styleSize={'lg'}
-                customClassName={'w-full'}
-              >
-                다음에
-              </Button1>
-              <Button1
-                onClick={() => {
-                  setIsModalOpen(false)
-                  router.push('/')
-                }}
-                styleType={'primary'}
-                styleSize={'lg'}
-                customClassName={'w-full'}
-              >
-                견적서 작성하기
-              </Button1>
-            </div>
-          </Modal.BottomButton>
-        </Modal>
-      ) : null}
+      {isModalOpen ? <SignUpSuccessModal setIsModalOpen={setIsModalOpen} /> : null}
       <Header headerType={'SIGNUP'} />
       <div className="mt-[200px] flex w-[600px] flex-col items-center justify-center">
         <section className="gap-y-2xs flex flex-col items-center">

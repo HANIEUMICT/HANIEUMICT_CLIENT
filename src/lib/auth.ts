@@ -1,4 +1,4 @@
-import { CompanyInfoType, IndividualSignUpType, LoginType, SignUpResponseType } from '@/type/auth'
+import { CompanyInfoType, CompanySignUpType, IndividualSignUpType, LoginType, SignUpResponseType } from '@/type/auth'
 import { ApiResponse } from '@/type/common'
 
 /**
@@ -34,6 +34,23 @@ export const postAuthLogin = async (data: LoginType): Promise<ApiResponse<SignUp
  */
 export const postRegisterCompanyInfo = async (data: CompanyInfoType): Promise<ApiResponse<number>> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/company`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return await response.json()
+}
+
+/**
+ * 기업 회원가입 API
+ */
+export const postCompanySignUp = async (
+  data: CompanySignUpType | undefined,
+  companyId: number | undefined
+): Promise<ApiResponse<number>> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/auth/signup/company/${companyId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

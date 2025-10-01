@@ -18,7 +18,7 @@ export default function AddressField() {
           onClick={() => {
             setModalState({ isSearchAddressModalOpen: true })
           }}
-          value={individualSignUpData?.zipcode ?? ''}
+          value={individualSignUpData?.addressRegisterRequest?.postalCode ?? ''}
           inputBoxStyle={'default'}
           placeholder={'우편번호 입력'}
           customClassName={'w-full'}
@@ -36,12 +36,16 @@ export default function AddressField() {
         </Button1>
       </section>
       <Input
-        value={individualSignUpData?.address1 ?? ''}
+        value={individualSignUpData?.addressRegisterRequest?.streetAddress ?? ''}
         onChange={(e) =>
           setState({
+            ...individualSignUpData,
             individualSignUpData: {
               ...individualSignUpData,
-              address1: e.target.value,
+              addressRegisterRequest: {
+                ...individualSignUpData?.addressRegisterRequest,
+                streetAddress: e.target.value,
+              },
             },
           })
         }
@@ -50,12 +54,16 @@ export default function AddressField() {
         customClassName={'w-full'}
       />
       <Input
-        value={individualSignUpData?.address2 ?? ''}
+        value={individualSignUpData?.addressRegisterRequest?.detailAddress ?? ''}
         onChange={(e) =>
           setState({
+            ...individualSignUpData,
             individualSignUpData: {
               ...individualSignUpData,
-              address2: e.target.value,
+              addressRegisterRequest: {
+                ...individualSignUpData?.addressRegisterRequest,
+                detailAddress: e.target.value,
+              },
             },
           })
         }

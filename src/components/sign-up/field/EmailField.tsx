@@ -9,10 +9,11 @@ export default function EmailField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
   const [hasCheckedCode, setHasCheckedCode] = useState(false) //인증번호 확인 필드 생성
-  const [isCodeVerified, setIsCodeVerified] = useState(false) // 인증번호 인증이 완료되었는지 확인하는 state
+  const [isCodeVerified, setIsCodeVerified] = useState<undefined | boolean>(undefined) // 인증번호 인증이 완료되었는지 확인하는 state
   const [code, setCode] = useState<string>()
 
-  const setSendingEmailCodeLoadingState = useLoadingStore((state) => state.setState)
+  // 로딩 상태 추가
+  const [isEmailVerificationLoading, setIsEmailVerificationLoading] = useState<boolean>(false)
 
   return (
     <div className="gap-y-4xs flex flex-col">
@@ -22,27 +23,27 @@ export default function EmailField() {
       <section className="gap-x-4xs flex">
         <Input
           value={individualSignUpData?.email ?? ''}
-          onChange={(e) =>
+          onChange={(e) => {
             setState({
               individualSignUpData: {
                 ...individualSignUpData,
                 email: e.target.value,
               },
             })
-          }
+            setIsCodeVerified(undefined)
+          }}
           inputBoxStyle={'default'}
           placeholder={'이메일을 입력해주세요.'}
           customClassName={'w-full'}
         />
         <Button1
           onClick={async () => {
-            setIsCodeVerified(false)
+            setIsCodeVerified(undefined)
 
             if (individualSignUpData && individualSignUpData.email) {
               try {
                 // API 호출 전에 로딩 시작
-                setSendingEmailCodeLoadingState({ sendingEmailCodeLoading: true })
-
+                setIsEmailVerificationLoading(true)
                 const response = await postSendEmailCode(individualSignUpData.email)
                 console.log('response', response)
 
@@ -54,7 +55,7 @@ export default function EmailField() {
                 // 에러 처리 (토스트 메시지 등)
               } finally {
                 // 성공/실패 관계없이 로딩 종료
-                setSendingEmailCodeLoadingState({ sendingEmailCodeLoading: false })
+                setIsEmailVerificationLoading(false)
               }
             }
           }}
@@ -63,7 +64,14 @@ export default function EmailField() {
           styleType={'secondary'}
           customClassName={'whitespace-nowrap w-[120px]'}
         >
-          인증번호 전송
+          {isEmailVerificationLoading ? (
+            <div className="flex items-center gap-x-2">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              <span>전송 중...</span>
+            </div>
+          ) : (
+            '인증번호 전송'
+          )}
         </Button1>
       </section>
       {hasCheckedCode && !isCodeVerified ? (
@@ -99,7 +107,11 @@ export default function EmailField() {
           </Button1>
         </section>
       ) : null}
-      {isCodeVerified && <p className="text-conic-blue-30 body1">인증되었습니다.</p>}
+      {isCodeVerified === undefined ? null : isCodeVerified ? (
+        <p className="text-conic-blue-30 body1">인증되었습니다.</p>
+      ) : (
+        <p className="text-conic-red-40 body1">인증코드를 다시 확인해주세요.</p>
+      )}
     </div>
   )
 }

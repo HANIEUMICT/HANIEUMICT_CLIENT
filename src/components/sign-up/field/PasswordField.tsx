@@ -1,6 +1,8 @@
 import Input from '@/components/common/Input'
 import { useAuthStore } from '@/store/authStore'
 import { ChangeEvent, useEffect, useState } from 'react'
+import NonEyeIcon from '@/assets/svgComponents/NonEyeIcon'
+import EyeIcon from '@/assets/svgComponents/EyeIcon'
 
 export default function PasswordField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
@@ -62,6 +64,25 @@ export default function PasswordField() {
           type={showPassword ? 'text' : 'password'}
           placeholder={'영문, 숫자, 특수문자 조합하여 8-20자.'}
           customClassName={'w-full'}
+          rightIcon={
+            showPassword ? (
+              <NonEyeIcon
+                onClick={() => {
+                  setShowPassword(false)
+                }}
+                width={24}
+                height={24}
+              />
+            ) : (
+              <EyeIcon
+                onClick={() => {
+                  setShowPassword(true)
+                }}
+                width={24}
+                height={24}
+              />
+            )
+          }
         />
         {isIndividualPasswordValid !== undefined ? (
           <div className="badge-md">
@@ -83,6 +104,25 @@ export default function PasswordField() {
               type={showCheckPassword ? 'text' : 'password'}
               placeholder={'비밀번호 확인'}
               customClassName={'w-full'}
+              rightIcon={
+                showPassword ? (
+                  <NonEyeIcon
+                    onClick={() => {
+                      setShowCheckPassword(false)
+                    }}
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <EyeIcon
+                    onClick={() => {
+                      setShowCheckPassword(true)
+                    }}
+                    width={24}
+                    height={24}
+                  />
+                )
+              }
             />
             {isIndividualPasswordMatch !== undefined ? (
               <div className="badge-md">

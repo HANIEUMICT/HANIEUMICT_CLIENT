@@ -55,7 +55,10 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
     }
     setState({
       ...individualSignUpData,
-      individualSignUpData: { ...individualSignUpData, zipcode: zonecode, address1: fullAddress },
+      individualSignUpData: {
+        ...individualSignUpData,
+        addressRegisterRequest: { postalCode: zonecode, streetAddress: fullAddress },
+      },
     })
 
     setModalState({ isSearchAddressModalOpen: false })

@@ -10,9 +10,11 @@ export interface IndividualSignUpType {
   phoneNumber?: string
   termsOfServiceAgreed?: boolean
   role?: 'OWNER'
-  zipcode?: string
-  address1?: string
-  address2?: string
+  addressRegisterRequest?: {
+    postalCode?: string
+    streetAddress?: string
+    detailAddress?: string
+  }
 }
 export interface SignUpResponseType {
   memberInfo: {

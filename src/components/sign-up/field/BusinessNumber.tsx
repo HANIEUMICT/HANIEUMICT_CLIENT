@@ -1,6 +1,9 @@
 import Input from '@/components/common/Input'
+import { useAuthStore } from '@/store/authStore'
 
 export default function BusinessNumber() {
+  const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
+  const setState = useAuthStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
       <section className="gap-x-5xs sub2 flex">
@@ -12,6 +15,14 @@ export default function BusinessNumber() {
         inputBoxStyle={'default'}
         placeholder={'회사명을 입력해주세요.'}
         customClassName={'w-full'}
+        onChange={(e) => {
+          setState({
+            registerCompanyInfoData: {
+              ...registerCompanyInfoData,
+              registrationNumber: e.target.value,
+            },
+          })
+        }}
       ></Input>
     </div>
   )

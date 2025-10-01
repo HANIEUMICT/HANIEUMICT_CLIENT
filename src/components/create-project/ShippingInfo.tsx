@@ -13,6 +13,7 @@ interface ShippingInfoProps {
 }
 export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
   const projectData = useProjectStore((state) => state.projectData)
+  const fileInfoList = useProjectStore((state) => state.fileInfoList)
   const finalProjectData = useProjectStore((state) => state.finalProjectData)
   const projectId = useProjectStore((state) => state.projectId)
 
@@ -67,7 +68,7 @@ export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
       }
 
       // 3. 파일 업로드 실행
-      const uploadSuccess = await uploadFiles(projectId)
+      const uploadSuccess = await uploadFiles(projectId, fileInfoList)
 
       if (uploadSuccess) {
         console.log('모든 파일 업로드 완료!')

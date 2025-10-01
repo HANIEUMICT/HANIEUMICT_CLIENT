@@ -11,6 +11,7 @@ import DrawingUploadField from '@/components/create-project/project-info/Drawing
 import { postProjectDraft } from '@/lib/project'
 import { UserDataType } from '@/type/common'
 import { useFileUpload } from '@/hooks/useFileUpload'
+import { useProjectImageUpload } from '@/hooks/useProjectImageUpload'
 
 interface ProjectInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -25,10 +26,21 @@ export default function ProjectInfo({
   setHasDrawingSelected,
 }: ProjectInfoProps) {
   const projectData = useProjectStore((state) => state.projectData)
+  const fileInfoList = useProjectStore((state) => state.fileInfoList)
   const projectId = useProjectStore((state) => state.projectId)
 
   const [userData, setUserData] = useState<UserDataType | null>(null)
   const { uploadFiles } = useFileUpload()
+  const { uploadCallback } = useProjectImageUpload(projectId)
+
+  const handleUpload = async () => {
+    // 프로젝트 이미지 등록과 함께 업로드
+    const result = await uploadFiles(fileInfoList, uploadCallback)
+
+    if (result.success) {
+      console.log('업로드된 URL들:', result.uploadedUrls)
+    }
+  }
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -88,7 +100,7 @@ export default function ProjectInfo({
                 console.log('임시저장 성공', response)
 
                 // 3. 파일 업로드 실행
-                const uploadSuccess = await uploadFiles(projectId)
+                const uploadSuccess = await handleUpload()
                 console.log(uploadSuccess)
               }
             }}

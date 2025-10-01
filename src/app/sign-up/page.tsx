@@ -6,7 +6,7 @@ import PersonSignUpPage from '@/components/sign-up/PersonSignUpPage'
 import CompanySignUpPage from '@/components/sign-up/CompanySignUpPage'
 
 const SignUpPage = () => {
-  const [step, setStep] = useState<'SelectRole' | 'PersonSignUpPage' | 'CompanySignUpPage'>('SelectRole')
+  const [step, setStep] = useState<'SelectRole' | 'PersonSignUpPage' | 'CompanyMemberSignUpPage'>('SelectRole')
   const [selectedRole, setSelectedRole] = useState<'person' | 'company' | undefined>()
 
   return (
@@ -17,7 +17,7 @@ const SignUpPage = () => {
             if (selectedRole === 'person') {
               setStep('PersonSignUpPage')
             } else {
-              setStep('CompanySignUpPage')
+              setStep('CompanyMemberSignUpPage')
             }
           }}
           selectedRole={selectedRole}
@@ -25,7 +25,7 @@ const SignUpPage = () => {
         />
       )}
       {step === 'PersonSignUpPage' && <PersonSignUpPage />}
-      {step === 'CompanySignUpPage' && <CompanySignUpPage />}
+      {step === 'CompanyMemberSignUpPage' && <CompanySignUpPage />}
     </main>
   )
 }

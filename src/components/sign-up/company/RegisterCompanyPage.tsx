@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import { CompanySignUpPageStepType } from '@/type/auth'
-import AddressField from '@/components/sign-up/field/AddressField'
+import IndividualAddressField from '@/components/sign-up/field/IndividualAddressField'
 import Header from '@/components/common/Header'
 import CompanyName from '@/components/sign-up/field/CompanyName'
 import BusinessNumber from '@/components/sign-up/field/BusinessNumber'
@@ -9,12 +9,119 @@ import BusinessTypeField from '@/components/sign-up/field/BusinessTypeField'
 import BusinessItemField from '@/components/sign-up/field/BusinessItemField'
 import Button1 from '@/components/common/Button1'
 import Modal from '@/components/common/Modal'
+import BankbookCopyUpload from '@/components/sign-up/field/BankbookCopyUpload'
+import BusinessRegistrationUpload from '@/components/sign-up/field/BusinessRegistrationUpload'
+import RepresentativePhoneNumberField from '@/components/sign-up/field/RepresentativePhoneNumberField'
+import RepresentativeEmailField from '@/components/sign-up/field/RepresentativeEmailField'
+import CompanyLogoImageUpload from '@/components/sign-up/field/CompanyLogoImageUpload'
+import { babel } from '@storybook/nextjs/preset'
+import CompanyAddressField from '@/components/sign-up/field/CompanyAddressField'
+import { UserDataType } from '@/type/common'
+import { postProjectFinal } from '@/lib/project'
+import { useFileUpload } from '@/hooks/useFileUpload'
+import { useAuthStore } from '@/store/authStore'
 
 interface RegisterCompanyPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [userData, setUserData] = useState()
+  const companyLogoImageRef = useRef<HTMLInputElement | null>(null)
+  const businessRegistrationFileRef = useRef<HTMLInputElement | null>(null)
+  const bankbookCopyFileRef = useRef<HTMLInputElement | null>(null)
+
+  const businessRegistrationFile = useAuthStore((state) => state.businessRegistrationFile)
+  const bankbookCopyFile = useAuthStore((state) => state.bankbookCopyFile)
+  const companyLogoFile = useAuthStore((state) => state.companyLogoFile)
+
+  const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
+
+  // 컴포넌트 내부에서
+  const isFormValid = useMemo(() => {
+    if (!registerCompanyInfoData) return false
+
+    const {
+      name,
+      owner,
+      email,
+      phoneNumber,
+      businessType,
+      industry,
+      registrationNumber,
+      registrationCertificateUrl,
+      bankbookCopy,
+      profileUrl,
+      addressRegisterRequest,
+    } = registerCompanyInfoData
+
+    // 모든 필드가 존재하고 빈 문자열이 아닌지 확인
+    return !!(
+      name?.trim() &&
+      owner?.trim() &&
+      email?.trim() &&
+      phoneNumber?.trim() &&
+      businessType?.trim() &&
+      industry?.trim() &&
+      registrationNumber?.trim() &&
+      registrationCertificateUrl?.trim() &&
+      bankbookCopy?.trim() &&
+      profileUrl?.trim() &&
+      addressRegisterRequest
+    )
+  }, [registerCompanyInfoData])
+
+  useEffect(() => {
+    console.log('registerCompanyInfoData', registerCompanyInfoData)
+  }, [registerCompanyInfoData])
+
+  const { uploadFiles } = useFileUpload()
+
+  // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
+
+  //
+  // const handleProjectSubmit = async () => {
+  //   if (!userData?.memberId) {
+  //     console.error('사용자 정보가 없습니다.')
+  //     return
+  //   }
+  //   if (!projectId) {
+  //     console.error('프로젝트 아이디가 없습니다.')
+  //     return
+  //   }
+  //
+  //   try {
+  //     // 2. 프로젝트 최종 생성 (finalProjectData가 없을 때만 요청)
+  //     if (!finalProjectData) {
+  //       const res = await postProjectFinal(projectId, {
+  //         ...projectData,
+  //         memberId: userData.memberId,
+  //         projectBidStatus: 'PRE_BID',
+  //       })
+  //       console.log('완성된 견적서', res)
+  //       setState({ finalProjectData: res.data })
+  //       console.log('프로젝트(공고) 생성 완료', res)
+  //     } else {
+  //       console.log('이미 최종 프로젝트 데이터가 존재합니다. 다시 생성하지 않습니다.')
+  //     }
+  //
+  //     // 3. 파일 업로드 실행
+  //     const uploadSuccess = await uploadFiles()
+  //
+  //     if (uploadSuccess) {
+  //       console.log('모든 파일 업로드 완료!')
+  //     } else {
+  //       console.log('일부 파일 업로드 실패')
+  //       // 파일 업로드 실패해도 다음 단계로 진행할지 결정
+  //     }
+  //
+  //     // 4. 다음 단계로 이동
+  //     setCurrentStep(6)
+  //   } catch (error) {
+  //     console.error('프로젝트 생성 및 파일 업로드 실패:', error)
+  //   }
+  // }
+
   return (
     <div className="flex flex-col items-center justify-center">
       {isModalOpen ? (
@@ -72,13 +179,18 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
         <h2 className="h2">기업 등록하기</h2>
         <div className="gap-y-2xs flex w-full flex-col">
           <CompanyName />
+          <CompanyLogoImageUpload companyLogoImageRef={companyLogoImageRef} />
           <RepresentativeNameField />
+          <RepresentativePhoneNumberField />
+          <RepresentativeEmailField />
           <BusinessNumber />
           <BusinessTypeField />
           <BusinessItemField />
-          <AddressField />
+          <BusinessRegistrationUpload businessRegistrationFileRef={businessRegistrationFileRef} />
+          <BankbookCopyUpload bankbookCopyFileRef={bankbookCopyFileRef} />
+          <CompanyAddressField />
         </div>
-        <div className="flex w-full gap-x-3">
+        <div className="flex w-full gap-x-3 pb-[40px]">
           <Button1
             onClick={() => {
               setStep('SearchCompanyInfoPage')
@@ -91,12 +203,15 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
             이전
           </Button1>
           <Button1
-            onClick={() => {
+            onClick={async () => {
               setStep('InputRegisterCompanyInfoPage')
+              // const result = await uploadFiles(companyLogoFile)
+              // console.log('result', result)
             }}
+            // disabled={!isFormValid}
             styleSize={'lg'}
             styleType={'primary'}
-            styleStatus={'default'}
+            styleStatus={isFormValid ? 'default' : 'disabled'}
             customClassName={'w-full'}
           >
             다음

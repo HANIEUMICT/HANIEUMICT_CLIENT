@@ -2,10 +2,10 @@ import Modal from '@/components/common/Modal'
 import Image from 'next/image'
 import Button1 from '@/components/common/Button1'
 import Header from '@/components/common/Header'
-import EmailField from '@/components/sign-up/field/EmailField'
-import PasswordField from '@/components/sign-up/field/PasswordField'
-import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
-import AddressField from '@/components/sign-up/field/AddressField'
+import IndividualEmailField from '@/components/sign-up/field/IndividualEmailField'
+import IndividualPasswordField from '@/components/sign-up/field/IndividualPasswordField'
+import IndividualPhoneNumberField from '@/components/sign-up/field/IndividualPhoneNumberField'
+import IndividualAddressField from '@/components/sign-up/field/IndividualAddressField'
 import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -130,10 +130,10 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
           </div>
         </section>
         <section className="gap-y-2xs my-[40px] flex w-full flex-col">
-          <EmailField />
-          <PasswordField />
-          <PhoneNumberField />
-          <AddressField />
+          <IndividualEmailField />
+          <IndividualPasswordField />
+          <IndividualPhoneNumberField />
+          <IndividualAddressField />
         </section>
         <TermsOfServiceField />
         <Button1

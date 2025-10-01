@@ -3,10 +3,11 @@ import Button1 from '@/components/common/Button1'
 import { useModalStore } from '@/store/modalStore'
 import { useAuthStore } from '@/store/authStore'
 
-export default function AddressField() {
+export default function CompanyAddressField() {
   const setModalState = useModalStore((state) => state.setState)
-  const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
+  const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
   const setState = useAuthStore((state) => state.setState)
+
   return (
     <div className="gap-y-4xs flex flex-col">
       <section className="gap-x-5xs sub2 flex">
@@ -18,7 +19,7 @@ export default function AddressField() {
           onClick={() => {
             setModalState({ isSearchAddressModalOpen: true })
           }}
-          value={individualSignUpData?.addressRegisterRequest?.postalCode ?? ''}
+          value={registerCompanyInfoData?.addressRegisterRequest?.postalCode ?? ''}
           inputBoxStyle={'default'}
           placeholder={'우편번호 입력'}
           customClassName={'w-full'}
@@ -36,14 +37,14 @@ export default function AddressField() {
         </Button1>
       </section>
       <Input
-        value={individualSignUpData?.addressRegisterRequest?.streetAddress ?? ''}
+        value={registerCompanyInfoData?.addressRegisterRequest?.streetAddress ?? ''}
         onChange={(e) =>
           setState({
-            ...individualSignUpData,
-            individualSignUpData: {
-              ...individualSignUpData,
+            ...registerCompanyInfoData,
+            registerCompanyInfoData: {
+              ...registerCompanyInfoData,
               addressRegisterRequest: {
-                ...individualSignUpData?.addressRegisterRequest,
+                ...registerCompanyInfoData?.addressRegisterRequest,
                 streetAddress: e.target.value,
               },
             },
@@ -54,14 +55,14 @@ export default function AddressField() {
         customClassName={'w-full'}
       />
       <Input
-        value={individualSignUpData?.addressRegisterRequest?.detailAddress ?? ''}
+        value={registerCompanyInfoData?.addressRegisterRequest?.detailAddress ?? ''}
         onChange={(e) =>
           setState({
-            ...individualSignUpData,
-            individualSignUpData: {
-              ...individualSignUpData,
+            ...registerCompanyInfoData,
+            registerCompanyInfoData: {
+              ...registerCompanyInfoData,
               addressRegisterRequest: {
-                ...individualSignUpData?.addressRegisterRequest,
+                ...registerCompanyInfoData?.addressRegisterRequest,
                 detailAddress: e.target.value,
               },
             },

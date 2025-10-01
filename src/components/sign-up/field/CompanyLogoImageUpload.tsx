@@ -1,22 +1,24 @@
 import { UploadIcon } from '@/assets/svgComponents'
 import UploadItem from '@/components/common/UploadItem'
+import { useProjectStore } from '@/store/projectStore'
+import { FileInfoType } from '@/type/common'
 import { RefObject } from 'react'
 import { formatFileSize, generateId } from '@/utils/upload'
 import { useAuthStore } from '@/store/authStore'
 
-interface BusinessRegistrationUploadProps {
-  bankbookCopyFileRef: RefObject<HTMLInputElement | null>
+interface CompanyLogoImageUploadProps {
+  companyLogoImageRef: RefObject<HTMLInputElement | null>
 }
 
-export default function BankbookCopyUpload({ bankbookCopyFileRef }: BusinessRegistrationUploadProps) {
-  const bankbookCopyFile = useAuthStore((state) => state.bankbookCopyFile)
+export default function CompanyLogoImageUpload({ companyLogoImageRef }: CompanyLogoImageUploadProps) {
+  const companyLogoFile = useAuthStore((state) => state.companyLogoFile)
   const setState = useAuthStore((state) => state.setState)
 
   /**
    * 이미지 미리보기 설정 (단일 파일)
    */
   const handleImagePreview = async () => {
-    const files = bankbookCopyFileRef.current?.files
+    const files = companyLogoImageRef.current?.files
 
     if (files && files.length > 0) {
       const file = files[0] // 첫 번째 파일만 선택
@@ -25,7 +27,7 @@ export default function BankbookCopyUpload({ bankbookCopyFileRef }: BusinessRegi
       reader.onloadend = () => {
         // 기존 파일을 대체
         setState({
-          bankbookCopyFile: {
+          companyLogoFile: {
             id: generateId(),
             name: file.name,
             size: file.size,
@@ -42,16 +44,16 @@ export default function BankbookCopyUpload({ bankbookCopyFileRef }: BusinessRegi
    */
   const handleRemoveFile = () => {
     setState({
-      businessRegistrationFile: undefined,
+      companyLogoFile: undefined,
     })
   }
 
   return (
     <div className="gap-y-4xs flex flex-col">
       <div className="gap-x-5xs sub2 flex">
-        통장 사본 업로드 <span className="text-conic-red-30">*</span>
+        회사 로고 업로드 <span className="text-conic-red-30">*</span>
       </div>
-      <div onClick={() => bankbookCopyFileRef.current?.click()} className="relative">
+      <div onClick={() => companyLogoImageRef.current?.click()} className="relative">
         <div className="border-gray-20 pr-2xs flex h-[52px] w-full items-center justify-center gap-x-2 rounded-[12px] border bg-white pl-3">
           <UploadIcon width={20} height={20} />
           <p className="button text-gray5">파일 업로드</p>
@@ -59,20 +61,20 @@ export default function BankbookCopyUpload({ bankbookCopyFileRef }: BusinessRegi
         <input
           type="file"
           id={'input-file'}
-          ref={bankbookCopyFileRef}
+          ref={companyLogoImageRef}
           name="input-file"
           onChange={handleImagePreview}
           className="hidden"
         />
       </div>
-      {bankbookCopyFile ? (
+      {companyLogoFile ? (
         <div className="flex flex-col gap-y-2">
           <UploadItem
             customClassName={'bg-white'}
-            key={bankbookCopyFile.id}
-            imageSize={formatFileSize(bankbookCopyFile.size)}
-            ImageUrl={bankbookCopyFile.url}
-            ImageUrlName={bankbookCopyFile.name}
+            key={companyLogoFile.id}
+            imageSize={formatFileSize(companyLogoFile.size)}
+            ImageUrl={companyLogoFile.url}
+            ImageUrlName={companyLogoFile.name}
             onRemove={() => handleRemoveFile()} // 삭제 기능 추가
           />
         </div>

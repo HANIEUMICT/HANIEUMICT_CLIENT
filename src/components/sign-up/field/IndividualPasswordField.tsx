@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import NonEyeIcon from '@/assets/svgComponents/NonEyeIcon'
 import EyeIcon from '@/assets/svgComponents/EyeIcon'
 
-export default function PasswordField() {
+export default function IndividualPasswordField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
   const isIndividualPasswordMatch = useAuthStore((state) => state.isIndividualPasswordMatch)

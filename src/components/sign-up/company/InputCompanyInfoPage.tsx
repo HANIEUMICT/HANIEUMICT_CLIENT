@@ -2,13 +2,13 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Header from '@/components/common/Header'
-import EmailField from '@/components/sign-up/field/EmailField'
-import PasswordField from '@/components/sign-up/field/PasswordField'
-import AddressField from '@/components/sign-up/field/AddressField'
+import IndividualEmailField from '@/components/sign-up/field/IndividualEmailField'
+import IndividualPasswordField from '@/components/sign-up/field/IndividualPasswordField'
+import IndividualAddressField from '@/components/sign-up/field/IndividualAddressField'
 import TermsOfServiceField from '@/components/sign-up/field/TermsOfServiceField'
 import Button1 from '@/components/common/Button1'
 import CompanyInfoField from '@/components/sign-up/company/CompanyInfoField'
-import PhoneNumberField from '@/components/sign-up/field/PhoneNumberField'
+import IndividualPhoneNumberField from '@/components/sign-up/field/IndividualPhoneNumberField'
 import Modal from '@/components/common/Modal'
 import Image from 'next/image'
 import { CompanySignUpPageStepType } from '@/type/auth'
@@ -71,10 +71,10 @@ export default function InputCompanyInfoPage({ setStep }: InputCompanyInfoPagePr
         </section>
         <section className="gap-y-2xs my-[40px] flex w-full flex-col">
           <CompanyInfoField setStep={setStep} />
-          <EmailField />
-          <PasswordField />
-          <PhoneNumberField />
-          <AddressField />
+          <IndividualEmailField />
+          <IndividualPasswordField />
+          <IndividualPhoneNumberField />
+          <IndividualAddressField />
         </section>
         <TermsOfServiceField />
         <Button1

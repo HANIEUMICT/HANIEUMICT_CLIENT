@@ -3,7 +3,7 @@ import Button1 from '@/components/common/Button1'
 import { useAuthStore } from '@/store/authStore'
 import { ChangeEvent } from 'react'
 
-export default function PhoneNumberField() {
+export default function IndividualPhoneNumberField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
   return (

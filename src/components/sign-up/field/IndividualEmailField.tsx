@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 import { postEmailValidation, postSendEmailCode } from '@/lib/common'
 import { useLoadingStore } from '@/store/loadingStore'
 
-export default function EmailField() {
+export default function IndividualEmailField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
   const [hasCheckedCode, setHasCheckedCode] = useState(false) //인증번호 확인 필드 생성

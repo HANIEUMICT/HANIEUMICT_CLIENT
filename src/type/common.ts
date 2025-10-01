@@ -58,3 +58,9 @@ export interface PaginationResultType<T> {
   first: boolean
   empty: boolean
 }
+
+export interface AddressRegisterRequestType {
+  postalCode?: string
+  streetAddress?: string
+  detailAddress?: string
+}

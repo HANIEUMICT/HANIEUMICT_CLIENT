@@ -1,5 +1,14 @@
-import { CompanyInfoType, CompanySignUpType, IndividualSignUpType, LoginType, SignUpResponseType } from '@/type/auth'
-import { ApiResponse } from '@/type/common'
+import {
+  CompanyInfoType,
+  CompanySignUpType,
+  IndividualSignUpType,
+  LoginType,
+  SignUpResponseType,
+  SummaryCompanyInfoResponseDataType,
+} from '@/type/auth'
+import { ApiResponse, PaginationResultType } from '@/type/common'
+import { ProjectResponseType } from '@/type/project'
+import { authorizedFetch } from '@/lib/common'
 
 /**
  * 소상공인 회원가입
@@ -57,5 +66,24 @@ export const postCompanySignUp = async (
     },
     body: JSON.stringify(data),
   })
+  return await response.json()
+}
+
+/**
+ * 기업 요약 리스트 불러오는 api
+ */
+export const getSummaryCompanyInfoList = async (
+  page: number,
+  size: number
+): Promise<ApiResponse<PaginationResultType<SummaryCompanyInfoResponseDataType>>> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/company/summaries?page=${page}&size=${size}&sort=createdAt,DESC`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
   return await response.json()
 }

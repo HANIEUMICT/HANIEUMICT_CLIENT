@@ -11,8 +11,8 @@ import CompanyMemberTermsOfServiceField from '@/components/sign-up/field/Company
 import { useAuthStore } from '@/store/authStore'
 import { useModalStore } from '@/store/modalStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
-import { postCompanySignUp } from '@/lib/auth'
 import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
+import { postCompanySignUp } from '@/lib/auth'
 
 interface CompanySignUpPageType {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>

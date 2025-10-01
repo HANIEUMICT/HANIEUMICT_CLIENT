@@ -1,5 +1,3 @@
-import Modal from '@/components/common/Modal'
-import Image from 'next/image'
 import Button1 from '@/components/common/Button1'
 import Header from '@/components/common/Header'
 import IndividualEmailField from '@/components/sign-up/field/IndividualEmailField'

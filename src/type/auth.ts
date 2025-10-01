@@ -47,7 +47,18 @@ export interface SummaryCompanyInfoDataType {
   registrationNumber?: string
   businessType?: string
 }
-
+export interface SummaryCompanyInfoResponseDataType {
+  id: number
+  name: string
+  businessType: string
+  owner: string
+  registrationNumber: string
+  address: {
+    postal: string
+    street: string
+    detail: string
+  }
+}
 export interface SignUpResponseType {
   memberInfo: {
     memberId: number

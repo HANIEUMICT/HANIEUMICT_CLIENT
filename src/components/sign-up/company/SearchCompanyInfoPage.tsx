@@ -1,11 +1,14 @@
-import { Dispatch, SetStateAction, useState } from 'react'
-import Modal from '@/components/common/Modal'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import Header from '@/components/common/Header'
 import Input from '@/components/common/Input'
 import { DropDownIcon, SearchIcon } from '@/assets/svgComponents'
 import CompanyInfoCard from '@/components/sign-up/company/CompanyInfoCard'
-import { CompanySignUpPageStepType } from '@/type/auth'
+import { CompanySignUpPageStepType, SummaryCompanyInfoResponseDataType } from '@/type/auth'
+import CompanyConfirmModal from '@/components/modal/CompanyConfirmModal'
+import { getSummaryCompanyInfoList } from '@/lib/auth'
+import Pagination from '@/components/common/Pagination'
+import { useAuthStore } from '@/store/authStore'
 
 interface SearchCompanyInfoPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
@@ -13,58 +16,59 @@ interface SearchCompanyInfoPageProps {
 
 export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
+  const [totalElements, setTotalElements] = useState<number>(0)
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [summaryCompanyList, setSummaryCompanyList] = useState<SummaryCompanyInfoResponseDataType[] | undefined>()
+  const setAuthState = useAuthStore((state) => state.setState)
+  const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page - 1) // Pagination은 1부터 시작하지만 API는 0부터 시작
+  }
+
+  // 데이터 로드
+  useEffect(() => {
+    const loadArchiveData = async () => {
+      try {
+        setIsLoading(true)
+
+        const response = await getSummaryCompanyInfoList(currentPage, 10)
+
+        console.log('API 전체 응답:', response)
+
+        if (response && response.result === 'SUCCESS' && response.data && Array.isArray(response.data.content)) {
+          const content = response.data.content
+          setSummaryCompanyList(content)
+          setTotalPages(response.data.totalPages)
+          setTotalElements(response.data.totalElements || 0)
+        } else {
+          console.warn('예상하지 못한 응답 구조:', response)
+          setSummaryCompanyList([])
+          setTotalPages(0)
+          setTotalElements(0)
+        }
+      } catch (error: unknown) {
+        console.error('아카이브 데이터 불러오기 실패:', error)
+        setSummaryCompanyList([])
+        setTotalPages(0)
+        setTotalElements(0)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadArchiveData()
+  }, [currentPage]) // currentPage 변경 시 실행
+
   return (
     <main className="bg-gray-10 flex min-h-screen flex-col items-center justify-center">
-      {isModalOpen ? (
-        <Modal>
-          <Modal.Content>
-            <div className="gap-y-s flex flex-col">
-              <section className="flex flex-col gap-y-2">
-                <h2 className="h2">
-                  이 기업 정보로 <br />
-                  <span className="text-conic-red-30">기업 회원(멤버) 가입</span>을 시작할까요?
-                </h2>
-                <p className="body1 text-gray-50">등록 전, 기업 정보가 정확한지 확인해주세요.</p>
-              </section>
-              <section className="gap-y-4xs bg-gray-10 p-2xs flex flex-col rounded-[12px]">
-                <h3 className="h3">기업명</h3>
-                <div className="gap-x-4xs button-lg flex">
-                  <p className="text-gray-50">대표자명</p>
-                  <p className="text-gray-30">|</p>
-                  <p className="text-gray-50">000-00-00000</p>
-                  <p className="text-gray-30">|</p>
-                  <p className="text-gray-50">서울특별시 금천구 벚꽃로 298</p>
-                </div>
-              </section>
-            </div>
-          </Modal.Content>
-          <Modal.BottomButton>
-            <div className="flex gap-x-3">
-              <Button1
-                onClick={() => {
-                  setIsModalOpen(false)
-                }}
-                styleSize="lg"
-                styleType="outline"
-                customClassName="w-full"
-              >
-                아니요
-              </Button1>
-              <Button1
-                onClick={() => {
-                  setIsModalOpen(false)
-                  setStep('InputCompanyInfoPage')
-                }}
-                styleSize="lg"
-                styleType="primary"
-                customClassName="w-full"
-              >
-                가입 진행
-              </Button1>
-            </div>
-          </Modal.BottomButton>
-        </Modal>
-      ) : null}
+      {isModalOpen ? <CompanyConfirmModal setIsModalOpen={setIsModalOpen} setStep={setStep} /> : null}
       <Header headerType={'SIGNUP'} />
       <div className="mt-[40px] w-[1218px]">
         <div className="h-[80px]"></div>
@@ -142,47 +146,40 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
           </div>
         </section>
         <section className="mt-3xs grid grid-cols-2 gap-[24px]">
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
-          <CompanyInfoCard
-            onClick={() => {
-              setIsModalOpen(true)
-            }}
-          />
+          {summaryCompanyList?.map((summaryCompany) => {
+            return (
+              <CompanyInfoCard
+                {...summaryCompany}
+                key={summaryCompany.id}
+                onClick={() => {
+                  setIsModalOpen(true)
+                  setAuthState({
+                    summaryCompanyInfoData: {
+                      companyId: summaryCompany.id,
+                      name: summaryCompany.name,
+                      businessType: summaryCompany.businessType,
+                      owner: summaryCompany.owner,
+                      registrationNumber: summaryCompany.registrationNumber,
+                      addressRegisterRequest: {
+                        postalCode: summaryCompany.address.postal,
+                        streetAddress: summaryCompany.address.street,
+                        detailAddress: summaryCompany.address.detail,
+                      },
+                    },
+                  })
+                }}
+              />
+            )
+          })}
         </section>
+        <div className="my-[40px]">
+          <Pagination
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            currentPage={currentPage + 1} // API는 0부터, UI는 1부터
+            showPages={5}
+          />
+        </div>
       </div>
     </main>
   )

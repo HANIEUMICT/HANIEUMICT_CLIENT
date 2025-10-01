@@ -20,7 +20,7 @@ interface InputProps {
   customClassName?: string
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onClick?: () => void
-  value: string
+  value?: string
   readonly?: boolean
 }
 
@@ -43,12 +43,15 @@ const Input = ({
 
   const inputBoxStyleClassName = inputBoxStyles[inputBoxStyle]
 
+  // readonly이거나 onChange가 없으면 readOnly 모드
+  const isReadOnly = readonly || !onChange
+
   return (
     <div className={`${inputBoxBase} ${inputBoxStyleClassName} ${customClassName}`}>
       {leftIcon ? leftIcon : null}
       <div className="flex w-full justify-between">
         <input
-          readOnly={readonly}
+          readOnly={isReadOnly}
           onClick={onClick}
           value={value}
           onChange={onChange}
@@ -57,7 +60,7 @@ const Input = ({
           className={`${inputFieldBase} ${inputBoxStyle === 'disabled' ? 'cursor-not-allowed' : ''}`}
           placeholder={placeholder}
         />
-        {textCount && totalCount && (
+        {textCount !== undefined && totalCount !== undefined && (
           <div className="body2 text-gray-50">
             {textCount}/{totalCount}
           </div>

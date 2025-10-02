@@ -6,8 +6,8 @@ export interface ProposalType {
   secondPrice?: number
   proposalNote?: string
   items?: ItemType[]
-  proposalBidStatus?: 'INITIALIZE' | 'TEMPORARY_SAVE' | 'SUBMIT'
-  submitStatus?: 'INITIALIZE' | 'TEMPORARY_SAVE' | 'SUBMIT'
+  proposalBidStatus?: ProposalStatusType
+  submitStatus?: ProposalStatusType
 }
 export interface ItemType {
   itemName: string
@@ -16,3 +16,4 @@ export interface ItemType {
   itemUnitPrice: number
   itemQuantity: number
 }
+export type ProposalStatusType = 'INITIALIZE' | 'TEMPORARY_SAVE' | 'SUBMIT'

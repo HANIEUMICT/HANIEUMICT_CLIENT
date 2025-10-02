@@ -1,26 +1,41 @@
 import { ChatIcon, GrayFavoriteIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
+import { ProjectResponseType } from '@/type/project'
+import { useRouter } from 'next/navigation'
 
-export default function ProjectCard() {
+interface ProjectCardProps extends ProjectResponseType {}
+
+export default function ProjectCard({ projectRegisterRequest, projectId, drawingUrls, modifiedAt }: ProjectCardProps) {
+  const router = useRouter()
   return (
-    <div className="gap-y-4xs py-xs flex flex-col rounded-[24px] bg-white px-5">
-      <h3 className="h3">프로젝트명</h3>
+    <div
+      onClick={(e) => {
+        e.stopPropagation()
+        router.push(`/project/${projectId}`)
+      }}
+      className="gap-y-4xs py-xs flex flex-col rounded-[24px] bg-white px-5"
+    >
+      <h3 className="h3">{projectRegisterRequest.projectTitle}</h3>
       <section className="gap-x-2xs flex">
-        <div className="relative h-[110px] w-[110px] flex-shrink-0">
-          <Image src={'/test/result.png'} alt={'사진'} className="rounded-[16px] object-cover" fill></Image>
-        </div>
-        <div className="bg-gray-20 h-[110px] w-[110px]" />
+        {drawingUrls && drawingUrls.length > 0 ? (
+          <div className="relative h-[110px] w-[110px] flex-shrink-0">
+            <Image src={drawingUrls[0]} alt={'사진'} className="rounded-[16px] object-cover" fill></Image>
+          </div>
+        ) : (
+          <div className="bg-gray-20 h-[110px] w-[110px] flex-shrink-0 rounded-[16px]" />
+        )}
+
         <div className="flex w-full flex-col gap-y-2">
           <div className="button-sm text-conic-orange-30 bg-conic-orange-10 flex h-[24px] w-fit items-center justify-center rounded-full px-2">
-            카테고리
+            {projectRegisterRequest.category}
           </div>
           <div className="gap-y-5xs flex flex-col">
             <section className="flex gap-x-2">
               <div className="border-gray-20 button-sm flex h-[24px] w-fit items-center justify-center rounded-full border px-2 text-gray-50">
-                카테고리
+                {projectRegisterRequest.category}
               </div>
               <div className="border-gray-20 button-sm flex h-[24px] w-fit items-center justify-center rounded-full border px-2 text-gray-50">
-                제조 분류
+                {projectRegisterRequest.categoryDetail}
               </div>
             </section>
             <div className="flex w-full items-center justify-between">
@@ -29,11 +44,11 @@ export default function ProjectCard() {
             </div>
             <div className="flex w-full items-center justify-between">
               <p className="body2 text-gray-40">추정액</p>
-              <p className="button-sm text-gray-50">1,000,000,000원</p>
+              <p className="button-sm text-gray-50">{projectRegisterRequest.requestEstimate?.toLocaleString()}원</p>
             </div>
             <div className="flex w-full items-center justify-between">
               <p className="body2 text-gray-40">입찰 마감일</p>
-              <p className="button-sm text-gray-50">~ 07. 10까지</p>
+              <p className="button-sm text-gray-50">~ {projectRegisterRequest.canDeadlineChange}까지</p>
             </div>
           </div>
         </div>

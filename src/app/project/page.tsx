@@ -19,17 +19,17 @@ export default function ProjectPage() {
         <section className="flex flex-col gap-y-4">
           <h1 className="h2">견적서 전체보기</h1>
           <section className="flex gap-x-2">
-            <Filter title={'카테고리'} />
-            <Filter title={'제조 분류'} />
-            <Filter title={'평균 응답 시간'} />
-            <Filter title={'입찰 여부'} />
+            {/*<Filter title={'카테고리'} />*/}
+            {/*<Filter title={'제조 분류'} />*/}
+            {/*<Filter title={'평균 응답 시간'} />*/}
+            {/*<Filter title={'입찰 여부'} />*/}
           </section>
           <section className="gap-s grid grid-cols-3">
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
+            {/*<ProjectCard />*/}
+            {/*<ProjectCard />*/}
+            {/*<ProjectCard />*/}
+            {/*<ProjectCard />*/}
+            {/*<ProjectCard />*/}
           </section>
         </section>
       </section>

@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgSelectedShippingInformationIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 18" {...props}><circle cx={5.597} cy={15.23} r={2.3} fill="#FF363C" /><circle cx={18.312} cy={15.23} r={2.3} fill="#FF363C" /><path fill="#FF363C" stroke="#FFE0E1" d="M20.258 4.969a.5.5 0 0 1 .333.127l1.4 1.248 1.341 1.199a.5.5 0 0 1 .167.373v2.053h-5.72v-5z" /><path fill="#FFE0E1" d="M17.28 9.469H24v4a1 1 0 0 1-1 1h-5.72z" /><path fill="#FFAEB1" d="M0 1.469a1 1 0 0 1 1-1h15.28a1 1 0 0 1 1 1v13H1a1 1 0 0 1-1-1z" /></svg>;
+export default SvgSelectedShippingInformationIcon;

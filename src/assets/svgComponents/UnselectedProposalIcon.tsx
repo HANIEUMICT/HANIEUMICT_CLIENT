@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgUnselectedProposalIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 24" {...props}><path fill="#E9EBEF" d="M2 0h11.051l6.944 7.923V22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2" /><path fill="#C5C6CD" d="m13.65.28 6.153 7.132a.8.8 0 0 1-.605 1.322h-6.154a.8.8 0 0 1-.8-.8V.804c0-.742.921-1.084 1.405-.523" /><path stroke="#C5C6CD" strokeLinecap="round" strokeWidth={1.6} d="M2.992 7.264h6.55M2.992 11.264h14.012M2.992 15.264h14.012" /></svg>;
+export default SvgUnselectedProposalIcon;

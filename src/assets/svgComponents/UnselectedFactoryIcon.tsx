@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgUnselectedFactoryIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 24 24" {...props}><path fill="#E9EBEF" d="M0 10.244V22a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V1.974a1 1 0 0 0-1.591-.807l-8.595 6.305a1 1 0 0 1-1.592-.806V3.893a1 1 0 0 0-1.491-.87l-9.714 5.48A2 2 0 0 0 0 10.244" /><rect width={4} height={4} x={3.781} y={12.994} fill="#C5C6CD" rx={1} /><rect width={4} height={4} x={10} y={12.994} fill="#C5C6CD" rx={1} /><rect width={4} height={4} x={16.219} y={12.994} fill="#C5C6CD" rx={1} /></svg>;
+export default SvgUnselectedFactoryIcon;

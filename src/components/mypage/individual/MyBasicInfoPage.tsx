@@ -1,4 +1,4 @@
-import Button1 from '@/components/common/Button1'
+import { Switch } from '@/components/ui/switch'
 import { GrayRightArrowIcon } from '@/assets/svgComponents'
 
 export default function MyBasicInfoPage() {
@@ -16,6 +16,7 @@ export default function MyBasicInfoPage() {
               <h2 className="sub2">
                 혜택/이벤트 정보 알림 수신<span className="body-md pl-2 text-gray-50">(이메일)</span>
               </h2>
+              <Switch />
             </div>
             <ul className="gap-y-4xs flex flex-col">
               <ol className="button-sm text-gray-40">
@@ -51,6 +52,7 @@ export default function MyBasicInfoPage() {
               <h2 className="sub2">
                 혜택/이벤트 정보 알림 수신<span className="body-md pl-2 text-gray-50">(앱 알림 또는 문자 메시지)</span>
               </h2>
+              <Switch />
             </div>
             <ul className="gap-y-4xs flex flex-col">
               <ol className="button-sm text-gray-40">CONIC 또는 문자 메시지로 알림이 발송될 수 있습니다.</ol>

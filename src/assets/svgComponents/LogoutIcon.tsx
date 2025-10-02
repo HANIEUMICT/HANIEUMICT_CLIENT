@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgLogoutIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 21 20" {...props}><path fill="#999BA5" fillRule="evenodd" d="M12.487 1.333a.8.8 0 0 1 .8-.8h4.009a2.8 2.8 0 0 1 2.8 2.8v13.332a2.8 2.8 0 0 1-2.8 2.8h-4.009a.8.8 0 1 1 0-1.6h4.009a1.2 1.2 0 0 0 1.2-1.2V3.333a1.2 1.2 0 0 0-1.2-1.2h-4.009a.8.8 0 0 1-.8-.8M1.408 11.249a1.8 1.8 0 0 1 0-2.498L5.6 4.401a.8.8 0 0 1 1.153 1.11L3.183 9.216l11.367.005a.8.8 0 0 1-.001 1.6l-11.34-.005 3.543 3.674a.8.8 0 0 1-1.153 1.11z" clipRule="evenodd" /></svg>;
+export default SvgLogoutIcon;

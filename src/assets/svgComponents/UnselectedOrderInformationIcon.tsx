@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgUnselectedOrderInformationIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 30 26" {...props}><path fill="#E9EBEF" d="M7.002.354h11.051L23 .359a2 2 0 0 1 1.998 2v19.995a2 2 0 0 1-2 2H7.002a2 2 0 0 1-2-2v-20a2 2 0 0 1 2-2" /><path stroke="#C5C6CD" strokeLinecap="round" strokeWidth={1.6} d="M7.994 4.623h6.55M7.994 8.623h14.012" /><path fill="#C5C6CD" d="M12.738 16.68a1 1 0 0 1 0 1.594l-8.144 6.16a1 1 0 0 1-1.604-.797v-12.32a1 1 0 0 1 1.604-.798zM17.264 16.68a1 1 0 0 0 0 1.594l8.144 6.16a1 1 0 0 0 1.604-.797v-12.32a1 1 0 0 0-1.604-.798z" /><path fill="#F9FAFB" d="M14.442 15.457a1 1 0 0 1 1.114 0l11.007 7.375c.82.55.431 1.83-.557 1.83H3.992c-.988 0-1.378-1.28-.557-1.83z" /></svg>;
+export default SvgUnselectedOrderInformationIcon;

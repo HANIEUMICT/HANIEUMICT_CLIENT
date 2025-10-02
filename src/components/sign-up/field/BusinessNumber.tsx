@@ -11,7 +11,7 @@ export default function BusinessNumber() {
         <span className="text-conic-red-30">*</span>
       </section>
       <Input
-        value={''}
+        value={registerCompanyInfoData?.name ?? ''}
         inputBoxStyle={'default'}
         placeholder={'회사명을 입력해주세요.'}
         customClassName={'w-full'}

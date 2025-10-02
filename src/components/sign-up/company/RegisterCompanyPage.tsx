@@ -16,6 +16,9 @@ import CompanyLogoImageUpload from '@/components/sign-up/field/CompanyLogoImageU
 import CompanyAddressField from '@/components/sign-up/field/CompanyAddressField'
 import { useFileUpload } from '@/hooks/useFileUpload'
 import { useAuthStore } from '@/store/authStore'
+import SearchAddressModal from '@/components/common/SearchAddressModal'
+import { useModalStore } from '@/store/modalStore'
+import { postRegisterCompanyInfo } from '@/lib/auth'
 
 interface RegisterCompanyPageProps {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
@@ -34,6 +37,9 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
   const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
   const setState = useAuthStore((state) => state.setState)
   const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
+
+  const setModalState = useModalStore((state) => state.setState)
+  const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
 
   // 컴포넌트 내부에서
   const isFormValid = useMemo(() => {
@@ -77,51 +83,99 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
 
-  //
-  // const handleProjectSubmit = async () => {
-  //   if (!userData?.memberId) {
-  //     console.error('사용자 정보가 없습니다.')
-  //     return
-  //   }
-  //   if (!projectId) {
-  //     console.error('프로젝트 아이디가 없습니다.')
-  //     return
-  //   }
-  //
-  //   try {
-  //     // 2. 프로젝트 최종 생성 (finalProjectData가 없을 때만 요청)
-  //     if (!finalProjectData) {
-  //       const res = await postProjectFinal(projectId, {
-  //         ...projectData,
-  //         memberId: userData.memberId,
-  //         projectBidStatus: 'PRE_BID',
-  //       })
-  //       console.log('완성된 견적서', res)
-  //       setState({ finalProjectData: res.data })
-  //       console.log('프로젝트(공고) 생성 완료', res)
-  //     } else {
-  //       console.log('이미 최종 프로젝트 데이터가 존재합니다. 다시 생성하지 않습니다.')
-  //     }
-  //
-  //     // 3. 파일 업로드 실행
-  //     const uploadSuccess = await uploadFiles()
-  //
-  //     if (uploadSuccess) {
-  //       console.log('모든 파일 업로드 완료!')
-  //     } else {
-  //       console.log('일부 파일 업로드 실패')
-  //       // 파일 업로드 실패해도 다음 단계로 진행할지 결정
-  //     }
-  //
-  //     // 4. 다음 단계로 이동
-  //     setCurrentStep(6)
-  //   } catch (error) {
-  //     console.error('프로젝트 생성 및 파일 업로드 실패:', error)
-  //   }
-  // }
+  const handleProjectSubmitWithLoading = async () => {
+    // 로딩 상태 추가 (컴포넌트 상단에)
+    // const [isUploading, setIsUploading] = useState(false)
+
+    try {
+      // setIsUploading(true)
+      console.log('파일 업로드 시작...')
+
+      // 모든 파일을 병렬로 업로드
+      const [logoResult, registrationResult, bankbookResult] = await Promise.all([
+        companyLogoFile ? uploadFiles(companyLogoFile) : Promise.resolve({ success: true, uploadedUrls: [''] }),
+        businessRegistrationFile
+          ? uploadFiles(businessRegistrationFile)
+          : Promise.resolve({ success: true, uploadedUrls: [''] }),
+        bankbookCopyFile ? uploadFiles(bankbookCopyFile) : Promise.resolve({ success: true, uploadedUrls: [''] }),
+      ])
+
+      // 업로드 실패 체크
+      const uploadResults = [logoResult, registrationResult, bankbookResult]
+      const failedUploads = uploadResults.filter((result) => !result.success)
+
+      if (failedUploads.length > 0) {
+        throw new Error(`${failedUploads.length}개의 파일 업로드 실패`)
+      }
+
+      const companyLogoUrl = logoResult.uploadedUrls[0] || ''
+      const businessRegistrationUrl = registrationResult.uploadedUrls[0] || ''
+      const bankbookUrl = bankbookResult.uploadedUrls[0] || ''
+
+      console.log('업로드된 URL:', {
+        profileUrl: companyLogoUrl,
+        registrationCertificateUrl: businessRegistrationUrl,
+        bankbookCopy: bankbookUrl,
+      })
+
+      // registerCompanyInfoData 업데이트
+      const updatedCompanyData = {
+        ...registerCompanyInfoData,
+        profileUrl: companyLogoUrl,
+        registrationCertificateUrl: businessRegistrationUrl,
+        bankbookCopy: bankbookUrl,
+      }
+
+      setState({
+        registerCompanyInfoData: updatedCompanyData,
+      })
+
+      // 기업 등록 API 요청
+      console.log('기업 등록 API 요청 중...')
+      const res = await postRegisterCompanyInfo(updatedCompanyData)
+      console.log('기업 등록 완료:', res)
+
+      // 성공 시 다음 단계로 이동
+      setIsModalOpen(true) // 또는 직접 이동: setStep('CompanyMemberSignUpPage')
+      setStep('CompanyMemberSignUpPage')
+    } catch (error) {
+      console.error('파일 업로드 및 기업 등록 실패:', error)
+      alert('파일 업로드 또는 기업 등록에 실패했습니다. 다시 시도해주세요.')
+    } finally {
+      // setIsUploading(false)
+    }
+  }
+
+  const handleComplete = async (data: any) => {
+    let fullAddress = data.address
+    let extraAddress = ''
+
+    const { addressType, bname, buildingName, zonecode } = data
+    console.log('data', data)
+
+    if (addressType === 'R') {
+      if (bname !== '') {
+        extraAddress += bname
+      }
+      if (buildingName !== '') {
+        extraAddress += `${extraAddress !== '' && ', '}${buildingName}`
+      }
+      fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
+    }
+    setState({
+      ...registerCompanyInfoData,
+      registerCompanyInfoData: {
+        ...registerCompanyInfoData,
+        addressRegisterRequest: { postalCode: zonecode, streetAddress: fullAddress },
+      },
+    })
+
+    setModalState({ isSearchAddressModalOpen: false })
+  }
 
   return (
     <div className="flex flex-col items-center justify-center">
+      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
       {isModalOpen ? (
         <Modal>
           <Modal.Content>
@@ -160,7 +214,7 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
               <Button1
                 onClick={() => {
                   setIsModalOpen(false)
-                  setStep('InputCompanyInfoPage')
+                  setStep('CompanyMemberSignUpPage')
                 }}
                 styleSize="lg"
                 styleType="primary"
@@ -202,7 +256,6 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
           </Button1>
           <Button1
             onClick={async () => {
-              setStep('CompanyMemberSignUpPage')
               setState({
                 summaryCompanyInfoData: {
                   ...summaryCompanyInfoData,
@@ -213,7 +266,7 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
                   addressRegisterRequest: registerCompanyInfoData?.addressRegisterRequest,
                 },
               })
-              // const result = await uploadFiles(companyLogoFile)
+              handleProjectSubmitWithLoading()
               // console.log('result', result)
             }}
             // disabled={!isFormValid}

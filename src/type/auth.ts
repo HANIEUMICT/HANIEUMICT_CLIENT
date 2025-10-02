@@ -1,10 +1,6 @@
 import { AddressRegisterRequestType } from '@/type/common'
 
-export type CompanySignUpPageStepType =
-  | 'SearchCompanyInfoPage'
-  | 'InputCompanyInfoPage'
-  | 'RegisterCompanyPage'
-  | 'CompanyMemberSignUpPage'
+export type CompanySignUpPageStepType = 'SearchCompanyInfoPage' | 'RegisterCompanyPage' | 'CompanyMemberSignUpPage'
 
 export interface IndividualSignUpType {
   email?: string

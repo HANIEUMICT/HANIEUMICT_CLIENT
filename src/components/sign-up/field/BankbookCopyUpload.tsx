@@ -42,7 +42,7 @@ export default function BankbookCopyUpload({ bankbookCopyFileRef }: BusinessRegi
    */
   const handleRemoveFile = () => {
     setState({
-      businessRegistrationFile: undefined,
+      bankbookCopyFile: undefined,
     })
   }
 

@@ -7,6 +7,7 @@ export default function CompanyMemberAddress() {
   const setModalState = useModalStore((state) => state.setState)
   const companySignUpData = useAuthStore((state) => state.companySignUpData)
   const setState = useAuthStore((state) => state.setState)
+
   return (
     <div className="gap-y-4xs flex flex-col">
       <section className="gap-x-5xs sub2 flex">
@@ -21,15 +22,17 @@ export default function CompanyMemberAddress() {
           value={companySignUpData?.addressRegisterRequest?.postalCode ?? ''}
           inputBoxStyle={'default'}
           placeholder={'우편번호 입력'}
-          customClassName={'w-full'}
+          customClassName={'w-full cursor-pointer'}
         />
         <Button1
           onClick={() => {
+            console.log('주소찾기 버튼 클릭됨')
             setModalState({ isSearchAddressModalOpen: true })
           }}
           styleSize={'lg'}
           styleStatus={'default'}
           styleType={'secondary'}
+          buttonType={'button'}
           customClassName={'whitespace-nowrap w-[120px]'}
         >
           주소찾기
@@ -39,7 +42,6 @@ export default function CompanyMemberAddress() {
         value={companySignUpData?.addressRegisterRequest?.streetAddress ?? ''}
         onChange={(e) =>
           setState({
-            ...companySignUpData,
             companySignUpData: {
               ...companySignUpData,
               addressRegisterRequest: {
@@ -57,7 +59,6 @@ export default function CompanyMemberAddress() {
         value={companySignUpData?.addressRegisterRequest?.detailAddress ?? ''}
         onChange={(e) =>
           setState({
-            ...companySignUpData,
             companySignUpData: {
               ...companySignUpData,
               addressRegisterRequest: {

@@ -52,7 +52,7 @@ export default function CompanyConfirmModal({ setIsModalOpen, setStep }: Company
           <Button1
             onClick={() => {
               setIsModalOpen(false)
-              setStep('InputCompanyInfoPage')
+              setStep('CompanyMemberSignUpPage')
             }}
             styleSize="lg"
             styleType="primary"

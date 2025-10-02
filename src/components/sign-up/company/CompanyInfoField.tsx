@@ -19,6 +19,7 @@ export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
             setStep('SearchCompanyInfoPage')
             setState({
               summaryCompanyInfoData: undefined,
+              registerCompanyInfoData: undefined,
             })
           }}
           styleSize="sm"

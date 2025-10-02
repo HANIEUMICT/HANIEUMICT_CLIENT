@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { CompanySignUpPageStepType } from '@/type/auth'
 import Header from '@/components/common/Header'
 import Button1 from '@/components/common/Button1'
@@ -13,6 +13,7 @@ import { useModalStore } from '@/store/modalStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
 import { postCompanySignUp } from '@/lib/auth'
+import CompanyMemberEmail from '@/components/sign-up/field/CompanyMemberEmail'
 
 interface CompanySignUpPageType {
   setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
@@ -76,6 +77,10 @@ export default function CompanyMemberSignUpPage({ setStep }: CompanySignUpPageTy
     return signUpDataValid && companyIdValid
   }, [companySignUpData, summaryCompanyInfoData])
 
+  useEffect(() => {
+    console.log('isSearchAddressModalOpen', isSearchAddressModalOpen)
+  }, [isSearchAddressModalOpen])
+
   return (
     <div className="flex flex-col items-center justify-center">
       {/* 회원가입 완료 모달 */}
@@ -98,6 +103,7 @@ export default function CompanyMemberSignUpPage({ setStep }: CompanySignUpPageTy
         <div className="gap-y-2xs flex w-full flex-col">
           <CompanyInfoField setStep={setStep} />
           <CompanyMemberName />
+          <CompanyMemberEmail />
           <CompanyMemberPassword />
           <CompanyMemberPhoneNumber />
           <CompanyMemberAddress />

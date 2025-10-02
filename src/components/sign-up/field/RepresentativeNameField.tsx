@@ -10,7 +10,7 @@ export default function RepresentativeNameField() {
         대표자명 <span className="text-conic-red-30">*</span>
       </section>
       <Input
-        value={''}
+        value={registerCompanyInfoData?.owner ?? ''}
         inputBoxStyle={'default'}
         placeholder={'대표자명을 입력해주세요.'}
         customClassName={'w-full'}

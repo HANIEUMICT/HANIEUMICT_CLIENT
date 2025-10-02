@@ -10,7 +10,7 @@ export default function BusinessItemField() {
         종목 <span className="text-conic-red-30">*</span>
       </section>
       <Input
-        value={''}
+        value={registerCompanyInfoData?.industry ?? ''}
         inputBoxStyle={'default'}
         placeholder={'종목명을 입력해주세요.'}
         customClassName={'w-full'}

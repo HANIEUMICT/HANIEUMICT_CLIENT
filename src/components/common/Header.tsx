@@ -38,7 +38,13 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
         return (
           <header className="py-s fixed top-0 z-50 flex h-[80px] w-full items-center justify-between bg-white px-[40px]">
             <section className="gap-x-2xl flex items-center">
-              <LogoIcon width={105} height={32} />
+              <LogoIcon
+                onClick={() => {
+                  router.push('/')
+                }}
+                width={105}
+                height={32}
+              />
               <div className="gap-x-l sub1 flex">
                 <Link href={'/'} className={pathName === '/' ? 'text-conic-red-30' : 'text-gray-30'}>
                   공급업체
@@ -112,8 +118,14 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
         )
       case 'SIGNUP':
         return (
-          <header className="py-s fixed top-0 w-full bg-white px-5 xl:px-[352px] 2xl:px-[352px]">
-            <LogoIcon width={105} height={32} />
+          <header className="py-s fixed top-0 z-50 w-full bg-white px-5 xl:px-[352px] 2xl:px-[352px]">
+            <LogoIcon
+              onClick={() => {
+                router.push('/')
+              }}
+              width={105}
+              height={32}
+            />
           </header>
         )
     }

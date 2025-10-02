@@ -25,3 +25,23 @@ export interface ProjectResponseType {
   projectRegisterRequest: ProjectType
   drawingUrls: string[]
 }
+
+export interface ProjectDetailResponseType {
+  projectDetailResponse: {
+    projectId: number
+    modifiedAt: string
+    projectRegisterRequest: ProjectType
+    drawingUrls: string[]
+  }
+  proposalThumbnails: proposalThumbnailType[]
+}
+export interface proposalThumbnailType {
+  proposalId: number
+  companyThumbnailResponse: {
+    companyId: number
+    companyName: string
+    profileUrl: string
+  }
+  totalPrice: number
+  operateUntil: string
+}

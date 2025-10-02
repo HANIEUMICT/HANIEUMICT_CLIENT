@@ -6,24 +6,31 @@ import FinalShippingAndExtraInfo from '@/components/create-project/detail/FinalS
 import FinalBasicInfo from '@/components/create-project/detail/FinalBasicInfo'
 import FinalRequestCondition from '@/components/create-project/detail/FinalRequestCondition'
 import Button1 from '@/components/common/Button1'
-import { useRouter } from 'next/navigation'
-import ProcessingBar from '@/components/create-project/ProcessingBar'
-import BusinessInfo from '@/components/proposal/BusinessInfo'
-import ProposalContent from '@/components/proposal/ProposalContent'
-import AdditionalInfo from '@/components/proposal/AdditionalInfo'
-import DrawingUploader from '@/components/proposal/DrawingUploader'
-import FinalProposalPreview from '@/components/proposal/FinalProposalPreview'
-import ProjectSummaryCard from '@/components/create-project/ProjectSummaryCard'
-import TotalPriceCard from '@/components/proposal/proposal-content/TotalPriceCard'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { getProjectDetail } from '@/lib/project'
+import { ProjectDetailResponseType } from '@/type/project'
 
 export default function ProjectDetailPage() {
   const router = useRouter()
+  const pathName = usePathname()
+  const [projectDetailData, setProjectDetailData] = useState<ProjectDetailResponseType | undefined>()
+
+  useEffect(() => {
+    const projectId = pathName.split('/').pop()
+    getProjectDetail(projectId).then((response) => {
+      if (response.result === 'SUCCESS' && response.data) {
+        setProjectDetailData(response.data)
+      }
+    })
+  }, [pathName])
+
   return (
     <main className="flex flex-col items-center justify-center">
       <Header headerType={'DEFAULT'} />
       <div className="gap-y-l mx-auto mt-[120px] flex h-[80px] flex-col">
         <div className="flex w-full items-center justify-between">
-          <h2 className="h2">견적서 작성하기</h2>
+          <h2 className="h2">견적서 상세보기</h2>
           <Button1
             onClick={() => {
               router.back()

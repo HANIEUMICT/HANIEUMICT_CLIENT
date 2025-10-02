@@ -1,5 +1,5 @@
 import { ApiResponse, PaginationResultType } from '@/type/common'
-import { ProjectResponseType, ProjectType } from '@/type/project'
+import { ProjectDetailResponseType, ProjectResponseType, ProjectType } from '@/type/project'
 import { authorizedFetch } from '@/lib/common'
 
 /**
@@ -70,13 +70,13 @@ export const postProjectImageUpload = async (
  * 사용자 프로젝트(공고) 조회 API
  */
 export const getProject = async (
-  memberId: number,
+  memberId: number | null,
   status: 'TEMPORARY_SAVE' | 'INITIALIZE' | 'SUBMIT' | null,
   page: number,
   size: number
 ): Promise<ApiResponse<PaginationResultType<ProjectResponseType>>> => {
   const response = await authorizedFetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project/${memberId}${status === null ? '' : `?status=${status}`}&page=${page}&size=${size}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project${status === null ? '' : `?status=${status}`}${memberId ? `&${memberId}` : null}&page=${page}&size=${size}`,
     {
       method: 'GET',
       headers: {
@@ -84,5 +84,20 @@ export const getProject = async (
       },
     }
   )
+  return await response.json()
+}
+
+/**
+ * 사용자 프로젝트(공고) 상세 조회 API
+ */
+export const getProjectDetail = async (
+  projectId: string | string[] | undefined
+): Promise<ApiResponse<ProjectDetailResponseType>> => {
+  const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/project/${projectId}/detail`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
   return await response.json()
 }

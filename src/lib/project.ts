@@ -76,7 +76,7 @@ export const getProject = async (
   size: number
 ): Promise<ApiResponse<PaginationResultType<ProjectResponseType>>> => {
   const response = await authorizedFetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project${status === null ? '' : `?status=${status}`}${memberId ? `&${memberId}` : null}&page=${page}&size=${size}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/project${status === null ? '' : `?status=${status}`}${memberId ? `&${memberId}` : ''}&page=${page}&size=${size}`,
     {
       method: 'GET',
       headers: {

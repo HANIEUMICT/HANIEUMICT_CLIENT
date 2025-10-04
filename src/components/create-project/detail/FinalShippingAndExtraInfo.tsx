@@ -1,9 +1,15 @@
 import { useProjectStore } from '@/store/projectStore'
 
-interface FinalShippingAndExtraInfoProps {}
-export default function FinalShippingAndExtraInfo({}: FinalShippingAndExtraInfoProps) {
-  const finalProjectData = useProjectStore((state) => state.finalProjectData)
-
+interface FinalShippingAndExtraInfoProps {
+  projectStatus?: string | null
+  canPhoneConsult?: boolean
+  deliveryAddress?: string | null
+}
+export default function FinalShippingAndExtraInfo({
+  deliveryAddress,
+  canPhoneConsult,
+  projectStatus,
+}: FinalShippingAndExtraInfoProps) {
   const convertProjectStatus = (projectStatus: string | undefined | null | 'PUBLIC' | 'PRIVATE' | 'PROTECTED') => {
     switch (projectStatus) {
       case 'PUBLIC':
@@ -22,17 +28,11 @@ export default function FinalShippingAndExtraInfo({}: FinalShippingAndExtraInfoP
         <div className="flex justify-between">
           <div className="flex flex-col gap-y-[12px]">
             <p className="sub2">견적서 공개 여부</p>
-            <p className="body1 text-gray-40">
-              비공개
-              {/*{convertProjectStatus(finalProjectData?.projectRegisterRequest.projectStatus)}*/}
-            </p>
+            <p className="body1 text-gray-40">{convertProjectStatus(projectStatus)}</p>
           </div>
           <div className="flex w-[300px] flex-col gap-y-[12px]">
             <p className="sub2">전화 상담 여부</p>
-            <p className="body1 text-gray-40">
-              가능 (담당자: 홍길동, 010-1234-5678)
-              {/*{finalProjectData?.projectRegisterRequest.canPhoneConsult ? '가능' : '불가능'}*/}
-            </p>
+            <p className="body1 text-gray-40">{canPhoneConsult ? '가능' : '불가능'}</p>
           </div>
         </div>
         <div className="flex w-full flex-col gap-y-[12px]">
@@ -41,10 +41,7 @@ export default function FinalShippingAndExtraInfo({}: FinalShippingAndExtraInfoP
             <p className="sub1">(주)알파정밀</p>
             <div className="gap-x-4xs flex">
               <p className="text-gray-40 body1">주소</p>
-              <p className="sub2 text-gray-50">
-                경기도 평택시 포승읍 ***로 123-45
-                {/*{finalProjectData?.projectRegisterRequest.deliveryAddress}*/}
-              </p>
+              <p className="sub2 text-gray-50">{deliveryAddress}</p>
             </div>
           </div>
         </div>

@@ -46,11 +46,34 @@ export default function ProjectDetailPage() {
 
         <div className="flex gap-x-[24px]">
           <div className="flex flex-col gap-y-[16px]">
-            <FinalBasicInfo />
-            <FinalRequestCondition />
-            <FinalShippingAndExtraInfo />
+            <FinalBasicInfo
+              projectTitle={projectDetailData?.projectDetailResponse.projectRegisterRequest.projectTitle}
+              categoryDetail={projectDetailData?.projectDetailResponse.projectRegisterRequest.categoryDetail}
+              category={projectDetailData?.projectDetailResponse.projectRegisterRequest.category}
+              categoryDetailEtc={projectDetailData?.projectDetailResponse.projectRegisterRequest.categoryDetailEtc}
+              purpose={projectDetailData?.projectDetailResponse.projectRegisterRequest.purpose}
+              purposeEtc={projectDetailData?.projectDetailResponse.projectRegisterRequest.purposeEtc}
+            />
+            <FinalRequestCondition
+              drawingUrls={projectDetailData?.projectDetailResponse.drawingUrls}
+              requests={projectDetailData?.projectDetailResponse.projectRegisterRequest.requests}
+              requestEstimate={projectDetailData?.projectDetailResponse.projectRegisterRequest.requestEstimate}
+              projectQuantity={projectDetailData?.projectDetailResponse.projectRegisterRequest.projectQuantity}
+              deadline={projectDetailData?.projectDetailResponse.projectRegisterRequest.deadline}
+              canDeadlineChange={projectDetailData?.projectDetailResponse.projectRegisterRequest.canDeadlineChange}
+              publicUntil={projectDetailData?.projectDetailResponse.projectRegisterRequest.publicUntil}
+            />
+            <FinalShippingAndExtraInfo
+              canPhoneConsult={projectDetailData?.projectDetailResponse.projectRegisterRequest.canPhoneConsult}
+              deliveryAddress={projectDetailData?.projectDetailResponse.projectRegisterRequest.deliveryAddress}
+              projectStatus={projectDetailData?.projectDetailResponse.projectRegisterRequest.projectStatus}
+            />
           </div>
-          <BidderList />
+          <BidderList
+            memberId={projectDetailData?.projectDetailResponse.projectRegisterRequest.memberId}
+            proposalThumbnails={projectDetailData?.proposalThumbnails}
+            publicUntil={projectDetailData?.projectDetailResponse.projectRegisterRequest.publicUntil}
+          />
         </div>
       </div>
     </main>

@@ -8,7 +8,9 @@ import Pagination from '@/components/common/Pagination'
 import { ProjectResponseType } from '@/type/project'
 import { useRouter } from 'next/navigation'
 
-export default function MyProjectPage() {
+interface MyProjectPageProps {}
+
+export default function MyProjectPage({}: MyProjectPageProps) {
   const router = useRouter()
   const [status, setStatus] = useState<ProposalStatusType>('SUBMIT')
   const [memberId, setMemberId] = useState<number | undefined>()
@@ -18,6 +20,7 @@ export default function MyProjectPage() {
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [totalElements, setTotalElements] = useState<number>(0)
+
   useEffect(() => {
     setMemberId(getUserData()?.memberId)
   }, [])

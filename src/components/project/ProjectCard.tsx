@@ -2,18 +2,34 @@ import { ChatIcon, GrayFavoriteIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
 import { ProjectResponseType } from '@/type/project'
 import { useRouter } from 'next/navigation'
+import { Dispatch, SetStateAction } from 'react'
 
-interface ProjectCardProps extends ProjectResponseType {}
+interface ProjectCardProps extends ProjectResponseType {
+  setSelectedProjectId?: Dispatch<SetStateAction<number | undefined>>
+  setIsCopyrightAgreementModalOpen?: Dispatch<SetStateAction<boolean>>
+}
 
-export default function ProjectCard({ projectRegisterRequest, projectId, drawingUrls, modifiedAt }: ProjectCardProps) {
+export default function ProjectCard({
+  projectRegisterRequest,
+  projectId,
+  drawingUrls,
+  modifiedAt,
+  setSelectedProjectId,
+  setIsCopyrightAgreementModalOpen,
+}: ProjectCardProps) {
   const router = useRouter()
   return (
     <div
       onClick={(e) => {
+        if (setSelectedProjectId && setIsCopyrightAgreementModalOpen) {
+          setSelectedProjectId(projectId)
+          setIsCopyrightAgreementModalOpen(true)
+        } else {
+          router.push(`/project/${projectId}`)
+        }
         e.stopPropagation()
-        router.push(`/project/${projectId}`)
       }}
-      className="gap-y-4xs py-xs flex flex-col rounded-[24px] bg-white px-5"
+      className="gap-y-4xs py-xs flex cursor-pointer flex-col rounded-[24px] bg-white px-5 transition hover:scale-105"
     >
       <h3 className="h3">{projectRegisterRequest.projectTitle}</h3>
       <section className="gap-x-2xs flex">
@@ -32,10 +48,7 @@ export default function ProjectCard({ projectRegisterRequest, projectId, drawing
           <div className="gap-y-5xs flex flex-col">
             <section className="flex gap-x-2">
               <div className="border-gray-20 button-sm flex h-[24px] w-fit items-center justify-center rounded-full border px-2 text-gray-50">
-                {projectRegisterRequest.category}
-              </div>
-              <div className="border-gray-20 button-sm flex h-[24px] w-fit items-center justify-center rounded-full border px-2 text-gray-50">
-                {projectRegisterRequest.categoryDetail}
+                {projectRegisterRequest.purpose}
               </div>
             </section>
             <div className="flex w-full items-center justify-between">
@@ -48,7 +61,7 @@ export default function ProjectCard({ projectRegisterRequest, projectId, drawing
             </div>
             <div className="flex w-full items-center justify-between">
               <p className="body2 text-gray-40">입찰 마감일</p>
-              <p className="button-sm text-gray-50">~ {projectRegisterRequest.canDeadlineChange}까지</p>
+              <p className="button-sm text-gray-50">{projectRegisterRequest.publicUntil} 까지</p>
             </div>
           </div>
         </div>

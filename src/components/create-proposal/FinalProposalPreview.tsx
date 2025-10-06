@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from 'react'
 import Button1 from '@/components/common/Button1'
-import SpecialNoteField from '@/components/proposal/additional-info/SpecialNoteField'
-import AdditionalProposalInfoField from '@/components/proposal/additional-info/AdditionalProposalInfoField'
-import FinalBusinessInfoPreview from '@/components/proposal/final-proposal-preview/FinalBusinessInfoPreview'
-import FinalProposalContentPreview from '@/components/proposal/final-proposal-preview/FinalProposalContentPreview'
-import FinalDrawingPreview from '@/components/proposal/final-proposal-preview/FinalDrawingPreview'
-import FinalETCPreview from '@/components/proposal/final-proposal-preview/FinalETCPreview'
+import SpecialNoteField from '@/components/create-proposal/additional-info/SpecialNoteField'
+import AdditionalProposalInfoField from '@/components/create-proposal/additional-info/AdditionalProposalInfoField'
+import FinalBusinessInfoPreview from '@/components/create-proposal/final-proposal-preview/FinalBusinessInfoPreview'
+import FinalProposalContentPreview from '@/components/create-proposal/final-proposal-preview/FinalProposalContentPreview'
+import FinalDrawingPreview from '@/components/create-proposal/final-proposal-preview/FinalDrawingPreview'
+import FinalETCPreview from '@/components/create-proposal/final-proposal-preview/FinalETCPreview'
 
 interface FinalProposalPreviewProps {
   setCurrentStep: Dispatch<SetStateAction<number>>

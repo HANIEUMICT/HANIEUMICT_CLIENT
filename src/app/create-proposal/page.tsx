@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/common/Header'
 import ProcessingBar from '@/components/create-project/ProcessingBar'
 import Button1 from '@/components/common/Button1'
-import BusinessInfo from '@/components/proposal/BusinessInfo'
-import ProposalContent from '@/components/proposal/ProposalContent'
-import AdditionalInfo from '@/components/proposal/AdditionalInfo'
-import DrawingUploader from '@/components/proposal/DrawingUploader'
-import FinalProposalPreview from '@/components/proposal/FinalProposalPreview'
+import BusinessInfo from '@/components/create-proposal/BusinessInfo'
+import ProposalContent from '@/components/create-proposal/ProposalContent'
+import AdditionalInfo from '@/components/create-proposal/AdditionalInfo'
+import DrawingUploader from '@/components/create-proposal/DrawingUploader'
+import FinalProposalPreview from '@/components/create-proposal/FinalProposalPreview'
 import ProjectSummaryCard from '@/components/create-project/ProjectSummaryCard'
-import TotalPriceCard from '@/components/proposal/proposal-content/TotalPriceCard'
 
 const steps = ['사업자 정보', '견적 내용 입력', '기타 내용 입력', '도면 입력', '견적서 생성']
 
@@ -49,7 +48,6 @@ export default function ProposalPage() {
           </div>
           <div className="gap-y-s flex flex-col">
             <ProjectSummaryCard />
-            {currentStep === 2 && <TotalPriceCard />}
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ interface InputProps {
   customClassName?: string
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   onClick?: () => void
-  value?: string
+  value?: string | number
   readonly?: boolean
 }
 

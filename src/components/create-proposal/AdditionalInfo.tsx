@@ -1,18 +1,25 @@
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction } from 'react'
-import SpecialNoteField from '@/components/proposal/additional-info/SpecialNoteField'
-import AdditionalProposalInfoField from '@/components/proposal/additional-info/AdditionalProposalInfoField'
+import { Dispatch, SetStateAction, useMemo } from 'react'
+import OperateUntilField from '@/components/create-proposal/additional-info/OperateUntilField'
+import AdditionalProposalInfoField from '@/components/create-proposal/additional-info/AdditionalProposalInfoField'
+import { useProposalStore } from '@/store/proposalStore'
 
 interface AdditionalInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
 }
 
 export default function AdditionalInfo({ setCurrentStep }: AdditionalInfoProps) {
+  const proposalData = useProposalStore((state) => state.proposalData)
+
+  const isValid = useMemo(() => {
+    return proposalData?.operateUntil
+  }, [proposalData?.operateUntil])
+
   return (
     <div className="flex flex-col gap-y-[40px]">
       <section className="border-gray-20 flex flex-col gap-y-4 rounded-[24px] border bg-white p-6">
         <h1 className="sub1">기타 내용 입력</h1>
-        <SpecialNoteField />
+        <OperateUntilField />
         <AdditionalProposalInfoField />
       </section>
       <section className="flex justify-between">
@@ -42,9 +49,10 @@ export default function AdditionalInfo({ setCurrentStep }: AdditionalInfoProps) 
               setCurrentStep(4)
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={isValid ? 'default' : 'disabled'}
             styleType={'primary'}
             styleSize={'lg'}
+            disabled={!isValid}
           >
             다음
           </Button1>

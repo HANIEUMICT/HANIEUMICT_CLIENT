@@ -10,11 +10,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getProjectDetail } from '@/lib/project'
 import { ProjectDetailResponseType } from '@/type/project'
+import { useModalStore } from '@/store/modalStore'
+import ServicePreparingModal from '@/components/modal/ServicePreparingModal'
 
 export default function ProjectDetailPage() {
   const router = useRouter()
   const pathName = usePathname()
   const [projectDetailData, setProjectDetailData] = useState<ProjectDetailResponseType | undefined>()
+  const isServicePreparingModalOpen = useModalStore((state) => state.isServicePreparingModalOpen)
 
   useEffect(() => {
     const projectId = pathName.split('/').pop()
@@ -27,6 +30,7 @@ export default function ProjectDetailPage() {
 
   return (
     <main className="flex flex-col items-center justify-center">
+      {isServicePreparingModalOpen ? <ServicePreparingModal /> : null}
       <Header headerType={'DEFAULT'} />
       <div className="gap-y-l mx-auto mt-[120px] flex h-[80px] flex-col">
         <div className="flex w-full items-center justify-between">
@@ -70,6 +74,7 @@ export default function ProjectDetailPage() {
             />
           </div>
           <BidderList
+            projectId={pathName.split('/').pop()}
             memberId={projectDetailData?.projectDetailResponse.projectRegisterRequest.memberId}
             proposalThumbnails={projectDetailData?.proposalThumbnails}
             publicUntil={projectDetailData?.projectDetailResponse.projectRegisterRequest.publicUntil}

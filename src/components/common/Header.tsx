@@ -61,7 +61,7 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
               {userData?.memberRole === 'INDIVIDUAL' ? (
                 <Button1
                   onClick={() => {
-                    router.push('/project')
+                    router.push('/create-project')
                   }}
                   styleType="primary"
                   styleStatus={'default'}
@@ -73,7 +73,7 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
               ) : userData?.memberRole === 'OWNER' ? (
                 <Button1
                   onClick={() => {
-                    router.push('/project')
+                    router.push('/register-factory')
                   }}
                   styleType="primary"
                   styleStatus={'default'}

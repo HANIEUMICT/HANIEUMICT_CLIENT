@@ -5,7 +5,7 @@ import CompanyMemberSignUpPage from '@/components/sign-up/company/CompanyMemberS
 import RegisterCompanyPage from '@/components/sign-up/company/RegisterCompanyPage'
 
 export default function CompanySignUpPage() {
-  const [step, setStep] = useState<CompanySignUpPageStepType>('SearchCompanyInfoPage')
+  const [step, setStep] = useState<CompanySignUpPageStepType>('CompanyMemberSignUpPage')
   return (
     <main>
       {step === 'SearchCompanyInfoPage' && <SearchCompanyInfoPage setStep={setStep} />}

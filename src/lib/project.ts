@@ -101,3 +101,18 @@ export const getProjectDetail = async (
   })
   return await response.json()
 }
+
+/**
+ * 프로젝트 찜하기 API
+ */
+export const postFavoriteProject = async (
+  projectId: string | string[] | undefined
+): Promise<ApiResponse<ProjectDetailResponseType>> => {
+  const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/company/favorites/${projectId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  return await response.json()
+}

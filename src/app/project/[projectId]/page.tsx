@@ -78,6 +78,7 @@ export default function ProjectDetailPage() {
             memberId={projectDetailData?.projectDetailResponse.projectRegisterRequest.memberId}
             proposalThumbnails={projectDetailData?.proposalThumbnails}
             publicUntil={projectDetailData?.projectDetailResponse.projectRegisterRequest.publicUntil}
+            ProjectResponseType={projectDetailData?.projectDetailResponse}
           />
         </div>
       </div>

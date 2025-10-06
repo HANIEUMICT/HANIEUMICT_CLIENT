@@ -2,24 +2,33 @@ import Button1 from '@/components/common/Button1'
 import { ChatIcon, FavoriteIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { proposalThumbnailType } from '@/type/project'
+import { ProjectDetailResponseType, ProjectResponseType, ProjectType, proposalThumbnailType } from '@/type/project'
 import { getUserData } from '@/utils/common'
 import { postFavoriteProject } from '@/lib/project'
 import { useModalStore } from '@/store/modalStore'
+import { useProposalStore } from '@/store/proposalStore'
 
 interface BidderListProps {
   projectId: string | undefined
   memberId: number | null | undefined
   proposalThumbnails: proposalThumbnailType[] | undefined
   publicUntil: string | null | undefined
+  ProjectResponseType: ProjectResponseType | undefined
 }
 
-export default function BidderList({ projectId, memberId, proposalThumbnails, publicUntil }: BidderListProps) {
+export default function BidderList({
+  projectId,
+  memberId,
+  proposalThumbnails,
+  publicUntil,
+  ProjectResponseType,
+}: BidderListProps) {
   const router = useRouter()
   const [click, setClick] = useState(false)
   const [isWriter, setIsWriter] = useState<boolean>()
   const [hasPermission, setHasPermission] = useState(true)
   const setModalState = useModalStore((state) => state.setState)
+  const setProposalState = useProposalStore((state) => state.setState)
 
   useEffect(() => {
     if (getUserData()?.memberId === memberId) {
@@ -80,6 +89,7 @@ export default function BidderList({ projectId, memberId, proposalThumbnails, pu
             <Button1
               disabled={!hasPermission}
               onClick={() => {
+                setProposalState({ selectedProjectId: projectId, summaryProjectData: ProjectResponseType })
                 router.push('/create-proposal')
               }}
               styleType={'primary'}

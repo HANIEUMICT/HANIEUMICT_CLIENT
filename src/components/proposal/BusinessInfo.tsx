@@ -1,5 +1,5 @@
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import BusinessNumberField from '@/components/proposal/business-info/BusinessNumberField'
 import RepresentativeNameField from '@/components/proposal/business-info/RepresentativeNameField'
 import BusinessNameField from '@/components/proposal/business-info/BusinessNameField'
@@ -9,6 +9,9 @@ import BusinessItemField from '@/components/proposal/business-info/BusinessItemF
 import ContactNumberField from '@/components/proposal/business-info/ContactNumberField'
 import ManagerField from '@/components/proposal/business-info/ManagerField'
 import { useRouter } from 'next/navigation'
+import { getCompany } from '@/lib/company'
+import { getUserData } from '@/utils/common'
+import { CompanyType } from '@/type/company'
 
 interface BusinessInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -16,18 +19,26 @@ interface BusinessInfoProps {
 
 export default function BusinessInfo({ setCurrentStep }: BusinessInfoProps) {
   const router = useRouter()
+  const [companyData, setCompanyData] = useState<CompanyType>()
+
+  useEffect(() => {
+    getCompany(getUserData()?.companyId).then((result) => {
+      if (result.result === 'SUCCESS') {
+        setCompanyData(result.data)
+      }
+    })
+  }, [])
+
   return (
     <div className="flex flex-col gap-y-[40px]">
       <section className="border-gray-20 flex flex-col gap-y-4 rounded-[24px] border bg-white p-6">
         <h1 className="sub1">사업자 정보</h1>
-        <BusinessNumberField />
-        <RepresentativeNameField />
-        <BusinessNameField />
-        <BusinessAddressField />
-        <BusinessTypeField />
-        <BusinessItemField />
-        <ManagerField />
-        <ContactNumberField />
+        <BusinessNumberField registrationNumber={companyData?.registrationNumber} />
+        <RepresentativeNameField owner={companyData?.owner} />
+        <BusinessNameField name={companyData?.name} />
+        <BusinessAddressField address={companyData?.address} />
+        <BusinessTypeField businessType={companyData?.businessType} />
+        <BusinessItemField industry={companyData?.industry} />
       </section>
       <section className="flex justify-between">
         <Button1
@@ -43,20 +54,11 @@ export default function BusinessInfo({ setCurrentStep }: BusinessInfoProps) {
         </Button1>
         <div className="gap-x-2xs flex">
           <Button1
-            onClick={() => {}}
-            customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
-            styleSize={'lg'}
-            styleType={'outline'}
-          >
-            임시저장
-          </Button1>
-          <Button1
             onClick={() => {
               setCurrentStep(2)
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={'default'}
             styleType={'primary'}
             styleSize={'lg'}
           >

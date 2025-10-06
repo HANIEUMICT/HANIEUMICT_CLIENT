@@ -11,6 +11,7 @@ export interface UserDataType {
   memberId: number
   memberName: string
   memberRole: 'INDIVIDUAL' | 'OWNER'
+  companyId?: number
 }
 
 export interface FileInfoType {

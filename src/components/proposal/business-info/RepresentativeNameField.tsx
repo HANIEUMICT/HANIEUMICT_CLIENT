@@ -1,10 +1,14 @@
 import Input from '@/components/common/Input'
 
-export default function RepresentativeNameField() {
+interface RepresentativeNameFieldProps {
+  owner: string | undefined
+}
+
+export default function RepresentativeNameField({ owner }: RepresentativeNameFieldProps) {
   return (
     <div className="gap-y-4xs flex flex-col">
       <p className="sub2">대표자명</p>
-      <Input inputBoxStyle={'default'} value={''} placeholder={'대표자명을 입력해주세요.'} />
+      <Input inputBoxStyle={'disabled'} value={owner ?? ''} placeholder={'대표자명을 입력해주세요.'} />
     </div>
   )
 }

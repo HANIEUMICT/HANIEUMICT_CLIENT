@@ -65,6 +65,7 @@ export interface SignUpResponseType {
     accessToken: string
     refreshToken: string
   }
+  companyId?: number
 }
 
 export interface LoginType {

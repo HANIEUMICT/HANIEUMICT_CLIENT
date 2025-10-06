@@ -118,10 +118,16 @@ export default function LoginPage() {
                   router.push('/')
                   console.log(response)
 
-                  const userData: { memberId: number; memberName: string; memberRole: 'INDIVIDUAL' | 'OWNER' } = {
+                  const userData: {
+                    memberId: number
+                    memberName: string
+                    memberRole: 'INDIVIDUAL' | 'OWNER'
+                    companyId?: number
+                  } = {
                     memberId: response.data.memberInfo.memberId,
                     memberName: response.data.memberInfo.memberName,
                     memberRole: response.data.memberInfo.memberRole,
+                    companyId: response.data.companyId,
                   }
                   // localStorage 는 브라우저 환경에서만 접근 가능
                   if (typeof window !== 'undefined') {

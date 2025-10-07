@@ -11,16 +11,19 @@ import AdditionalInfo from '@/components/create-proposal/AdditionalInfo'
 import DrawingUploader from '@/components/create-proposal/DrawingUploader'
 import FinalProposalPreview from '@/components/create-proposal/FinalProposalPreview'
 import ProjectSummaryCard from '@/components/create-project/ProjectSummaryCard'
+import ProposalSentModal from '@/components/modal/ProposalSentModal'
 
 const steps = ['사업자 정보', '견적 내용 입력', '기타 내용 입력', '도면 입력', '견적서 생성']
 
 export default function ProposalPage() {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const router = useRouter()
+  const [isProposalSentModalOpen, setIsProposalSentModalOpen] = useState(false)
 
   return (
     <main className="flex flex-col">
       <Header headerType={'DEFAULT'} />
+      {isProposalSentModalOpen && <ProposalSentModal setIsProposalSentModalOpen={setIsProposalSentModalOpen} />}
       <div className="gap-y-l mx-auto mt-[120px] flex h-[80px] flex-col">
         <div className="flex w-full items-center justify-between">
           <h2 className="h2">견적서 작성하기</h2>
@@ -44,7 +47,12 @@ export default function ProposalPage() {
             {currentStep === 2 && <ProposalContent setCurrentStep={setCurrentStep} />}
             {currentStep === 3 && <AdditionalInfo setCurrentStep={setCurrentStep} />}
             {currentStep === 4 && <DrawingUploader setCurrentStep={setCurrentStep} />}
-            {currentStep === 5 && <FinalProposalPreview setCurrentStep={setCurrentStep} />}
+            {currentStep === 5 && (
+              <FinalProposalPreview
+                setCurrentStep={setCurrentStep}
+                setIsProposalSentModalOpen={setIsProposalSentModalOpen}
+              />
+            )}
           </div>
           <div className="gap-y-s flex flex-col">
             <ProjectSummaryCard />

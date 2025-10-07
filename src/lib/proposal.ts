@@ -62,7 +62,7 @@ export const postProposalDraft = async (
 export const postProposalImageUpload = async (
   memberId: number | undefined,
   data: { proposalId: number; drawingUrl: string }
-): Promise<ApiResponse<string>> => {
+): Promise<string> => {
   const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/proposal/${memberId}/image`, {
     method: 'POST',
     headers: {

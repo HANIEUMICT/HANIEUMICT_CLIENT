@@ -46,6 +46,10 @@ export default function BidderList({
     }
   }, [memberId, getUserData()])
 
+  useEffect(() => {
+    console.log('proposalThumbnails', proposalThumbnails)
+  }, [])
+
   return (
     <div className="gap-y-2xs flex flex-col">
       <div
@@ -79,7 +83,9 @@ export default function BidderList({
               )
             })
           ) : (
-            <div className="flex h-[208px] flex-col items-center justify-center">
+            <div
+              className={`${!isWriter && hasPermission ? 'h-[550px]' : 'h-[208px]'} flex flex-col items-center justify-center`}
+            >
               <p className="sub2 text-gray-50">아직 입찰 현황이 없습니다.</p>
             </div>
           )}

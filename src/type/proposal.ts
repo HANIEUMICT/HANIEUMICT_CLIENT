@@ -7,7 +7,7 @@ export interface ProposalType {
   proposalNote?: string
   operateUntil?: string
   items?: ItemType[]
-  proposalBidStatus?: ProposalStatusType
+  proposalBidStatus?: ProposalBidStatusType
   submitStatus?: ProposalStatusType
 }
 export interface ItemType {
@@ -18,6 +18,7 @@ export interface ItemType {
   itemQuantity: number
 }
 export type ProposalStatusType = 'INITIALIZE' | 'TEMPORARY_SAVE' | 'SUBMIT'
+export type ProposalBidStatusType = 'PRE_BID' | 'BID_CLOSED' | 'BIDDING'
 
 export interface ProposalResponseType {
   proposalId: number

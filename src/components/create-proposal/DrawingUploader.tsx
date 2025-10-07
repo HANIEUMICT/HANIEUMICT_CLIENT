@@ -3,10 +3,9 @@ import Button1 from '@/components/common/Button1'
 import DrawingUploadField from '@/components/create-proposal/drawing-uploader/DrawingUploadField'
 import { useFileUpload } from '@/hooks/useFileUpload'
 import { useProposalStore } from '@/store/proposalStore'
-import { UserDataType } from '@/type/common'
-import { postProposalImageUpload, postProposalFinal, postProposalDraft } from '@/lib/proposal'
+import { postProposalImageUpload, postProposalDraft } from '@/lib/proposal'
 import { getUserData } from '@/utils/common'
-import { ProposalStatusType } from '@/type/proposal'
+import { ProposalBidStatusType, ProposalStatusType } from '@/type/proposal'
 
 interface DrawingUploaderProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -17,8 +16,8 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
   const fileInfoList = useProposalStore((state) => state.fileInfoList)
   const setState = useProposalStore((state) => state.setState)
   const proposalData = useProposalStore((state) => state.proposalData)
+  const selectedProjectId = useProposalStore((state) => state.selectedProjectId)
   const resultProposalId = useProposalStore((state) => state.resultProposalId)
-  const [userData, setUserData] = useState<UserDataType>()
   const [isUploading, setIsUploading] = useState(false)
 
   const { uploadFiles } = useFileUpload()
@@ -35,6 +34,11 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
 
     if (!resultProposalId) {
       alert('제안서 ID가 없습니다.')
+      return
+    }
+
+    if (!selectedProjectId) {
+      alert('프로젝트 ID가 없습니다.')
       return
     }
 
@@ -63,11 +67,21 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
       const imageUploadResults = await Promise.all(postPromises)
       console.log('모든 도면 등록 완료:', imageUploadResults)
 
+      // uploadUrls에 저장
+      if (imageUploadResults && imageUploadResults.length > 0) {
+        const currentUploadUrls = fileInfoList || []
+        setState({
+          uploadUrls: [...currentUploadUrls, ...fileInfoList],
+        })
+      }
+
       // 3. proposalData에 상태값 추가
       const updatedProposalData = {
         ...proposalData,
-        proposalBidStatus: statusType,
+        proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
         submitStatus: statusType,
+        projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
+        companyId: getUserData()?.companyId,
       }
 
       // store 업데이트
@@ -79,18 +93,13 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
       console.log('최종 제안서 제출 시작...', statusType)
       if (statusType === 'TEMPORARY_SAVE') {
         const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
-        console.log('최종 제안서 제출 완료:', draftResult)
-      } else if (statusType === 'SUBMIT') {
-        const finalResult = await postProposalFinal(resultProposalId, updatedProposalData)
-        console.log('최종 제안서 제출 완료:', finalResult)
+        console.log('최종 제안서 임시 저장:', draftResult)
       }
-
       // 5. 성공 메시지 및 다음 단계
       if (statusType === 'TEMPORARY_SAVE') {
         alert('임시저장이 완료되었습니다.')
       } else {
-        alert('제출이 완료되었습니다.')
-        setCurrentStep(4)
+        setCurrentStep(5)
       }
     } catch (error) {
       console.error('도면 업로드 또는 제안서 제출 실패:', error)
@@ -143,14 +152,16 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
             {isUploading ? '저장 중...' : '임시저장'}
           </Button1>
           <Button1
-            onClick={handleFinalSubmit}
+            onClick={() => {
+              setCurrentStep(5)
+            }}
             customClassName={'h-[52px] w-[260px]'}
             styleStatus={isValid ? 'default' : 'disabled'}
             styleType={'primary'}
             styleSize={'lg'}
             disabled={!isValid || isUploading}
           >
-            {isUploading ? '업로드 중...' : '다음'}
+            다음
           </Button1>
         </div>
       </section>

@@ -9,6 +9,7 @@ interface SetProposalStoreType {
   resultProposalId?: number | undefined
   summaryProjectData?: ProjectResponseType | undefined
   fileInfoList?: FileInfoType[] | undefined
+  uploadUrls?: FileInfoType[] | undefined
   proposalData?: ProposalType | null
 }
 
@@ -18,6 +19,7 @@ interface ProposalStoreType {
   proposalData: ProposalType | null
   summaryProjectData: ProjectResponseType | undefined
   fileInfoList?: FileInfoType[] | undefined
+  uploadUrls: FileInfoType[] | undefined
   setState: (params: SetProposalStoreType) => void
 }
 
@@ -28,6 +30,7 @@ export const useProposalStore = create<ProposalStoreType>()(
       proposalData: null,
       summaryProjectData: undefined,
       fileInfoList: undefined,
+      uploadUrls: undefined,
       resultProposalId: undefined,
       setState: (params: SetProposalStoreType) => {
         set((state) => ({

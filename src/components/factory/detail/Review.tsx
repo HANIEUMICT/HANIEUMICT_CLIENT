@@ -11,7 +11,13 @@ export default function Review() {
       <h2 className="h2">리뷰(472)</h2>
       <SummaryReview />
       <ReviewFilter filterType={filterType} setFilterType={setFilterType} />
-      <ReviewItem />
+      <section className="flex w-full flex-col gap-y-4">
+        <ReviewItem />
+        <ReviewItem />
+        <ReviewItem />
+        <ReviewItem />
+      </section>
+
       {/*<Pagination />*/}
     </div>
   )

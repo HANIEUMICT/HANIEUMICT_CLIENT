@@ -3,11 +3,13 @@ import Button1 from '@/components/common/Button1'
 import { useRegisterFactoryStore } from '@/store/register-factory'
 import { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
 import { RegisterFactoryPortfolioType } from '@/type/register-factory'
-import { formatFileSize, generateId } from '@/utils/upload'
+import { generateId } from '@/utils/upload'
 import { FileInfoType } from '@/type/common'
-import { CancelIcon, PlusIcon, UploadIcon } from '@/assets/svgComponents'
+import { CancelIcon, ImgUploadIcon, PlusIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
-import UploadItem from '@/components/common/UploadItem'
+import ImageUploadItem from '@/components/common/ImageUploadItem'
+import { uploadFiles } from '@/hooks/useFileUpload'
+import { postCompanyDetail } from '@/lib/company'
 
 interface ProductInfoProps {
   portfolioImageRef: RefObject<HTMLInputElement | null>
@@ -26,64 +28,85 @@ export default function ProductInfo({
 }: ProductInfoProps) {
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
-  const portfolioImageFile = useRegisterFactoryStore((state) => state.portfolioImageFile)
+  const portfolioImageFileList = useRegisterFactoryStore((state) => state.portfolioImageFileList)
+  const companyLogoImageFile = useRegisterFactoryStore((state) => state.companyLogoImageFile)
+  const equipmentImageFileList = useRegisterFactoryStore((state) => state.equipmentImageFileList)
+
   const [isFormOpen, setIsFormOpen] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     console.log('registerFactoryData', registerFactoryData)
   }, [registerFactoryData])
 
   /**
-   * 이미지 미리보기 설정 (단일 파일)
+   * 이미지 미리보기 설정 (여러 파일)
    */
   const handleImagePreview = async () => {
     const files = portfolioImageRef.current?.files
 
     if (files && files.length > 0) {
-      const file = files[0] // 첫 번째 파일만 선택
-      const reader = new FileReader()
+      const fileArray = Array.from(files)
 
-      reader.onloadend = () => {
-        // 기존 파일을 대체
-        setState({
-          portfolioImageFile: {
-            id: generateId(),
-            name: file.name,
-            size: file.size,
-            url: reader.result,
-          },
+      // 모든 파일을 비동기로 읽기
+      const newFiles = await Promise.all(
+        fileArray.map((file) => {
+          return new Promise<{ id: string; name: string; size: number; url: string | ArrayBuffer | null }>(
+            (resolve) => {
+              const reader = new FileReader()
+
+              reader.onloadend = () => {
+                resolve({
+                  id: generateId(),
+                  name: file.name,
+                  size: file.size,
+                  url: reader.result,
+                })
+              }
+              reader.readAsDataURL(file)
+            }
+          )
         })
-      }
-      reader.readAsDataURL(file)
+      )
+
+      // 기존 파일 리스트에 새 파일들 추가
+      setState({
+        portfolioImageFileList: [...(portfolioImageFileList || []), ...newFiles],
+      })
     }
   }
 
   /**
-   * 파일 삭제
+   * 특정 파일 삭제
    */
-  const handleRemoveFile = () => {
+  const handleRemoveFile = (id: string) => {
     setState({
-      portfolioImageFile: undefined,
+      portfolioImageFileList: portfolioImageFileList?.filter((file) => file.id !== id),
     })
   }
 
   /**
-   * 장비 추가 완료
+   * 포트폴리오 추가 완료
    */
   const handleCompletePortfolio = () => {
     // 유효성 검사
-    if (!portfolioData.quantity || !portfolioData.description || !portfolioImageFile || !portfolioImageFile.name) {
+    if (
+      !portfolioData.quantity ||
+      !portfolioData.description ||
+      !portfolioImageFileList ||
+      portfolioImageFileList.length === 0
+    ) {
       alert('모든 필수 항목을 입력해주세요.')
       return
     }
 
-    // 이미지 URL 포함한 완성된 장비 데이터
+    // 이미지 URL 배열 포함한 완성된 포트폴리오 데이터
     const newPortfolio: RegisterFactoryPortfolioType = {
       ...portfolioData,
-      imageUrl: portfolioImageFile,
+      imageUrl: portfolioImageFileList, // 배열로 저장
     }
 
-    // 기존 equipments 배열에 추가
+    // 기존 portfolios 배열에 추가
     const updatedPortfolios = [...(registerFactoryData?.portfolios || []), newPortfolio]
 
     // Zustand store 업데이트
@@ -92,7 +115,7 @@ export default function ProductInfo({
         ...registerFactoryData,
         portfolios: updatedPortfolios,
       },
-      portfolioImageFile: undefined, // 이미지 파일 초기화
+      portfolioImageFileList: [], // 이미지 파일 리스트 초기화
     })
 
     // 폼 초기화 및 닫기
@@ -106,25 +129,35 @@ export default function ProductInfo({
   }
 
   /**
-   * imageUrl에서 URL 추출
+   * imageUrls에서 첫 번째 URL 추출 (대표 이미지)
    */
-  const getImageUrl = (imageUrl: string | FileInfoType | undefined): string => {
-    if (!imageUrl) return ''
-    if (typeof imageUrl === 'string') return imageUrl
-    return imageUrl.url as string
+  const getImageUrl = (imageUrls: string | FileInfoType | FileInfoType[] | undefined): string => {
+    if (!imageUrls) return ''
+    if (typeof imageUrls === 'string') return imageUrls
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+      const firstImage = imageUrls[0]
+      return typeof firstImage === 'string' ? firstImage : (firstImage.url as string)
+    }
+    if ('url' in imageUrls) return imageUrls.url as string
+    return ''
   }
 
   /**
-   * imageUrl에서 alt 텍스트 추출
+   * imageUrls에서 alt 텍스트 추출
    */
-  const getImageAlt = (imageUrl: string | FileInfoType | undefined): string => {
-    if (!imageUrl) return 'portfolio image'
-    if (typeof imageUrl === 'string') return 'portfolio image'
-    return imageUrl.name || imageUrl.id || 'portfolio image'
+  const getImageAlt = (imageUrls: string | FileInfoType | FileInfoType[] | undefined): string => {
+    if (!imageUrls) return 'portfolio image'
+    if (typeof imageUrls === 'string') return 'portfolio image'
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+      const firstImage = imageUrls[0]
+      return typeof firstImage === 'string' ? 'portfolio image' : firstImage.name || firstImage.id || 'portfolio image'
+    }
+    if ('name' in imageUrls) return imageUrls.name || imageUrls.id || 'portfolio image'
+    return 'portfolio image'
   }
 
   /**
-   * 장비 삭제
+   * 포트폴리오 삭제
    */
   const handleRemovePortfolio = (indexToRemove: number) => {
     // 확인 대화상자 (선택사항)
@@ -142,6 +175,151 @@ export default function ProductInfo({
         portfolios: updatedPortfolios,
       },
     })
+  }
+
+  const handleSubmit = async () => {
+    try {
+      setIsUploading(true)
+      console.log('공장 등록 시작...')
+
+      // 업데이트할 registerFactoryData 복사
+      const updatedRegisterFactoryData = { ...registerFactoryData }
+
+      // 1. 회사 로고 업로드 및 처리
+      if (companyLogoImageFile) {
+        console.log('회사 로고 업로드 중...')
+
+        // S3에 업로드하고 objectUrl 받기
+        const logoUploadResult = await uploadFiles([companyLogoImageFile])
+
+        if (!logoUploadResult.success || logoUploadResult.uploadedUrls.length === 0) {
+          throw new Error('회사 로고 업로드 실패')
+        }
+
+        // detail.logoUrl 업데이트
+        updatedRegisterFactoryData.detail = {
+          ...updatedRegisterFactoryData.detail,
+          logoUrl: logoUploadResult.uploadedUrls[0],
+        }
+
+        console.log('회사 로고 업로드 완료:', logoUploadResult.uploadedUrls[0])
+      }
+
+      // 2. 장비 이미지 업로드 및 처리
+      if (updatedRegisterFactoryData.equipments && updatedRegisterFactoryData.equipments.length > 0) {
+        console.log('장비 이미지 업로드 중...')
+
+        const updatedEquipments = await Promise.all(
+          updatedRegisterFactoryData.equipments.map(async (equipment) => {
+            // imageUrl이 FileInfoType[] 형태인 경우에만 업로드
+            if (equipment.imageUrl && Array.isArray(equipment.imageUrl) && equipment.imageUrl.length > 0) {
+              // FileInfoType[]인지 string[]인지 확인
+              const firstItem = equipment.imageUrl[0]
+
+              // 이미 string[]인 경우 그대로 반환
+              if (typeof firstItem === 'string') {
+                return equipment
+              }
+
+              // FileInfoType[]인 경우 업로드 진행
+              const imageFiles = equipment.imageUrl as FileInfoType[]
+
+              // S3에 업로드하고 objectUrls 받기
+              const equipmentUploadResult = await uploadFiles(imageFiles)
+
+              if (!equipmentUploadResult.success) {
+                throw new Error('장비 이미지 업로드 실패')
+              }
+
+              return {
+                ...equipment,
+                imageUrl: equipmentUploadResult.uploadedUrls,
+              }
+            }
+
+            return equipment
+          })
+        )
+
+        updatedRegisterFactoryData.equipments = updatedEquipments
+        console.log('장비 이미지 업로드 완료')
+      }
+
+      // 추가: 현재 폼에 있는 장비 이미지가 있다면 처리
+      if (equipmentImageFileList && equipmentImageFileList.length > 0) {
+        console.log('폼에 남아있는 장비 이미지 감지 - 저장되지 않은 장비가 있습니다.')
+        alert('완료하기 버튼을 누르지 않은 장비가 있습니다. 먼저 장비를 추가 완료해주세요.')
+        throw new Error('미완성 장비 존재')
+      }
+
+      // 3. 포트폴리오 이미지 업로드 및 처리
+      if (updatedRegisterFactoryData.portfolios && updatedRegisterFactoryData.portfolios.length > 0) {
+        console.log('포트폴리오 이미지 업로드 중...')
+
+        const updatedPortfolios = await Promise.all(
+          updatedRegisterFactoryData.portfolios.map(async (portfolio) => {
+            // imageUrl이 FileInfoType[] 형태인 경우에만 업로드
+            if (portfolio.imageUrl && Array.isArray(portfolio.imageUrl) && portfolio.imageUrl.length > 0) {
+              // FileInfoType[]인지 string[]인지 확인
+              const firstItem = portfolio.imageUrl[0]
+
+              // 이미 string[]인 경우 그대로 반환
+              if (typeof firstItem === 'string') {
+                return portfolio
+              }
+
+              // FileInfoType[]인 경우 업로드 진행
+              const imageFiles = portfolio.imageUrl as FileInfoType[]
+
+              // S3에 업로드하고 objectUrls 받기
+              const portfolioUploadResult = await uploadFiles(imageFiles)
+
+              if (!portfolioUploadResult.success) {
+                throw new Error('포트폴리오 이미지 업로드 실패')
+              }
+
+              return {
+                ...portfolio,
+                imageUrl: portfolioUploadResult.uploadedUrls,
+              }
+            }
+
+            return portfolio
+          })
+        )
+
+        updatedRegisterFactoryData.portfolios = updatedPortfolios
+        console.log('포트폴리오 이미지 업로드 완료')
+      }
+
+      // 추가: 현재 폼에 있는 포트폴리오 이미지가 있다면 처리
+      if (portfolioImageFileList && portfolioImageFileList.length > 0) {
+        console.log('폼에 남아있는 포트폴리오 이미지 감지 - 저장되지 않은 포트폴리오가 있습니다.')
+        alert('완료하기 버튼을 누르지 않은 포트폴리오가 있습니다. 먼저 포트폴리오를 추가 완료해주세요.')
+        throw new Error('미완성 포트폴리오 존재')
+      }
+
+      // 4. store 업데이트
+      setState({
+        registerFactoryData: updatedRegisterFactoryData,
+      })
+
+      // 5. 최종 공장 정보 제출
+      console.log('공장 정보 제출 시작...', updatedRegisterFactoryData)
+      const result = await postCompanyDetail(updatedRegisterFactoryData)
+      console.log('공장 정보 제출 완료:', result)
+
+      // 6. 성공 메시지
+      alert('공장 등록이 완료되었습니다.')
+
+      // 필요시 다음 단계로 이동
+      // router.push('/success-page')
+    } catch (error) {
+      console.error('공장 등록 실패:', error)
+      alert('공장 등록에 실패했습니다. 다시 시도해주세요.')
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -166,14 +344,16 @@ export default function ProductInfo({
               key={`${portfolio.description}-${index}`}
               className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
             >
-              <div className="relative h-[189px] w-[317px]">
-                <Image
-                  src={getImageUrl(portfolio.imageUrl)}
-                  alt={getImageAlt(portfolio.imageUrl)}
-                  fill
-                  className="rounded-[16px] object-cover"
-                />
-              </div>
+              {portfolio.imageUrl && (
+                <div className="relative h-[189px] w-[317px]">
+                  <Image
+                    src={getImageUrl(portfolio.imageUrl[0])}
+                    alt={getImageAlt(portfolio.imageUrl[0])}
+                    fill
+                    className="rounded-[16px] object-cover"
+                  />
+                </div>
+              )}
 
               <div className="flex w-full flex-col gap-y-5">
                 <div className="flex items-center justify-between">
@@ -249,11 +429,12 @@ export default function ProductInfo({
                 완제품 사진 업로드 <span className="text-conic-red-30">*</span>
               </div>
               <div onClick={() => portfolioImageRef.current?.click()} className="relative">
-                <div className="border-gray-20 pr-2xs flex h-[52px] w-fit items-center justify-center gap-x-2 rounded-[12px] border bg-white pl-3">
-                  <UploadIcon width={20} height={20} />
-                  <p className="button text-gray5">파일 업로드</p>
+                <div className="px-2xs py-3xs border-gray-20 flex w-fit gap-x-2 rounded-[12px] border">
+                  <ImgUploadIcon width={24} height={24} />
+                  <p className="button text-gray-50">사진 업로드</p>
                 </div>
                 <input
+                  multiple={true}
                   type="file"
                   id={'input-file'}
                   ref={portfolioImageRef}
@@ -262,16 +443,16 @@ export default function ProductInfo({
                   className="hidden"
                 />
               </div>
-              {portfolioImageFile ? (
-                <div className="flex flex-col gap-y-2">
-                  <UploadItem
-                    customClassName={'bg-white'}
-                    key={portfolioImageFile.id}
-                    imageSize={formatFileSize(portfolioImageFile.size)}
-                    ImageUrl={portfolioImageFile.url}
-                    ImageUrlName={portfolioImageFile.name}
-                    onRemove={() => handleRemoveFile()} // 삭제 기능 추가
-                  />
+              {portfolioImageFileList && portfolioImageFileList.length > 0 ? (
+                <div className="gap-x-2xs flex">
+                  {portfolioImageFileList.map((file) => (
+                    <ImageUploadItem
+                      key={file.id}
+                      ImageUrl={file.url}
+                      ImageUrlName={file.name}
+                      onRemove={() => handleRemoveFile(file.id)}
+                    />
+                  ))}
                 </div>
               ) : null}
               <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>
@@ -294,13 +475,13 @@ export default function ProductInfo({
           이전
         </Button1>
         <Button1
-          onClick={() => {
-            // setCurrentStep(3)
-          }}
-          customClassName={'w-[260px]'}
+          onClick={handleSubmit}
+          customClassName={'h-[52px] w-[260px]'}
+          styleStatus={'default'}
           styleType={'primary'}
+          styleSize={'lg'}
         >
-          완료
+          {isUploading ? '업로드 중...' : '공장 정보 등록'}
         </Button1>
       </div>
     </div>

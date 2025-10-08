@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgImgUploadIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 25 25" {...props}><path fill="#E9EBEF" d="M.65 4.082a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4h-16a4 4 0 0 1-4-4z" /><path stroke="#C5C6CD" strokeLinecap="round" strokeWidth={1.6} d="m2.375 17.8 5.909-6.815a1 1 0 0 1 1.533.027l3.776 4.674a1 1 0 0 0 1.516.047l2.118-2.318a1 1 0 0 1 1.459-.02l4.24 4.405" /><circle cx={17.966} cy={6.404} r={2.08} stroke="#C5C6CD" strokeWidth={1.6} /></svg>;
+export default SvgImgUploadIcon;

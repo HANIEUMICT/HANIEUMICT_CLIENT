@@ -1,11 +1,12 @@
 import Input from '@/components/common/Input'
 import Button1 from '@/components/common/Button1'
 import { useRegisterFactoryStore } from '@/store/register-factory'
-import { Dispatch, RefObject, SetStateAction } from 'react'
+import { Dispatch, RefObject, SetStateAction, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatFileSize, generateId } from '@/utils/upload'
-import { UploadIcon } from '@/assets/svgComponents'
+import { ImgUploadIcon, UploadIcon } from '@/assets/svgComponents'
 import UploadItem from '@/components/common/UploadItem'
+import ImageUploadItem from '@/components/common/ImageUploadItem'
 
 interface FactoryInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -17,6 +18,8 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
   const companyLogoFile = useRegisterFactoryStore((state) => state.companyLogoImageFile)
+  const [startTime, setStartTime] = useState<string>('')
+  const [endTime, setEndTime] = useState<string>('')
 
   /**
    * 이미지 미리보기 설정 (단일 파일)
@@ -52,6 +55,26 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
     })
   }
 
+  /**
+   * 다음 단계로 이동
+   */
+  const handleNext = () => {
+    // contactAvailableTime 설정
+    const contactAvailableTime = `${startTime}-${endTime}`
+
+    setState({
+      registerFactoryData: {
+        ...registerFactoryData,
+        detail: {
+          ...registerFactoryData?.detail,
+          contactAvailableTime,
+        },
+      },
+    })
+
+    setCurrentStep(2)
+  }
+
   return (
     <div>
       <div className="border-gray-20 flex flex-col gap-y-3 rounded-[24px] border bg-white p-6">
@@ -84,9 +107,9 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
               공장 로고 업로드 <span className="text-conic-red-30">*</span>
             </div>
             <div onClick={() => companyLogoImageRef.current?.click()} className="relative">
-              <div className="border-gray-20 pr-2xs flex h-[52px] w-fit items-center justify-center gap-x-2 rounded-[12px] border bg-white pl-3">
-                <UploadIcon width={20} height={20} />
-                <p className="button text-gray5">파일 업로드</p>
+              <div className="py-3xs px-2xs border-gray-20 flex h-[48px] w-fit items-center gap-x-2 rounded-[12px] border">
+                <UploadIcon width={24} height={24} />
+                <p className="button text-gray-50">파일 업로드</p>
               </div>
               <input
                 type="file"
@@ -100,12 +123,10 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
             {companyLogoFile ? (
               <div className="flex flex-col gap-y-2">
                 <UploadItem
-                  customClassName={'bg-white'}
                   key={companyLogoFile.id}
-                  imageSize={formatFileSize(companyLogoFile.size)}
                   ImageUrl={companyLogoFile.url}
                   ImageUrlName={companyLogoFile.name}
-                  onRemove={() => handleRemoveFile()} // 삭제 기능 추가
+                  onRemove={() => handleRemoveFile()}
                 />
               </div>
             ) : null}
@@ -154,6 +175,25 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
           </div>
           <div className="gap-y-4xs flex flex-col">
             <p className="gap-x-5xs sub2 flex">
+              연락 가능 날짜<span className="text-conic-red-30">*</span>
+            </p>
+            <div className="flex gap-x-2">
+              <Input
+                inputBoxStyle={'default'}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                type={'time'}
+              />
+              <Input
+                inputBoxStyle={'default'}
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                type={'time'}
+              />
+            </div>
+          </div>
+          <div className="gap-y-4xs flex flex-col">
+            <p className="gap-x-5xs sub2 flex">
               공장 소개글<span className="text-conic-red-30">*</span>
             </p>
             <textarea
@@ -185,13 +225,7 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
         >
           이전
         </Button1>
-        <Button1
-          onClick={() => {
-            setCurrentStep(2)
-          }}
-          customClassName={'w-[260px]'}
-          styleType={'primary'}
-        >
+        <Button1 onClick={handleNext} customClassName={'w-[260px]'} styleType={'primary'}>
           다음
         </Button1>
       </div>

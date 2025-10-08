@@ -10,7 +10,7 @@ import { RegisterFactoryPortfolioType } from '@/type/register-factory'
 import ServiceCategoryModal from '@/components/modal/ServiceCategoryModal'
 
 export default function RegisterFactory() {
-  const [currentStep, setCurrentStep] = useState<number>(2)
+  const [currentStep, setCurrentStep] = useState<number>(1)
 
   const [portfolioData, setPortfolioData] = useState<RegisterFactoryPortfolioType>({})
   const [isServiceCategoryModalOpen, setIsServiceCategoryModalOpen] = useState(false)

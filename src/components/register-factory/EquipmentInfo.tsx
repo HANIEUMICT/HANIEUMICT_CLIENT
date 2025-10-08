@@ -1,6 +1,6 @@
 import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
-import { CancelIcon, PlusIcon, UploadIcon } from '@/assets/svgComponents'
+import { CancelIcon, ImgUploadIcon, PlusIcon, UploadIcon } from '@/assets/svgComponents'
 import { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
 import UploadItem from '@/components/common/UploadItem'
 import { formatFileSize, generateId } from '@/utils/upload'
@@ -8,6 +8,7 @@ import { useRegisterFactoryStore } from '@/store/register-factory'
 import { RegisterFactoryEquipmentType } from '@/type/register-factory'
 import Image from 'next/image'
 import { FileInfoType } from '@/type/common'
+import ImageUploadItem from '@/components/common/ImageUploadItem'
 
 interface EquipmentInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -17,7 +18,7 @@ interface EquipmentInfoProps {
 export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: EquipmentInfoProps) {
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
-  const equipmentImageFile = useRegisterFactoryStore((state) => state.equipmentImageFile)
+  const equipmentImageFileList = useRegisterFactoryStore((state) => state.equipmentImageFileList)
   const [equipmentData, setEquipmentData] = useState<RegisterFactoryEquipmentType>({})
   const [isFormOpen, setIsFormOpen] = useState(true)
 
@@ -26,36 +27,48 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
   }, [registerFactoryData])
 
   /**
-   * 이미지 미리보기 설정 (단일 파일)
+   * 이미지 미리보기 설정 (여러 파일)
    */
   const handleImagePreview = async () => {
     const files = equipmentImageRef.current?.files
 
     if (files && files.length > 0) {
-      const file = files[0] // 첫 번째 파일만 선택
-      const reader = new FileReader()
+      const fileArray = Array.from(files)
 
-      reader.onloadend = () => {
-        // 기존 파일을 대체
-        setState({
-          equipmentImageFile: {
-            id: generateId(),
-            name: file.name,
-            size: file.size,
-            url: reader.result,
-          },
+      // 모든 파일을 비동기로 읽기
+      const newFiles = await Promise.all(
+        fileArray.map((file) => {
+          return new Promise<{ id: string; name: string; size: number; url: string | ArrayBuffer | null }>(
+            (resolve) => {
+              const reader = new FileReader()
+
+              reader.onloadend = () => {
+                resolve({
+                  id: generateId(),
+                  name: file.name,
+                  size: file.size,
+                  url: reader.result,
+                })
+              }
+              reader.readAsDataURL(file)
+            }
+          )
         })
-      }
-      reader.readAsDataURL(file)
+      )
+
+      // 기존 파일 리스트에 새 파일들 추가
+      setState({
+        equipmentImageFileList: [...(equipmentImageFileList || []), ...newFiles],
+      })
     }
   }
 
   /**
-   * 파일 삭제
+   * 특정 파일 삭제
    */
-  const handleRemoveFile = () => {
+  const handleRemoveFile = (id: string) => {
     setState({
-      equipmentImageFile: undefined,
+      equipmentImageFileList: equipmentImageFileList?.filter((file) => file.id !== id),
     })
   }
 
@@ -64,15 +77,20 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
    */
   const handleCompleteEquipment = () => {
     // 유효성 검사
-    if (!equipmentData.quantity || !equipmentData.description || !equipmentImageFile || !equipmentImageFile.name) {
+    if (
+      !equipmentData.quantity ||
+      !equipmentData.description ||
+      !equipmentImageFileList ||
+      equipmentImageFileList.length === 0
+    ) {
       alert('모든 필수 항목을 입력해주세요.')
       return
     }
 
-    // 이미지 URL 포함한 완성된 장비 데이터
+    // 이미지 URL 배열 포함한 완성된 장비 데이터
     const newEquipment: RegisterFactoryEquipmentType = {
       ...equipmentData,
-      imageUrl: equipmentImageFile,
+      imageUrl: equipmentImageFileList, // 배열로 저장
     }
 
     // 기존 equipments 배열에 추가
@@ -84,7 +102,7 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
         ...registerFactoryData,
         equipments: updatedEquipments,
       },
-      equipmentImageFile: undefined, // 이미지 파일 초기화
+      equipmentImageFileList: [], // 이미지 파일 리스트 초기화
     })
 
     // 폼 초기화 및 닫기
@@ -98,21 +116,31 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
   }
 
   /**
-   * imageUrl에서 URL 추출
+   * imageUrls에서 첫 번째 URL 추출 (대표 이미지)
    */
-  const getImageUrl = (imageUrl: string | FileInfoType | undefined): string => {
-    if (!imageUrl) return ''
-    if (typeof imageUrl === 'string') return imageUrl
-    return imageUrl.url as string
+  const getImageUrl = (imageUrls: string | FileInfoType | FileInfoType[] | undefined): string => {
+    if (!imageUrls) return ''
+    if (typeof imageUrls === 'string') return imageUrls
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+      const firstImage = imageUrls[0]
+      return typeof firstImage === 'string' ? firstImage : (firstImage.url as string)
+    }
+    if ('url' in imageUrls) return imageUrls.url as string
+    return ''
   }
 
   /**
-   * imageUrl에서 alt 텍스트 추출
+   * imageUrls에서 alt 텍스트 추출
    */
-  const getImageAlt = (imageUrl: string | FileInfoType | undefined): string => {
-    if (!imageUrl) return 'equipment image'
-    if (typeof imageUrl === 'string') return 'equipment image'
-    return imageUrl.name || imageUrl.id || 'equipment image'
+  const getImageAlt = (imageUrls: string | FileInfoType | FileInfoType[] | undefined): string => {
+    if (!imageUrls) return 'equipment image'
+    if (typeof imageUrls === 'string') return 'equipment image'
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+      const firstImage = imageUrls[0]
+      return typeof firstImage === 'string' ? 'equipment image' : firstImage.name || firstImage.id || 'equipment image'
+    }
+    if ('name' in imageUrls) return imageUrls.name || imageUrls.id || 'equipment image'
+    return 'equipment image'
   }
 
   /**
@@ -158,14 +186,16 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
               key={`${equipment.name}-${index}`}
               className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
             >
-              <div className="relative h-[189px] w-[317px]">
-                <Image
-                  src={getImageUrl(equipment.imageUrl)}
-                  alt={getImageAlt(equipment.imageUrl)}
-                  fill
-                  className="rounded-[16px] object-cover"
-                />
-              </div>
+              {equipment.imageUrl && (
+                <div className="relative h-[189px] w-[317px]">
+                  <Image
+                    src={getImageUrl(equipment.imageUrl[0])}
+                    alt={getImageAlt(equipment.imageUrl[0])}
+                    fill
+                    className="rounded-[16px] object-cover"
+                  />
+                </div>
+              )}
 
               <div className="flex w-full flex-col gap-y-5">
                 <div className="flex items-center justify-between">
@@ -240,11 +270,12 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
                 장비 사진 업로드 <span className="text-conic-red-30">*</span>
               </div>
               <div onClick={() => equipmentImageRef.current?.click()} className="relative">
-                <div className="border-gray-20 pr-2xs flex h-[52px] w-fit items-center justify-center gap-x-2 rounded-[12px] border bg-white pl-3">
-                  <UploadIcon width={20} height={20} />
-                  <p className="button text-gray5">파일 업로드</p>
+                <div className="px-2xs py-3xs border-gray-20 flex w-fit gap-x-2 rounded-[12px] border">
+                  <ImgUploadIcon width={24} height={24} />
+                  <p className="button text-gray-50">사진 업로드</p>
                 </div>
                 <input
+                  multiple={true}
                   type="file"
                   id={'input-file'}
                   ref={equipmentImageRef}
@@ -253,16 +284,16 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
                   className="hidden"
                 />
               </div>
-              {equipmentImageFile ? (
-                <div className="flex flex-col gap-y-2">
-                  <UploadItem
-                    customClassName={'bg-white'}
-                    key={equipmentImageFile.id}
-                    imageSize={formatFileSize(equipmentImageFile.size)}
-                    ImageUrl={equipmentImageFile.url}
-                    ImageUrlName={equipmentImageFile.name}
-                    onRemove={() => handleRemoveFile()} // 삭제 기능 추가
-                  />
+              {equipmentImageFileList && equipmentImageFileList.length > 0 ? (
+                <div className="gap-x-2xs flex">
+                  {equipmentImageFileList.map((file) => (
+                    <ImageUploadItem
+                      key={file.id}
+                      ImageUrl={file.url}
+                      ImageUrlName={file.name}
+                      onRemove={() => handleRemoveFile(file.id)}
+                    />
+                  ))}
                 </div>
               ) : null}
               <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>

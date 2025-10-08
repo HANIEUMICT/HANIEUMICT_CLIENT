@@ -5,23 +5,23 @@ import { FileInfoType } from '@/type/common'
 interface SetRegisterFactoryStoreType {
   registerFactoryData?: RegisterFactoryDataType | undefined
   companyLogoImageFile?: FileInfoType | undefined
-  equipmentImageFile?: FileInfoType | undefined
-  portfolioImageFile?: FileInfoType | undefined
+  equipmentImageFileList?: FileInfoType[] | undefined
+  portfolioImageFileList?: FileInfoType[] | undefined
 }
 
 interface RegisterFactoryStoreType {
   registerFactoryData: RegisterFactoryDataType | undefined
   companyLogoImageFile: FileInfoType | undefined
-  equipmentImageFile: FileInfoType | undefined
-  portfolioImageFile: FileInfoType | undefined
+  equipmentImageFileList: FileInfoType[] | undefined
+  portfolioImageFileList: FileInfoType[] | undefined
   setState: (params: SetRegisterFactoryStoreType) => void
 }
 
 export const useRegisterFactoryStore = create<RegisterFactoryStoreType>((set) => ({
   registerFactoryData: undefined,
   companyLogoImageFile: undefined,
-  equipmentImageFile: undefined,
-  portfolioImageFile: undefined,
+  equipmentImageFileList: undefined,
+  portfolioImageFileList: undefined,
   setState: (params: SetRegisterFactoryStoreType) => {
     set((state) => ({
       ...state,

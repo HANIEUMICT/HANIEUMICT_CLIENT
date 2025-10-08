@@ -12,7 +12,7 @@ export default function FactoryDetailPage() {
   return (
     <main className="flex flex-col items-center justify-center">
       <Header headerType={'DEFAULT'} />
-      <div className="mt-[80px] flex w-[1218px] flex-col items-center justify-center gap-y-[40px]">
+      <div className="mt-[123px] flex w-[1218px] flex-col items-center justify-center gap-y-[40px]">
         <SummaryCompanyCard />
         <Menu setMenuType={setMenuType} menuType={menuType} />
         {menuType === '공장 정보' ? <CompanyInfo /> : null}

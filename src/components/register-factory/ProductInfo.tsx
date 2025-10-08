@@ -103,7 +103,7 @@ export default function ProductInfo({
     // 이미지 URL 배열 포함한 완성된 포트폴리오 데이터
     const newPortfolio: RegisterFactoryPortfolioType = {
       ...portfolioData,
-      imageUrl: portfolioImageFileList, // 배열로 저장
+      imageUrls: portfolioImageFileList, // 배열로 저장
     }
 
     // 기존 portfolios 배열에 추가
@@ -212,9 +212,9 @@ export default function ProductInfo({
         const updatedEquipments = await Promise.all(
           updatedRegisterFactoryData.equipments.map(async (equipment) => {
             // imageUrl이 FileInfoType[] 형태인 경우에만 업로드
-            if (equipment.imageUrl && Array.isArray(equipment.imageUrl) && equipment.imageUrl.length > 0) {
+            if (equipment.imageUrls && Array.isArray(equipment.imageUrls) && equipment.imageUrls.length > 0) {
               // FileInfoType[]인지 string[]인지 확인
-              const firstItem = equipment.imageUrl[0]
+              const firstItem = equipment.imageUrls[0]
 
               // 이미 string[]인 경우 그대로 반환
               if (typeof firstItem === 'string') {
@@ -222,7 +222,7 @@ export default function ProductInfo({
               }
 
               // FileInfoType[]인 경우 업로드 진행
-              const imageFiles = equipment.imageUrl as FileInfoType[]
+              const imageFiles = equipment.imageUrls as FileInfoType[]
 
               // S3에 업로드하고 objectUrls 받기
               const equipmentUploadResult = await uploadFiles(imageFiles)
@@ -233,7 +233,7 @@ export default function ProductInfo({
 
               return {
                 ...equipment,
-                imageUrl: equipmentUploadResult.uploadedUrls,
+                imageUrls: equipmentUploadResult.uploadedUrls,
               }
             }
 
@@ -259,9 +259,9 @@ export default function ProductInfo({
         const updatedPortfolios = await Promise.all(
           updatedRegisterFactoryData.portfolios.map(async (portfolio) => {
             // imageUrl이 FileInfoType[] 형태인 경우에만 업로드
-            if (portfolio.imageUrl && Array.isArray(portfolio.imageUrl) && portfolio.imageUrl.length > 0) {
+            if (portfolio.imageUrls && Array.isArray(portfolio.imageUrls) && portfolio.imageUrls.length > 0) {
               // FileInfoType[]인지 string[]인지 확인
-              const firstItem = portfolio.imageUrl[0]
+              const firstItem = portfolio.imageUrls[0]
 
               // 이미 string[]인 경우 그대로 반환
               if (typeof firstItem === 'string') {
@@ -269,7 +269,7 @@ export default function ProductInfo({
               }
 
               // FileInfoType[]인 경우 업로드 진행
-              const imageFiles = portfolio.imageUrl as FileInfoType[]
+              const imageFiles = portfolio.imageUrls as FileInfoType[]
 
               // S3에 업로드하고 objectUrls 받기
               const portfolioUploadResult = await uploadFiles(imageFiles)
@@ -280,7 +280,7 @@ export default function ProductInfo({
 
               return {
                 ...portfolio,
-                imageUrl: portfolioUploadResult.uploadedUrls,
+                imageUrls: portfolioUploadResult.uploadedUrls,
               }
             }
 
@@ -344,11 +344,11 @@ export default function ProductInfo({
               key={`${portfolio.description}-${index}`}
               className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
             >
-              {portfolio.imageUrl && (
+              {portfolio.imageUrls && (
                 <div className="relative h-[189px] w-[317px]">
                   <Image
-                    src={getImageUrl(portfolio.imageUrl[0])}
-                    alt={getImageAlt(portfolio.imageUrl[0])}
+                    src={getImageUrl(portfolio.imageUrls[0])}
+                    alt={getImageAlt(portfolio.imageUrls[0])}
                     fill
                     className="rounded-[16px] object-cover"
                   />

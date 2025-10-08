@@ -90,7 +90,7 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
     // 이미지 URL 배열 포함한 완성된 장비 데이터
     const newEquipment: RegisterFactoryEquipmentType = {
       ...equipmentData,
-      imageUrl: equipmentImageFileList, // 배열로 저장
+      imageUrls: equipmentImageFileList, // 배열로 저장
     }
 
     // 기존 equipments 배열에 추가
@@ -186,11 +186,11 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
               key={`${equipment.name}-${index}`}
               className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
             >
-              {equipment.imageUrl && (
+              {equipment.imageUrls && (
                 <div className="relative h-[189px] w-[317px]">
                   <Image
-                    src={getImageUrl(equipment.imageUrl[0])}
-                    alt={getImageAlt(equipment.imageUrl[0])}
+                    src={getImageUrl(equipment.imageUrls[0])}
+                    alt={getImageAlt(equipment.imageUrls[0])}
                     fill
                     className="rounded-[16px] object-cover"
                   />

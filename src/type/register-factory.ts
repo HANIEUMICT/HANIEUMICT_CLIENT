@@ -17,12 +17,12 @@ export interface RegisterFactoryEquipmentType {
   name?: string
   description?: string
   quantity?: number
-  imageUrl?: string[] | FileInfoType[]
+  imageUrls?: string[] | FileInfoType[]
 }
 
 export interface RegisterFactoryPortfolioType {
   quantity?: number
   description?: string
-  imageUrl?: string[] | FileInfoType[]
+  imageUrls?: string[] | FileInfoType[]
   category?: string
 }

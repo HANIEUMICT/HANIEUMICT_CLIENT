@@ -6,11 +6,17 @@ import CompanyInfo from '@/components/factory/detail/CompanyInfo'
 import { Dispatch, SetStateAction, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import Review from '@/components/factory/detail/Review'
+import CompanyDetailCardModal from '@/components/modal/CompanyDetailCardModal'
 
 export default function FactoryDetailPage() {
   const [menuType, setMenuType] = useState<'공장 정보' | '리뷰'>('공장 정보')
+  const [isCompanyDetailCardModalOpen, setIsCompanyDetailCardModalOpen] = useState(false)
+
   return (
     <main className="flex flex-col items-center justify-center">
+      {isCompanyDetailCardModalOpen && (
+        <CompanyDetailCardModal setIsCompanyDetailCardModalOpen={setIsCompanyDetailCardModalOpen} />
+      )}
       <Header headerType={'DEFAULT'} />
       <div className="mt-[123px] flex w-[1218px] flex-col items-center justify-center gap-y-[40px]">
         <SummaryCompanyCard />

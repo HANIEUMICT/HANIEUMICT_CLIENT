@@ -1,9 +1,11 @@
-import { AlarmIcon, DropDownIcon, LogoIcon, TranslateIcon } from '@/assets/svgComponents'
+import { AlarmIcon, LogoIcon, ProfileIcon, TranslateIcon } from '@/assets/svgComponents'
 import { usePathname, useRouter } from 'next/navigation'
 import Button1 from '@/components/common/Button1'
 import { useEffect, useState } from 'react'
 import { UserDataType } from '@/type/common'
 import Link from 'next/link'
+import TranslationModal from '@/components/modal/TranslationModal'
+import { useModalStore } from '@/store/modalStore'
 
 type HeaderType = 'DEFAULT' | 'SIGNUP'
 
@@ -16,6 +18,8 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
   const pathName = usePathname()
 
   const [userData, setUserData] = useState<UserDataType | null>(null)
+  const setState = useModalStore((state) => state.setState)
+  const isTranslationModalOpen = useModalStore((state) => state.isTranslationModalOpen)
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -37,8 +41,10 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
       case 'DEFAULT':
         return (
           <header className="py-s fixed top-0 z-50 flex h-[80px] w-full items-center justify-between bg-white px-[40px]">
+            {isTranslationModalOpen && <TranslationModal />}
             <section className="gap-x-2xl flex items-center">
               <LogoIcon
+                className="cursor-pointer"
                 onClick={() => {
                   router.push('/')
                 }}
@@ -84,13 +90,34 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
                 </Button1>
               ) : null}
               <div className="flex items-center gap-x-2">
-                <TranslateIcon width={32} height={32} />
-                <AlarmIcon width={20} height={24} />
+                <TranslateIcon
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setState({ isTranslationModalOpen: !isTranslationModalOpen })
+                  }}
+                  width={32}
+                  height={32}
+                />
+                <AlarmIcon className="cursor-pointer" width={20} height={24} />
               </div>
               {userData ? (
-                <div className="flex gap-x-1">
-                  <p className="button-lg">{userData.memberName}</p>
-                  <DropDownIcon width={16} height={12} />
+                <div
+                  onClick={() => {
+                    router.push('/mypage')
+                  }}
+                  className="flex cursor-pointer items-center gap-x-2"
+                >
+                  <div className="bg-gray-10 flex h-[32px] w-[32px] items-center justify-center rounded-full">
+                    <ProfileIcon width={24} height={24} />
+                  </div>
+                  <div className="flex items-center gap-x-1">
+                    {userData.memberRole === 'INDIVIDUAL' ? (
+                      <div className="badge text-conic-blue-30 bg-conic-blue-10 p-5xs rounded-[4px]">개인</div>
+                    ) : (
+                      <div className="badge text-conic-orange-30 bg-conic-orange-10 p-5xs rounded-[4px]">기업</div>
+                    )}
+                    <p className="button-lg">{userData.memberName}</p>
+                  </div>
                 </div>
               ) : (
                 <div className="button-lg gap-x-4xs flex items-center">
@@ -130,6 +157,6 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
         )
     }
   }
-  return renderHeaderType(headerType)
+  return <>{renderHeaderType(headerType)}</>
 }
 export default Header

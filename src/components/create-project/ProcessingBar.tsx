@@ -4,9 +4,10 @@ interface ProcessingBarProps {
   currentStep: number // 1부터 시작 ~ 6
   width?: string
   steps: string[]
+  row?: boolean
 }
 
-export default function ProcessingBar({ currentStep = 2, width = '80px', steps }: ProcessingBarProps) {
+export default function ProcessingBar({ currentStep = 2, width = '80px', steps, row = true }: ProcessingBarProps) {
   return (
     <div className="p-s border-gray-20 flex items-center rounded-[24px] border bg-white">
       {steps.map((label, index) => {
@@ -18,7 +19,9 @@ export default function ProcessingBar({ currentStep = 2, width = '80px', steps }
         return (
           <div key={stepNumber} className="flex items-center">
             {/* Step */}
-            <div className="gap-x-4xs flex items-center justify-between">
+            <div
+              className={`${row ? '' : 'flex-col items-center justify-center gap-y-2'} gap-x-4xs flex items-center justify-between`}
+            >
               {isCompleted ? (
                 <div className="bg-conic-orange-30 flex h-[32px] w-[32px] items-center justify-center rounded-full">
                   <WhiteCheckIcon width={12} height={8} />

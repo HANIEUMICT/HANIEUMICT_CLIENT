@@ -1,0 +1,4 @@
+import * as React from "react";
+import type { SVGProps } from "react";
+const SvgUnselectedMyprofileIcon = (props: SVGProps<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" {...props}><rect width={9.924} height={9.924} x={5.038} y={0.43} fill="#E9EBEF" rx={4.962} /><path fill="#E9EBEF" d="M.076 18.83a7.443 7.443 0 0 1 7.443-7.443h4.962a7.443 7.443 0 0 1 7.443 7.443v.358a1.24 1.24 0 0 1-1.24 1.24H1.317a1.24 1.24 0 0 1-1.24-1.24z" /><circle cx={17.301} cy={18.297} r={1.035} fill="#C5C6CD" /></svg>;
+export default SvgUnselectedMyprofileIcon;

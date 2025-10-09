@@ -3,10 +3,12 @@ import { ReactNode } from 'react'
 import {
   LogoutIcon,
   SelectedFactoryIcon,
+  SelectedMyprofileIcon,
   SelectedOrderInformationIcon,
   SelectedProposalIcon,
   SelectedShippingInformationIcon,
   UnselectedFactoryIcon,
+  UnselectedMyprofileIcon,
   UnselectedOrderInformationIcon,
   UnselectedProposalIcon,
   UnselectedShippingInformationIcon,
@@ -18,6 +20,13 @@ import Link from 'next/link'
 
 export default function IndividualSideBar() {
   const pathname = usePathname()
+
+  // pathname을 3단계까지만 추출하는 함수
+  const getFirstThreeSegments = (path: string) => {
+    const segments = path.split('/').filter(Boolean)
+    return '/' + segments.slice(0, 3).join('/')
+  }
+
   const menuList: {
     selectedIcon: ReactNode
     unselectedIcon: ReactNode
@@ -25,8 +34,8 @@ export default function IndividualSideBar() {
     router: string
   }[] = [
     {
-      selectedIcon: <SelectedProposalIcon width={20} height={24} />,
-      unselectedIcon: <UnselectedProposalIcon width={20} height={24} />,
+      selectedIcon: <SelectedMyprofileIcon width={19} height={19} />,
+      unselectedIcon: <UnselectedMyprofileIcon width={19} height={19} />,
       title: '내 정보',
       router: '/mypage/individual',
     },
@@ -61,6 +70,7 @@ export default function IndividualSideBar() {
         <h3 className="h3">마이페이지</h3>
         <section className="mt-[20px] flex flex-col gap-y-[13px]">
           {menuList.map((menu) => {
+            const isActive = getFirstThreeSegments(pathname) === getFirstThreeSegments(menu.router)
             return (
               <Link
                 key={menu.title}
@@ -68,9 +78,9 @@ export default function IndividualSideBar() {
                 className="gap-x-4xs px-4xs py-3xs flex cursor-pointer items-center"
               >
                 <div className="flex h-[40px] w-[40px] items-center justify-center">
-                  {pathname === menu.router ? menu.selectedIcon : menu.unselectedIcon}
+                  {isActive ? menu.selectedIcon : menu.unselectedIcon}
                 </div>
-                <p className={`${pathname === menu.router ? '' : 'text-gray-40'} h3`}>{menu.title}</p>
+                <p className={`${isActive ? '' : 'text-gray-40'} h3`}>{menu.title}</p>
               </Link>
             )
           })}

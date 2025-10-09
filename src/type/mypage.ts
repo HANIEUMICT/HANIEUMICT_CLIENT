@@ -6,4 +6,17 @@ export interface AddressResponseType {
   postalCode: string
   streetAddress: string
   detailAddress: string
+  addressName: string
+  recipient: string
+  phoneNumber: string
+}
+
+export interface AddressType {
+  addressName?: string
+  recipient?: string
+  phoneNumber?: string
+  postalCode?: string
+  streetAddress?: string
+  detailAddress?: string
+  default?: boolean
 }

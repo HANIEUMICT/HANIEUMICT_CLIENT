@@ -3,7 +3,7 @@ import { create } from 'zustand'
 interface SetModalStoreType {
   isSearchAddressModalOpen?: boolean // kakao api
   isEstimateModalOpen?: boolean // 견적서를 불러오는 모달창 띄우기
-  isAddAddressModalOpen?: boolean //주소 정보
+  isAddAddressInfoModalOpen?: boolean //주소 모달
   isServicePreparingModalOpen?: boolean
   isTranslationModalOpen?: boolean
 }
@@ -11,7 +11,7 @@ interface SetModalStoreType {
 interface ModalStoreType {
   isSearchAddressModalOpen: boolean // kakao api
   isEstimateModalOpen: boolean // 견적서를 불러오는 모달창 띄우기
-  isAddAddressModalOpen: boolean
+  isAddAddressInfoModalOpen?: boolean //주소 모달
   isServicePreparingModalOpen: boolean
   isTranslationModalOpen: boolean
   setState: (params: SetModalStoreType) => void
@@ -20,7 +20,7 @@ interface ModalStoreType {
 export const useModalStore = create<ModalStoreType>((set) => ({
   isSearchAddressModalOpen: false, // kakao api
   isEstimateModalOpen: false, // 견적서를 불러오는 모달창 띄우기
-  isAddAddressModalOpen: false,
+  isAddAddressInfoModalOpen: false, //주소 모달
   isServicePreparingModalOpen: false,
   isTranslationModalOpen: false,
   setState: (params: SetModalStoreType) => {

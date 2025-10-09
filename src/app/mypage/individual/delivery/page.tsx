@@ -6,15 +6,22 @@ import Pagination from '@/components/common/Pagination'
 import { useEffect, useState } from 'react'
 import { AddressResponseType } from '@/type/mypage'
 import { useModalStore } from '@/store/modalStore'
+import AddAddressInfoModal from '@/components/modal/AddAddressInfoModal'
+import SearchAddressModal from '@/components/common/SearchAddressModal'
+import { useMyPageStore } from '@/store/mypageStore'
 
 export default function IndividualMyDeliveryInfoPage() {
   const setModalState = useModalStore((state) => state.setState)
+  const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
+  const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [totalElements, setTotalElements] = useState<number>(0)
 
   const [addressList, setAddressList] = useState<AddressResponseType[]>()
+  const setMyPageState = useMyPageStore((state) => state.setState)
+  const addressData = useMyPageStore((state) => state.addressData)
 
   // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
@@ -52,13 +59,47 @@ export default function IndividualMyDeliveryInfoPage() {
     loadArchiveData()
   }, [currentPage]) // currentPage 변경 시 실행
 
+  /**
+   * 카카오 주소 데이터 불러오기
+   * @param data
+   */
+  const handleComplete = async (data: any) => {
+    let fullAddress = data.address
+    let extraAddress = ''
+
+    const { addressType, bname, buildingName, zonecode } = data
+    console.log('data', data)
+
+    if (addressType === 'R') {
+      if (bname !== '') {
+        extraAddress += bname
+      }
+      if (buildingName !== '') {
+        extraAddress += `${extraAddress !== '' && ', '}${buildingName}`
+      }
+      fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
+    }
+    setMyPageState({
+      ...addressData,
+      addressData: {
+        ...addressData,
+        streetAddress: fullAddress, // 전체 도로명 주소
+        postalCode: zonecode, // 우편번호
+      },
+    })
+
+    setModalState({ isSearchAddressModalOpen: false, isAddAddressInfoModalOpen: true })
+  }
+
   return (
     <section className="gap-y-2xs mt-[40px] flex w-[1220px] flex-col">
+      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
+      {isAddAddressInfoModalOpen && <AddAddressInfoModal />}
       <div className="flex justify-between">
         <h1 className="h2">배송 정보</h1>
         <Button1
           onClick={() => {
-            setModalState({ isAddAddressModalOpen: true })
+            setModalState({ isAddAddressInfoModalOpen: true })
           }}
           styleStatus={'default'}
           styleSize={'sm'}
@@ -71,30 +112,41 @@ export default function IndividualMyDeliveryInfoPage() {
       {addressList
         ? addressList.map((address) => {
             return (
-              <section className="p-s border-gray-20 flex justify-between gap-y-[16px] rounded-[24px] border bg-white">
+              <section
+                key={address.id}
+                className="p-s border-gray-20 flex justify-between gap-y-[16px] rounded-[24px] border bg-white"
+              >
                 <div className="flex flex-col gap-y-[16px]">
                   <div className="gap-x-4xs flex items-center">
-                    <h1 className="sub1">배송지명</h1>
-                    <div className="badge text-conic-blue-30 bg-conic-blue-10 p-5xs w-fit rounded-[4px]">
-                      기본 배송지
-                    </div>
+                    <h1 className="sub1">{address.addressName}</h1>
+
+                    {/*<div className="badge text-conic-blue-30 bg-conic-blue-10 p-5xs w-fit rounded-[4px]">*/}
+                    {/*  기본 배송지*/}
+                    {/*</div>*/}
                   </div>
 
-                  <div className="flex items-center gap-x-[7px]">
-                    <p className="body1 text-gray-40">전화번호</p>
-                    <p className="button-lg"></p>
-                  </div>
-                  <div className="flex items-center gap-x-[7px]">
-                    <p className="body1 text-gray-40">주소</p>
-                    <p className="button-lg">
-                      {address.streetAddress} {address.detailAddress} {address.postalCode}
-                    </p>
+                  <div className="flex flex-col gap-y-2">
+                    <div className="flex items-center gap-x-[7px]">
+                      <p className="body1 text-gray-40">수령인</p>
+                      <p className="button-lg">{address.recipient}</p>
+                    </div>
+                    <div className="flex items-center gap-x-[7px]">
+                      <p className="body1 text-gray-40">전화번호</p>
+                      <p className="button-lg">{address.phoneNumber}</p>
+                    </div>
+                    <div className="flex items-center gap-x-[7px]">
+                      <p className="body1 text-gray-40">주소</p>
+                      <p className="button-lg">
+                        {address.streetAddress} {address.detailAddress} {address.postalCode}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div className="flex h-fit gap-x-3">
                   <Button1
                     onClick={async () => {
                       const result = await deleteAddress(address.id)
+
                       console.log('result', result)
                     }}
                     styleType={'secondary'}

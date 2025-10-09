@@ -1,5 +1,5 @@
 import { ApiResponse, PaginationResultType } from '@/type/common'
-import { AddressResponseType } from '@/type/mypage'
+import { AddressResponseType, AddressType } from '@/type/mypage'
 import { authorizedFetch } from '@/lib/common'
 
 /**
@@ -39,6 +39,20 @@ export const patchMemberProfile = async ({
 }
 
 /**
+ * 주소 추가
+ */
+export const patchMemberAddresses = async (data: AddressType): Promise<ApiResponse<string>> => {
+  const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/member/addresses`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return await response.json()
+}
+
+/**
  * 내 주소를 불러오는 api
  */
 export const getAddressList = async (
@@ -64,7 +78,7 @@ export const deleteAddress = async (
   addressId: number
 ): Promise<ApiResponse<PaginationResultType<AddressResponseType>>> => {
   const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/member/addresses/${addressId}`, {
-    method: 'GET',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },

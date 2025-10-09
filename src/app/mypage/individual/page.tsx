@@ -1,9 +1,9 @@
 import { Switch } from '@/components/ui/switch'
 import { GrayRightArrowIcon } from '@/assets/svgComponents'
 
-export default function MyBasicInfoPage() {
+export default function IndividualMyBasicInfoPage() {
   return (
-    <div className="mt-[40px] flex gap-x-[40px]">
+    <div className="mx-auto mt-[40px] flex gap-x-[40px]">
       <section className="gap-y-2xs flex w-[1220px] flex-col">
         <h1 className="h2">기본 정보</h1>
         <section className="p-s border-gray-20 flex flex-col gap-y-[5xs] rounded-[24px] border bg-white">

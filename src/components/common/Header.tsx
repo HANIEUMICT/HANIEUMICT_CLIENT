@@ -1,3 +1,4 @@
+'use client'
 import { AlarmIcon, LogoIcon, ProfileIcon, TranslateIcon } from '@/assets/svgComponents'
 import { usePathname, useRouter } from 'next/navigation'
 import Button1 from '@/components/common/Button1'
@@ -103,7 +104,11 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
               {userData ? (
                 <div
                   onClick={() => {
-                    router.push('/mypage')
+                    if (userData?.memberRole === 'INDIVIDUAL') {
+                      router.push('/mypage/individual')
+                    } else {
+                      router.push('/mypage/company')
+                    }
                   }}
                   className="flex cursor-pointer items-center gap-x-2"
                 >

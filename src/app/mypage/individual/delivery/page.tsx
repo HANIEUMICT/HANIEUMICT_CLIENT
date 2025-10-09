@@ -1,3 +1,5 @@
+'use client'
+
 import Button1 from '@/components/common/Button1'
 import { deleteAddress, getAddressList } from '@/lib/mypage'
 import Pagination from '@/components/common/Pagination'
@@ -5,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { AddressResponseType } from '@/type/mypage'
 import { useModalStore } from '@/store/modalStore'
 
-export default function MyDeliveryInfoPage() {
+export default function IndividualMyDeliveryInfoPage() {
   const setModalState = useModalStore((state) => state.setState)
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(0)

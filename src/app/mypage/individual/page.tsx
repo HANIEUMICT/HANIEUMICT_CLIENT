@@ -1,9 +1,27 @@
+'use client'
+
 import { Switch } from '@/components/ui/switch'
 import { GrayRightArrowIcon } from '@/assets/svgComponents'
+import { useState } from 'react'
+import IndividualNameChangeModal from '@/components/modal/IndividualNameChangeModal'
+import IndividualPhoneNumberChangeModal from '@/components/modal/IndividualPhoneNumberChangeModal'
+import IndividualPasswordChangeModal from '@/components/modal/IndividualPasswordChangeModal'
 
 export default function IndividualMyBasicInfoPage() {
+  const [isNameChangeModalOpen, setIsNameChangeModalOpen] = useState(false)
+  const [isPhoneNumberChangeModalOpen, setIsPhoneNumberChangeModalOpen] = useState(false)
+  const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] = useState(false)
+
   return (
     <div className="mx-auto mt-[40px] flex gap-x-[40px]">
+      {isNameChangeModalOpen && <IndividualNameChangeModal setIsNameChangeModalOpen={setIsNameChangeModalOpen} />}
+      {isPhoneNumberChangeModalOpen && (
+        <IndividualPhoneNumberChangeModal setIsPhoneNumberChangeModalOpen={setIsPhoneNumberChangeModalOpen} />
+      )}
+      {isPasswordChangeModalOpen && (
+        <IndividualPasswordChangeModal setIsPasswordChangeModalOpen={setIsPasswordChangeModalOpen} />
+      )}
+
       <section className="gap-y-2xs flex w-[1220px] flex-col">
         <h1 className="h2">기본 정보</h1>
         <section className="p-s border-gray-20 flex flex-col gap-y-[5xs] rounded-[24px] border bg-white">
@@ -28,7 +46,12 @@ export default function IndividualMyBasicInfoPage() {
             </ul>
           </section>
 
-          <section className="py-xs border-gray-20 flex items-center justify-between border-b">
+          <section
+            onClick={() => {
+              setIsNameChangeModalOpen(!isNameChangeModalOpen)
+            }}
+            className="py-xs border-gray-20 flex items-center justify-between border-b"
+          >
             <p className="sub1">이름</p>
             <div className="flex items-center gap-x-2">
               <p className="sub1">황유림</p>
@@ -39,7 +62,12 @@ export default function IndividualMyBasicInfoPage() {
           </section>
 
           <section className="py-xs border-gray-20 flex flex-col gap-y-[12px] border-b">
-            <div className="flex w-full items-center justify-between">
+            <div
+              onClick={() => {
+                setIsPhoneNumberChangeModalOpen(!isPhoneNumberChangeModalOpen)
+              }}
+              className="flex w-full items-center justify-between"
+            >
               <h2 className="sub1">전화번호</h2>
               <div className="flex items-center gap-x-2">
                 <p className="sub1">010-7557-9217</p>
@@ -62,7 +90,12 @@ export default function IndividualMyBasicInfoPage() {
             </ul>
           </section>
 
-          <section className="py-xs border-gray-20 flex items-center justify-between border-b">
+          <section
+            onClick={() => {
+              setIsPasswordChangeModalOpen(!isPasswordChangeModalOpen)
+            }}
+            className="py-xs border-gray-20 flex items-center justify-between border-b"
+          >
             <p className="sub1">비밀번호 변경</p>
             <div className="flex items-center gap-x-2">
               <div className="flex h-[24px] w-[24px] items-center justify-center">

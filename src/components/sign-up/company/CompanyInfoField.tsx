@@ -1,13 +1,9 @@
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction } from 'react'
-import { CompanySignUpPageStepType } from '@/type/auth'
 import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
 
-interface CompanyInfoFieldProps {
-  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
-}
-
-export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
+export default function CompanyInfoField() {
+  const router = useRouter()
   const setState = useAuthStore((state) => state.setState)
   const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
   return (
@@ -16,7 +12,7 @@ export default function CompanyInfoField({ setStep }: CompanyInfoFieldProps) {
         <h3 className="sub2">기업정보</h3>
         <Button1
           onClick={() => {
-            setStep('SearchCompanyInfoPage')
+            router.push('/sign-up/company/search')
             setState({
               summaryCompanyInfoData: undefined,
               registerCompanyInfoData: undefined,

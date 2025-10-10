@@ -125,7 +125,7 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
                   </div>
                 </div>
               ) : (
-                <div className="button-lg gap-x-4xs flex items-center">
+                <div className="button-lg gap-x-4xs flex cursor-pointer items-center">
                   <button
                     onClick={() => {
                       router.push('/login')
@@ -152,6 +152,7 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
         return (
           <header className="py-s fixed top-0 z-50 w-full bg-white px-5 xl:px-[352px] 2xl:px-[352px]">
             <LogoIcon
+              className="cursor-pointer"
               onClick={() => {
                 router.back()
               }}

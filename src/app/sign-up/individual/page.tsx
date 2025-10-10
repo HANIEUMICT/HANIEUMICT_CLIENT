@@ -1,3 +1,5 @@
+'use client'
+
 import Button1 from '@/components/common/Button1'
 import Header from '@/components/common/Header'
 import IndividualEmailField from '@/components/sign-up/field/IndividualEmailField'
@@ -16,9 +18,9 @@ import { AddressRegisterRequestType } from '@/type/common'
 import IndividualNameField from '@/components/sign-up/field/IndividualNameField'
 import Cookies from 'js-cookie'
 
-interface PersonSignUpPageProps {}
+interface IndividualSignUpPageProps {}
 
-const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
+const IndividualSignUpPage = ({}: IndividualSignUpPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
   const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
@@ -93,7 +95,7 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
               개인회원
             </div>
             <div className="button-lg flex h-[48px] w-[120px] items-center justify-center rounded-[12px] bg-white text-gray-50">
-              개인회원
+              기업회원
             </div>
           </div>
         </section>
@@ -162,4 +164,4 @@ const PersonSignUpPage = ({}: PersonSignUpPageProps) => {
     </div>
   )
 }
-export default PersonSignUpPage
+export default IndividualSignUpPage

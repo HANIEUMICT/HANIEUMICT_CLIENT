@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import { CompanySignUpPageStepType } from '@/type/auth'
+'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import Header from '@/components/common/Header'
 import Button1 from '@/components/common/Button1'
 import CompanyInfoField from '@/components/sign-up/company/CompanyInfoField'
@@ -15,10 +16,7 @@ import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
 import { postCompanySignUp } from '@/lib/auth'
 import CompanyMemberEmail from '@/components/sign-up/field/CompanyMemberEmail'
 
-interface CompanySignUpPageType {
-  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
-}
-export default function CompanyMemberSignUpPage({ setStep }: CompanySignUpPageType) {
+export default function CompanyMemberSignUpPage() {
   const setState = useAuthStore((state) => state.setState)
   const companySignUpData = useAuthStore((state) => state.companySignUpData)
   const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
@@ -101,7 +99,7 @@ export default function CompanyMemberSignUpPage({ setStep }: CompanySignUpPageTy
           </div>
         </section>
         <div className="gap-y-2xs flex w-full flex-col">
-          <CompanyInfoField setStep={setStep} />
+          <CompanyInfoField />
           <CompanyMemberName />
           <CompanyMemberEmail />
           <CompanyMemberPassword />

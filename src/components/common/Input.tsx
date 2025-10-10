@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react'
+import { ChangeEvent, KeyboardEvent as ReactKeyboardEvent } from 'react'
 
 const inputBoxStyles = {
   default:

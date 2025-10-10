@@ -73,11 +73,12 @@ export const postCompanySignUp = async (
  * 기업 요약 리스트 불러오는 api
  */
 export const getSummaryCompanyInfoList = async (
+  name: string | undefined,
   page: number,
   size: number
 ): Promise<ApiResponse<PaginationResultType<SummaryCompanyInfoResponseDataType>>> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/company/summaries?page=${page}&size=${size}&sort=createdAt,DESC`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/v1/company/summaries?${name ? `name=${name}&` : ''}page=${page}&size=${size}&sort=createdAt,DESC`,
     {
       method: 'GET',
       headers: {

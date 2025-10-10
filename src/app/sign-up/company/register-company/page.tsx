@@ -1,5 +1,6 @@
+'use client'
+
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
-import { CompanySignUpPageStepType } from '@/type/auth'
 import Header from '@/components/common/Header'
 import CompanyName from '@/components/sign-up/field/CompanyName'
 import BusinessNumber from '@/components/sign-up/field/BusinessNumber'
@@ -19,11 +20,10 @@ import { useAuthStore } from '@/store/authStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useModalStore } from '@/store/modalStore'
 import { postRegisterCompanyInfo } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
 
-interface RegisterCompanyPageProps {
-  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
-}
-export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProps) {
+export default function RegisterCompanyPage() {
+  const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [userData, setUserData] = useState()
   const companyLogoImageRef = useRef<HTMLInputElement | null>(null)
@@ -136,8 +136,8 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
       console.log('기업 등록 완료:', res)
 
       // 성공 시 다음 단계로 이동
-      setIsModalOpen(true) // 또는 직접 이동: setStep('CompanyMemberSignUpPage')
-      setStep('CompanyMemberSignUpPage')
+      setIsModalOpen(true)
+      router.push('/sign-up/company/register-member')
     } catch (error) {
       console.error('파일 업로드 및 기업 등록 실패:', error)
       alert('파일 업로드 또는 기업 등록에 실패했습니다. 다시 시도해주세요.')
@@ -214,7 +214,7 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
               <Button1
                 onClick={() => {
                   setIsModalOpen(false)
-                  setStep('CompanyMemberSignUpPage')
+                  router.push('/sign-up/company/register-member')
                 }}
                 styleSize="lg"
                 styleType="primary"
@@ -245,7 +245,7 @@ export default function RegisterCompanyPage({ setStep }: RegisterCompanyPageProp
         <div className="flex w-full gap-x-3 pb-[40px]">
           <Button1
             onClick={() => {
-              setStep('SearchCompanyInfoPage')
+              router.back()
             }}
             styleSize={'lg'}
             styleType={'outline'}

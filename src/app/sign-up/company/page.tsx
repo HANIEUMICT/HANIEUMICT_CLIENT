@@ -1,25 +1,29 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+'use client'
+
+import { useEffect, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import Header from '@/components/common/Header'
 import Input from '@/components/common/Input'
 import { DropDownIcon, SearchIcon } from '@/assets/svgComponents'
 import CompanyInfoCard from '@/components/sign-up/company/CompanyInfoCard'
-import { CompanySignUpPageStepType, SummaryCompanyInfoResponseDataType } from '@/type/auth'
+import { SummaryCompanyInfoResponseDataType } from '@/type/auth'
 import CompanyConfirmModal from '@/components/modal/CompanyConfirmModal'
 import { getSummaryCompanyInfoList } from '@/lib/auth'
 import Pagination from '@/components/common/Pagination'
 import { useAuthStore } from '@/store/authStore'
+import { useModalStore } from '@/store/modalStore'
+import { useRouter } from 'next/navigation'
 
-interface SearchCompanyInfoPageProps {
-  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
-}
-
-export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPageProps) {
+export default function SearchCompanyInfoPage() {
+  const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const setModalState = useModalStore((state) => state.setState)
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [totalElements, setTotalElements] = useState<number>(0)
+
+  const [keyword, setKeyword] = useState<string>('')
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -38,11 +42,13 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
       try {
         setIsLoading(true)
 
-        const response = await getSummaryCompanyInfoList(currentPage, 10)
+        const response = await getSummaryCompanyInfoList(keyword, currentPage, 10)
 
         console.log('API 전체 응답:', response)
 
         if (response && response.result === 'SUCCESS' && response.data && Array.isArray(response.data.content)) {
+          const totalElements = response.data.totalElements
+          setTotalElements(totalElements)
           const content = response.data.content
           setSummaryCompanyList(content)
           setTotalPages(response.data.totalPages)
@@ -64,11 +70,11 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
     }
 
     loadArchiveData()
-  }, [currentPage]) // currentPage 변경 시 실행
+  }, [currentPage, keyword]) // currentPage 변경 시 실행
 
   return (
     <main className="bg-gray-10 flex min-h-screen flex-col items-center justify-center">
-      {isModalOpen ? <CompanyConfirmModal setIsModalOpen={setIsModalOpen} setStep={setStep} /> : null}
+      {isModalOpen ? <CompanyConfirmModal setIsModalOpen={setIsModalOpen} /> : null}
       <Header headerType={'SIGNUP'} />
       <div className="mt-[40px] w-[1218px]">
         <div className="h-[80px]"></div>
@@ -76,7 +82,10 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
           <h1 className="h2">기업 정보 검색</h1>
           <div className="flex gap-x-2">
             <Input
-              value={''}
+              value={keyword}
+              onChange={(e) => {
+                setKeyword(e.target.value)
+              }}
               customClassName={'h-[52px] w-full'}
               type={'text'}
               inputBoxStyle={'default'}
@@ -96,7 +105,7 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
         </section>
         <section className="mt-m gap-y-3xs flex w-full flex-col">
           <h2 className="h3">
-            검색 결과 <span className="text-conic-red-30">12</span>
+            검색 결과 <span className="text-conic-red-30">{totalElements}</span>
           </h2>
           <div className="flex justify-between">
             <div className="gap-x-4xs flex">
@@ -105,7 +114,9 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
                 styleType={'outline'}
                 styleStatus={'default'}
                 styleSize={'md'}
-                onClick={() => {}}
+                onClick={() => {
+                  setModalState({ isServicePreparingModalOpen: true })
+                }}
                 rightIcon={<DropDownIcon width={16} height={12} />}
               >
                 전체 지역
@@ -115,13 +126,17 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
                 styleType={'outline'}
                 styleStatus={'default'}
                 styleSize={'md'}
-                onClick={() => {}}
+                onClick={() => {
+                  setModalState({ isServicePreparingModalOpen: true })
+                }}
                 rightIcon={<DropDownIcon width={16} height={12} />}
               >
                 전체 업종
               </Button1>
               <Input
-                value={''}
+                onClick={() => {
+                  setModalState({ isServicePreparingModalOpen: true })
+                }}
                 customClassName={'h-[48px] w-[365px]'}
                 type={'text'}
                 inputBoxStyle={'default'}
@@ -133,7 +148,7 @@ export default function SearchCompanyInfoPage({ setStep }: SearchCompanyInfoPage
               <p className="sub1 text-gray-50">찾으시는 기업이 없나요?</p>
               <Button1
                 onClick={() => {
-                  setStep('RegisterCompanyPage')
+                  router.push('/sign-up/company/register-company')
                 }}
                 styleType={'outline2'}
                 styleSize={'sm'}

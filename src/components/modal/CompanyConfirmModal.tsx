@@ -1,15 +1,15 @@
 import Modal from '@/components/common/Modal'
 import Button1 from '@/components/common/Button1'
 import { Dispatch, SetStateAction } from 'react'
-import { CompanySignUpPageStepType } from '@/type/auth'
 import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
 
 interface CompanyConfirmModalProps {
   setIsModalOpen: Dispatch<SetStateAction<boolean>>
-  setStep: Dispatch<SetStateAction<CompanySignUpPageStepType>>
 }
 
-export default function CompanyConfirmModal({ setIsModalOpen, setStep }: CompanyConfirmModalProps) {
+export default function CompanyConfirmModal({ setIsModalOpen }: CompanyConfirmModalProps) {
+  const router = useRouter()
   const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
   return (
     <Modal>
@@ -52,7 +52,7 @@ export default function CompanyConfirmModal({ setIsModalOpen, setStep }: Company
           <Button1
             onClick={() => {
               setIsModalOpen(false)
-              setStep('CompanyMemberSignUpPage')
+              router.push('/sign-up/company/register-member')
             }}
             styleSize="lg"
             styleType="primary"

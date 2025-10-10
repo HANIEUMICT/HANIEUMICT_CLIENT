@@ -9,6 +9,7 @@ export interface AddressResponseType {
   addressName: string
   recipient: string
   phoneNumber: string
+  isDefault: boolean
 }
 
 export interface AddressType {

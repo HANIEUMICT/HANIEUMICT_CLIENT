@@ -119,10 +119,11 @@ export default function IndividualMyDeliveryInfoPage() {
                 <div className="flex flex-col gap-y-[16px]">
                   <div className="gap-x-4xs flex items-center">
                     <h1 className="sub1">{address.addressName}</h1>
-
-                    {/*<div className="badge text-conic-blue-30 bg-conic-blue-10 p-5xs w-fit rounded-[4px]">*/}
-                    {/*  기본 배송지*/}
-                    {/*</div>*/}
+                    {address.isDefault ? (
+                      <div className="badge text-conic-blue-30 bg-conic-blue-10 p-5xs w-fit rounded-[4px]">
+                        기본 배송지
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="flex flex-col gap-y-2">

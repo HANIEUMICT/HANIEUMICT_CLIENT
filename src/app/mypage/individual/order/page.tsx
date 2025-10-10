@@ -2,7 +2,7 @@
 
 import Button1 from '@/components/common/Button1'
 import { useRouter } from 'next/navigation'
-import OrderItem from '@/components/mypage/individual/OrderItem'
+import OrderItem from '@/components/mypage/individual/order/OrderItem'
 
 export default function IndividualMyOrderInfoPage() {
   const router = useRouter()

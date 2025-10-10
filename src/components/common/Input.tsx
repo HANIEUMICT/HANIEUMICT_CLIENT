@@ -1,7 +1,8 @@
 import { ChangeEvent } from 'react'
 
 const inputBoxStyles = {
-  default: 'border-gray-20 placeholder:text-gray-50 text-black',
+  default:
+    'border-gray-20 placeholder:text-gray-50 text-black hover:border-conic-orange-20 focus:border-conic-orange-30 focus-within:border-conic-orange-30',
   hover: 'border-gray-20 hover:border-conic-orange-20 placeholder:text-gray-50 text-black',
   focus:
     'border-gray-20 hover:border-conic-orange-20 focus:border-conic-orange-30 placeholder:text-gray-50 text-black focus-within:border-conic-orange-30',

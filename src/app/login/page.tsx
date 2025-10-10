@@ -1,20 +1,100 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/common/Header'
 import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
-import { UnCheckboxIcon } from '@/assets/svgComponents'
+import { CheckboxFillIcon, UnCheckboxIcon } from '@/assets/svgComponents'
 import { useAuthStore } from '@/store/authStore'
 import { postAuthLogin } from '@/lib/auth'
 import Cookies from 'js-cookie'
+import { useModalStore } from '@/store/modalStore'
 
 export default function LoginPage() {
-  const [signupType, setSignupType] = useState<'개인회원' | '기업회원'>('개인회원')
   const router = useRouter()
   const setState = useAuthStore((state) => state.setState)
   const loginData = useAuthStore((state) => state.loginData)
+  const [errorMessage, setErrorMessage] = useState(false)
+  // 아이디 저장 체크박스 상태
+  const [rememberMe, setRememberMe] = useState(false)
+  // 서비스 준비중입니다 모달창
+  const setModalState = useModalStore((state) => state.setState)
+
+  // 컴포넌트 마운트 시 저장된 아이디만 불러오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUserId = localStorage.getItem('savedUserId')
+
+      if (savedUserId) {
+        setState({
+          loginData: {
+            ...loginData,
+            email: savedUserId,
+          },
+        })
+        setRememberMe(true)
+      }
+    }
+  }, [setState])
+
+  // 아이디 저장 체크박스 토글
+  const handleRememberMe = () => {
+    setRememberMe(!rememberMe)
+  }
+
+  // 아이디만 저장/삭제
+  const saveUserId = (save: boolean) => {
+    if (typeof window !== 'undefined') {
+      if (save && loginData?.email) {
+        localStorage.setItem('savedUserId', loginData.email)
+      } else {
+        localStorage.removeItem('savedUserId')
+      }
+    }
+  }
+
+  // 로그인 처리
+  const handleLogin = async () => {
+    if (!loginData) return
+
+    try {
+      const response = await postAuthLogin(loginData)
+      console.log('response', response)
+      if (response.result === 'SUCCESS') {
+        // 아이디 저장 설정에 따라 아이디만 저장/삭제
+        saveUserId(rememberMe)
+
+        if (response.data) {
+          Cookies.set('accessToken', response.data.tokenInfo.accessToken)
+          Cookies.set('refreshToken', response.data.tokenInfo.accessToken)
+          router.push('/')
+          console.log(response)
+
+          const userData: {
+            memberId: number
+            memberName: string
+            memberRole: 'INDIVIDUAL' | 'OWNER'
+            companyId?: number
+          } = {
+            memberId: response.data.memberInfo.memberId,
+            memberName: response.data.memberInfo.memberName,
+            memberRole: response.data.memberInfo.memberRole,
+            companyId: response.data.companyId,
+          }
+          // localStorage 는 브라우저 환경에서만 접근 가능
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('userData', JSON.stringify(userData))
+          }
+        }
+      } else if (response.result === 'ERROR') {
+        setErrorMessage(true)
+      }
+    } catch (error: any) {
+      // 네트워크 에러나 예외 발생 시
+      setErrorMessage(true)
+    }
+  }
 
   return (
     <main className="bg-gray-10 flex min-h-screen items-center justify-center">
@@ -23,30 +103,6 @@ export default function LoginPage() {
         <div className="w-[600px]">
           <section className="gap-y-2xs flex flex-col items-center justify-center">
             <h1 className="h2">로그인</h1>
-            <div className="flex rounded-[12px] bg-white">
-              <Button1
-                onClick={() => {
-                  setSignupType('개인회원')
-                }}
-                styleType={signupType === '개인회원' ? 'secondary' : 'ghost'}
-                styleStatus={'click'}
-                styleSize={'md'}
-                customClassName="h-[48px] w-[120px]"
-              >
-                개인회원
-              </Button1>
-              <Button1
-                onClick={() => {
-                  setSignupType('기업회원')
-                }}
-                styleType={signupType === '기업회원' ? 'secondary' : 'ghost'}
-                styleStatus={'click'}
-                styleSize={'md'}
-                customClassName="h-[48px] w-[120px]"
-              >
-                기업회원
-              </Button1>
-            </div>
           </section>
 
           <section className="gap-y-2xs mt-[40px] flex flex-col">
@@ -61,9 +117,10 @@ export default function LoginPage() {
                       email: e.target.value,
                     },
                   })
+                  setErrorMessage(false)
                 }}
                 type={'email'}
-                inputBoxStyle={'focus'}
+                inputBoxStyle={'default'}
                 placeholder={'이메일을 입력해주세요.'}
               />
               {/*<p className="body1 text-conic-red-40">이메일을 찾을 수 없습니다. 다시 입력해주세요.</p>*/}
@@ -79,25 +136,40 @@ export default function LoginPage() {
                       password: e.target.value,
                     },
                   })
+                  setErrorMessage(false)
                 }}
                 type={'password'}
-                inputBoxStyle={'focus'}
+                inputBoxStyle={'default'}
                 placeholder={'비밀번호를 입력해주세요.'}
               />
-              {/*<p className="body1 text-conic-red-40">비밀번호가 일치하지 않습니다. 다시 입력해주세요.</p>*/}
+              {errorMessage && <p className="body1 text-conic-red-40">아이디/비밀번호를 확인해주세요.</p>}
             </section>
 
-            <section className="flex justify-between">
-              <div className="gap-x-4xs flex cursor-pointer items-center">
-                <UnCheckboxIcon width={24} height={24} />
+            <section className="flex items-center justify-between">
+              <div className="gap-x-4xs flex cursor-pointer items-center" onClick={handleRememberMe}>
+                {rememberMe ? <CheckboxFillIcon width={24} height={24} /> : <UnCheckboxIcon width={24} height={24} />}
                 <p className="button-lg text-gray-50">아이디 저장</p>
               </div>
-              <div className="mt-m flex items-center justify-center">
-                <Button1 onClick={() => {}} styleSize={'sm'} styleStatus={'default'} styleType={'ghost'}>
+              <div className="flex items-center justify-center">
+                <Button1
+                  onClick={() => {
+                    setModalState({ isServicePreparingModalOpen: true })
+                  }}
+                  styleSize={'sm'}
+                  styleStatus={'default'}
+                  styleType={'ghost'}
+                >
                   아이디 찾기
                 </Button1>
                 <div className="border-gray-30 h-[13.5px] border-r" />
-                <Button1 onClick={() => {}} styleSize={'sm'} styleStatus={'default'} styleType={'ghost'}>
+                <Button1
+                  onClick={() => {
+                    setModalState({ isServicePreparingModalOpen: true })
+                  }}
+                  styleSize={'sm'}
+                  styleStatus={'default'}
+                  styleType={'ghost'}
+                >
                   비밀번호 찾기
                 </Button1>
               </div>
@@ -108,34 +180,7 @@ export default function LoginPage() {
             styleType={'primary'}
             styleStatus={'hover'}
             styleSize={'lg'}
-            onClick={async () => {
-              if (loginData) {
-                const response = await postAuthLogin(loginData)
-                console.log('response', response)
-                if (response.data) {
-                  Cookies.set('accessToken', response.data.tokenInfo.accessToken)
-                  Cookies.set('refreshToken', response.data.tokenInfo.accessToken)
-                  router.push('/')
-                  console.log(response)
-
-                  const userData: {
-                    memberId: number
-                    memberName: string
-                    memberRole: 'INDIVIDUAL' | 'OWNER'
-                    companyId?: number
-                  } = {
-                    memberId: response.data.memberInfo.memberId,
-                    memberName: response.data.memberInfo.memberName,
-                    memberRole: response.data.memberInfo.memberRole,
-                    companyId: response.data.companyId,
-                  }
-                  // localStorage 는 브라우저 환경에서만 접근 가능
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem('userData', JSON.stringify(userData))
-                  }
-                }
-              }
-            }}
+            onClick={handleLogin}
             customClassName={'mt-[40px] w-full'}
           >
             로그인

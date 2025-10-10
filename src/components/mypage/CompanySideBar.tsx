@@ -2,8 +2,10 @@
 import { ReactNode } from 'react'
 import {
   LogoutIcon,
+  SelectedMyprofileIcon,
   SelectedOrderInformationIcon,
   SelectedProposalIcon,
+  UnselectedMyprofileIcon,
   UnselectedOrderInformationIcon,
   UnselectedProposalIcon,
 } from '@/assets/svgComponents'
@@ -21,8 +23,8 @@ export default function CompanySideBar() {
     router: string
   }[] = [
     {
-      selectedIcon: <SelectedProposalIcon width={20} height={24} />,
-      unselectedIcon: <UnselectedProposalIcon width={20} height={24} />,
+      selectedIcon: <SelectedMyprofileIcon width={19} height={19} />,
+      unselectedIcon: <UnselectedMyprofileIcon width={19} height={19} />,
       title: '내 정보',
       router: '/mypage/company',
     },

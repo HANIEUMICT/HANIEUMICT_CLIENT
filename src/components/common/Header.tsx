@@ -153,7 +153,7 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
           <header className="py-s fixed top-0 z-50 w-full bg-white px-5 xl:px-[352px] 2xl:px-[352px]">
             <LogoIcon
               onClick={() => {
-                router.push('/')
+                router.back()
               }}
               width={105}
               height={32}

@@ -61,7 +61,11 @@ export interface PaginationResultType<T> {
 }
 
 export interface AddressRegisterRequestType {
+  addressName?: string
+  recipient?: string
+  phoneNumber?: string
   postalCode?: string
   streetAddress?: string
   detailAddress?: string
+  default?: boolean
 }

@@ -10,7 +10,7 @@ import { patchMemberAddresses } from '@/lib/mypage'
 
 interface AddAddressInfoModalProps {}
 
-export default function AddAddressInfoModal({}: AddAddressInfoModalProps) {
+export default function MyPageAddAddressInfoModal({}: AddAddressInfoModalProps) {
   const setModalState = useModalStore((state) => state.setState)
   const setMyPageState = useMyPageStore((state) => state.setState)
   const addressData = useMyPageStore((state) => state.addressData)

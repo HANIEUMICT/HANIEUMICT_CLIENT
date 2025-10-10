@@ -92,12 +92,12 @@ export default function CompanyMemberSignUpPage({ setStep }: CompanySignUpPageTy
         <section className="gap-y-2xs flex flex-col items-center">
           <h2 className="h2">회원가입 유형</h2>
           <div className="flex rounded-[12px] bg-white">
-            <Button1 onClick={() => {}} styleType={'ghost'} styleSize={'md'} customClassName="h-[48px] w-[120px]">
+            <div className="button-lg flex h-[48px] w-[120px] items-center justify-center rounded-[12px] bg-white text-gray-50">
               개인회원
-            </Button1>
-            <Button1 onClick={() => {}} styleType={'secondary'} styleSize={'md'} customClassName="h-[48px] w-[120px]">
+            </div>
+            <div className="bg-conic-orange-30 button-lg flex h-[48px] w-[120px] items-center justify-center rounded-[12px] text-white">
               기업회원
-            </Button1>
+            </div>
           </div>
         </section>
         <div className="gap-y-2xs flex w-full flex-col">

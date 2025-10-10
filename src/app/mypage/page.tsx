@@ -1,6 +1,6 @@
 'use client'
 
-import AddAddressInfoModal from '@/components/modal/AddAddressInfoModal'
+import MyPageAddAddressInfoModal from '@/components/modal/MyPageAddAddressInfoModal'
 import { useModalStore } from '@/store/modalStore'
 
 export default function MyPage() {

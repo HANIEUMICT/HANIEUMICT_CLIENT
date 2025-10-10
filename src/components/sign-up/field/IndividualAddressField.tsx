@@ -1,7 +1,8 @@
-import Input from '@/components/common/Input'
 import Button1 from '@/components/common/Button1'
 import { useModalStore } from '@/store/modalStore'
 import { useAuthStore } from '@/store/authStore'
+import { deleteAddress } from '@/lib/mypage'
+import AddressItem from '@/components/common/AddressItem'
 
 export default function IndividualAddressField() {
   const setModalState = useModalStore((state) => state.setState)
@@ -9,68 +10,45 @@ export default function IndividualAddressField() {
   const setState = useAuthStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
-      <section className="gap-x-5xs sub2 flex">
-        주소 <span className="text-conic-red-30">*</span>
-      </section>
-      <section className="gap-x-4xs flex">
-        <Input
-          readonly={true}
-          onClick={() => {
-            setModalState({ isSearchAddressModalOpen: true })
-          }}
-          value={individualSignUpData?.addressRegisterRequest?.postalCode ?? ''}
-          inputBoxStyle={'default'}
-          placeholder={'우편번호 입력'}
-          customClassName={'w-full'}
-        />
+      <div className="flex items-center justify-between">
+        <section className="gap-x-5xs sub2 flex">
+          주소 <span className="text-conic-red-30">*</span>
+        </section>
         <Button1
-          onClick={() => {
-            setModalState({ isSearchAddressModalOpen: true })
-          }}
-          styleSize={'lg'}
-          styleStatus={'default'}
           styleType={'secondary'}
-          customClassName={'whitespace-nowrap w-[120px]'}
+          styleSize={'sm'}
+          styleStatus={'default'}
+          onClick={() => {
+            setModalState({ isAddAddressInfoModalOpen: true })
+          }}
+          buttonType={'button'}
         >
-          주소찾기
+          추가
         </Button1>
-      </section>
-      <Input
-        value={individualSignUpData?.addressRegisterRequest?.streetAddress ?? ''}
-        onChange={(e) =>
-          setState({
-            ...individualSignUpData,
-            individualSignUpData: {
+      </div>
+      {individualSignUpData?.addressRegisterRequest ? (
+        <AddressItem
+          addressName={individualSignUpData?.addressRegisterRequest.addressName}
+          streetAddress={individualSignUpData?.addressRegisterRequest.streetAddress}
+          isDefault={individualSignUpData?.addressRegisterRequest.default}
+          onDelete={() => {
+            setModalState({ isAddAddressInfoModalOpen: true })
+          }}
+          detailAddress={individualSignUpData?.addressRegisterRequest.detailAddress}
+          onEdit={() => {
+            setState({
               ...individualSignUpData,
-              addressRegisterRequest: {
-                ...individualSignUpData?.addressRegisterRequest,
-                streetAddress: e.target.value,
+              individualSignUpData: {
+                ...individualSignUpData,
+                addressRegisterRequest: undefined,
               },
-            },
-          })
-        }
-        inputBoxStyle={'default'}
-        placeholder={'주소'}
-        customClassName={'w-full'}
-      />
-      <Input
-        value={individualSignUpData?.addressRegisterRequest?.detailAddress ?? ''}
-        onChange={(e) =>
-          setState({
-            ...individualSignUpData,
-            individualSignUpData: {
-              ...individualSignUpData,
-              addressRegisterRequest: {
-                ...individualSignUpData?.addressRegisterRequest,
-                detailAddress: e.target.value,
-              },
-            },
-          })
-        }
-        inputBoxStyle={'default'}
-        placeholder={'상세주소를 입력해주세요.'}
-        customClassName={'w-full'}
-      />
+            })
+          }}
+          postalCode={individualSignUpData?.addressRegisterRequest.postalCode}
+          phoneNumber={individualSignUpData?.addressRegisterRequest.phoneNumber}
+          recipient={individualSignUpData?.addressRegisterRequest.recipient}
+        ></AddressItem>
+      ) : null}
     </div>
   )
 }

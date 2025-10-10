@@ -1,11 +1,20 @@
 import Input from '@/components/common/Input'
-import Button1 from '@/components/common/Button1'
 import { useAuthStore } from '@/store/authStore'
-import { ChangeEvent } from 'react'
+import { formatPhoneNumber } from '@/utils/common'
 
 export default function IndividualPhoneNumberField() {
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
+
+  // 전화번호 - 붙여서 format
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    setState({
+      ...individualSignUpData,
+      individualSignUpData: { ...individualSignUpData, phoneNumber: formatted },
+    })
+  }
+
   return (
     <div className="gap-y-4xs flex flex-col">
       <section className="gap-x-5xs sub2 flex">
@@ -14,14 +23,9 @@ export default function IndividualPhoneNumberField() {
       <section className="gap-x-4xs flex">
         <Input
           value={individualSignUpData?.phoneNumber ?? ''}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setState({
-              ...individualSignUpData,
-              individualSignUpData: { ...individualSignUpData, phoneNumber: e.target.value },
-            })
-          }}
+          onChange={handlePhoneNumberChange}
           inputBoxStyle={'default'}
-          placeholder={`'-' 제외 입력 `}
+          placeholder={`전화번호를 입력해주세요.`}
           customClassName={'w-full'}
         />
       </section>

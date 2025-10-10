@@ -11,9 +11,20 @@ export default function IndividualEmailField() {
   const [hasCheckedCode, setHasCheckedCode] = useState(false) //인증번호 확인 필드 생성
   const [isCodeVerified, setIsCodeVerified] = useState<undefined | boolean>(undefined) // 인증번호 인증이 완료되었는지 확인하는 state
   const [code, setCode] = useState<string>()
+  // 이메일을 이미 사용중이라면 error
+  const [emailDuplicateError, setEmailDuplicateError] = useState<boolean | undefined>(undefined)
 
   // 로딩 상태 추가
   const [isEmailVerificationLoading, setIsEmailVerificationLoading] = useState<boolean>(false)
+
+  // 이메일 형식 검증 함수
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // 이메일이 유효한지 확인
+  const isEmailValid = individualSignUpData?.email && validateEmail(individualSignUpData.email)
 
   return (
     <div className="gap-y-4xs flex flex-col">
@@ -30,7 +41,9 @@ export default function IndividualEmailField() {
                 email: e.target.value,
               },
             })
-            setIsCodeVerified(undefined)
+            setIsCodeVerified(undefined) // 입력이 변경되면 코드 인증 메시지 초기화
+            setHasCheckedCode(false) // 입력이 변경되면 인증코드 입력창 초기화
+            setEmailDuplicateError(undefined) // 입력이 변경되면 이메일 중복 에러 메시지 초기화
           }}
           inputBoxStyle={'default'}
           placeholder={'이메일을 입력해주세요.'}
@@ -39,7 +52,7 @@ export default function IndividualEmailField() {
         <Button1
           onClick={async () => {
             setIsCodeVerified(undefined)
-
+            setEmailDuplicateError(undefined)
             if (individualSignUpData && individualSignUpData.email) {
               try {
                 // API 호출 전에 로딩 시작
@@ -47,8 +60,10 @@ export default function IndividualEmailField() {
                 const response = await postSendEmailCode(individualSignUpData.email)
                 console.log('response', response)
 
-                if (response && response.data === '이메일 전송 성공') {
+                if (response.result === 'SUCCESS') {
                   setHasCheckedCode(true)
+                } else if (response.result === 'ERROR') {
+                  setEmailDuplicateError(true)
                 }
               } catch (error) {
                 console.error('이메일 전송 실패:', error)
@@ -60,7 +75,8 @@ export default function IndividualEmailField() {
             }
           }}
           styleSize={'lg'}
-          styleStatus={individualSignUpData?.email?.length !== 0 ? 'default' : 'disabled'}
+          disabled={!isEmailValid}
+          styleStatus={isEmailValid ? 'default' : 'disabled'}
           styleType={'secondary'}
           customClassName={'whitespace-nowrap w-[120px]'}
         >
@@ -74,6 +90,7 @@ export default function IndividualEmailField() {
           )}
         </Button1>
       </section>
+      {emailDuplicateError ? <p className="body1 text-conic-red-40">이미 사용중인 이메일입니다.</p> : null}
       {hasCheckedCode && !isCodeVerified ? (
         <section className="gap-x-4xs flex">
           <Input

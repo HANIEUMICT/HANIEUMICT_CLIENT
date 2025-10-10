@@ -3,11 +3,12 @@ import { AddressRegisterRequestType } from '@/type/common'
 export type CompanySignUpPageStepType = 'SearchCompanyInfoPage' | 'RegisterCompanyPage' | 'CompanyMemberSignUpPage'
 
 export interface IndividualSignUpType {
+  name?: string
   email?: string
   password?: string
   phoneNumber?: string
   termsOfServiceAgreed?: boolean
-  role?: 'OWNER'
+  role?: 'OWNER' | 'INDIVIDUAL'
   addressRegisterRequest?: AddressRegisterRequestType
 }
 //기업 회원가입

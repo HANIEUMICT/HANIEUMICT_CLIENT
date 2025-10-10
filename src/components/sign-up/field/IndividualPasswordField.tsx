@@ -87,7 +87,7 @@ export default function IndividualPasswordField() {
         {isIndividualPasswordValid !== undefined ? (
           <div className="badge-md">
             {isIndividualPasswordValid ? null : (
-              <p className="text-conic-red-40">비밀번호는 대소문자, 숫자, 기호 포함 8~15자를 만족해야 합니다.</p>
+              <p className="body1 text-conic-red-40">비밀번호는 대소문자, 숫자, 기호 포함 8~15자를 만족해야 합니다.</p>
             )}
           </div>
         ) : null}
@@ -125,8 +125,10 @@ export default function IndividualPasswordField() {
               }
             />
             {isIndividualPasswordMatch !== undefined ? (
-              <div className="badge-md">
-                {isIndividualPasswordMatch ? null : <p className="text-conic-red-40">비밀번호가 일치하지 않습니다.</p>}
+              <div className="badge-md mt-4xs">
+                {isIndividualPasswordMatch ? null : (
+                  <p className="body1 text-conic-red-40">비밀번호가 일치하지 않습니다.</p>
+                )}
               </div>
             ) : null}
           </div>

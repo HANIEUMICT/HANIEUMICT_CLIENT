@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Header from '@/components/common/Header'
 import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
-import { CheckboxFillIcon, UnCheckboxIcon } from '@/assets/svgComponents'
+import { CheckboxFillIcon, EyeIcon, NonEyeIcon, UnCheckboxIcon } from '@/assets/svgComponents'
 import { useAuthStore } from '@/store/authStore'
 import { postAuthLogin } from '@/lib/auth'
 import Cookies from 'js-cookie'
@@ -20,6 +20,8 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   // 서비스 준비중입니다 모달창
   const setModalState = useModalStore((state) => state.setState)
+  // 비밀번호 보기
+  const [showPassword, setShowPassword] = useState(false)
 
   // 컴포넌트 마운트 시 저장된 아이디만 불러오기
   useEffect(() => {
@@ -123,7 +125,6 @@ export default function LoginPage() {
                 inputBoxStyle={'default'}
                 placeholder={'이메일을 입력해주세요.'}
               />
-              {/*<p className="body1 text-conic-red-40">이메일을 찾을 수 없습니다. 다시 입력해주세요.</p>*/}
             </section>
             <section className="gap-y-4xs flex flex-col">
               <h2 className="sub2">비밀번호</h2>
@@ -138,9 +139,28 @@ export default function LoginPage() {
                   })
                   setErrorMessage(false)
                 }}
-                type={'password'}
+                type={showPassword ? 'text' : 'password'}
                 inputBoxStyle={'default'}
                 placeholder={'비밀번호를 입력해주세요.'}
+                rightIcon={
+                  showPassword ? (
+                    <NonEyeIcon
+                      onClick={() => {
+                        setShowPassword(false)
+                      }}
+                      width={24}
+                      height={24}
+                    />
+                  ) : (
+                    <EyeIcon
+                      width={24}
+                      height={24}
+                      onClick={() => {
+                        setShowPassword(true)
+                      }}
+                    />
+                  )
+                }
               />
               {errorMessage && <p className="body1 text-conic-red-40">아이디/비밀번호를 확인해주세요.</p>}
             </section>

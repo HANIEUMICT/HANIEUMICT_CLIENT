@@ -6,7 +6,7 @@ import Pagination from '@/components/common/Pagination'
 import { useEffect, useState } from 'react'
 import { AddressResponseType } from '@/type/mypage'
 import { useModalStore } from '@/store/modalStore'
-import AddAddressInfoModal from '@/components/modal/AddAddressInfoModal'
+import MyPageAddAddressInfoModal from '@/components/modal/MyPageAddAddressInfoModal'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useMyPageStore } from '@/store/mypageStore'
 
@@ -94,7 +94,7 @@ export default function IndividualMyDeliveryInfoPage() {
   return (
     <section className="gap-y-2xs mt-[40px] flex w-[1220px] flex-col">
       {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
-      {isAddAddressInfoModalOpen && <AddAddressInfoModal />}
+      {isAddAddressInfoModalOpen && <MyPageAddAddressInfoModal />}
       <div className="flex justify-between">
         <h1 className="h2">배송 정보</h1>
         <Button1

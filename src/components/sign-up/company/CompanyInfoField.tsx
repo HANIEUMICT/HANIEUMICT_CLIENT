@@ -12,7 +12,7 @@ export default function CompanyInfoField() {
         <h3 className="sub2">기업정보</h3>
         <Button1
           onClick={() => {
-            router.push('/sign-up/company/search')
+            router.push('/sign-up/company')
             setState({
               summaryCompanyInfoData: undefined,
               registerCompanyInfoData: undefined,

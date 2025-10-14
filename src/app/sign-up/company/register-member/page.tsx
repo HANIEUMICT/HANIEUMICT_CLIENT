@@ -15,6 +15,8 @@ import SearchAddressModal from '@/components/common/SearchAddressModal'
 import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
 import { postCompanySignUp } from '@/lib/auth'
 import CompanyMemberEmail from '@/components/sign-up/field/CompanyMemberEmail'
+import RegisterCompanyMemberAddAddressInfoModal from '@/components/modal/RegisterCompanyMemberAddAddressInfoModal'
+import { AddressRegisterRequestType } from '@/type/common'
 
 export default function CompanyMemberSignUpPage() {
   const setState = useAuthStore((state) => state.setState)
@@ -22,7 +24,20 @@ export default function CompanyMemberSignUpPage() {
   const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
 
   const setModalState = useModalStore((state) => state.setState)
+  const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
+
+  // 임시 주소 저장 state - 모달 내에서만 사용
+  const [tempAddressData, setTempAddressData] = useState<AddressRegisterRequestType>({
+    addressName: '',
+    recipient: '',
+    phoneNumber: '',
+    postalCode: '',
+    streetAddress: '',
+    detailAddress: '',
+    default: false,
+  })
+
   const [isSignUpSuccessModalOpen, setIsSignUpSuccessModalOpen] = useState(false)
 
   const handleComplete = async (data: any) => {
@@ -41,15 +56,8 @@ export default function CompanyMemberSignUpPage() {
       }
       fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
     }
-    setState({
-      ...companySignUpData,
-      companySignUpData: {
-        ...companySignUpData,
-        addressRegisterRequest: { postalCode: zonecode, streetAddress: fullAddress },
-      },
-    })
-
-    setModalState({ isSearchAddressModalOpen: false })
+    setTempAddressData({ ...tempAddressData, postalCode: zonecode, streetAddress: fullAddress })
+    setModalState({ isAddAddressInfoModalOpen: true, isSearchAddressModalOpen: false })
   }
 
   // 컴포넌트 내부에서
@@ -75,16 +83,18 @@ export default function CompanyMemberSignUpPage() {
     return signUpDataValid && companyIdValid
   }, [companySignUpData, summaryCompanyInfoData])
 
-  useEffect(() => {
-    console.log('isSearchAddressModalOpen', isSearchAddressModalOpen)
-  }, [isSearchAddressModalOpen])
-
   return (
     <div className="flex flex-col items-center justify-center">
       {/* 회원가입 완료 모달 */}
       {isSignUpSuccessModalOpen && <SignUpSuccessModal setIsModalOpen={setIsSignUpSuccessModalOpen} role={'COMPANY'} />}
 
       {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
+      {isAddAddressInfoModalOpen && (
+        <RegisterCompanyMemberAddAddressInfoModal
+          tempAddressData={tempAddressData}
+          setTempAddressData={setTempAddressData}
+        />
+      )}
       <Header headerType={'SIGNUP'} />
       <div className="mt-[200px] flex w-[600px] flex-col items-center gap-y-[40px]">
         <section className="gap-y-2xs flex flex-col items-center">
@@ -104,7 +114,7 @@ export default function CompanyMemberSignUpPage() {
           <CompanyMemberEmail />
           <CompanyMemberPassword />
           <CompanyMemberPhoneNumber />
-          <CompanyMemberAddress />
+          <CompanyMemberAddress setTempAddressData={setTempAddressData} />
         </div>
         <div className="gap-y-3xs flex w-full flex-col">
           <CompanyMemberTermsOfServiceField />

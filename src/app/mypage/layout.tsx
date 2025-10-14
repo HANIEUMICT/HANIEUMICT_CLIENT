@@ -15,6 +15,7 @@ export default async function RecruitLayout({
   return (
     <div className="">
       <Header headerType={'DEFAULT'} />
+      {/*<Sid></Sid>*/}
       <div className="h-[80px]" />
       <main className="">{children}</main>
     </div>

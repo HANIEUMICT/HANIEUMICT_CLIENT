@@ -21,6 +21,9 @@ import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useModalStore } from '@/store/modalStore'
 import { postRegisterCompanyInfo } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
+import RegisterCompanyMemberAddAddressInfoModal from '@/components/modal/RegisterCompanyMemberAddAddressInfoModal'
+import RegisterCompanyAddAddressInfoModal from '@/components/modal/RegisterCompanyAddAddressInfoModal'
+import { AddressRegisterRequestType } from '@/type/common'
 
 export default function RegisterCompanyPage() {
   const router = useRouter()
@@ -40,6 +43,18 @@ export default function RegisterCompanyPage() {
 
   const setModalState = useModalStore((state) => state.setState)
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
+  const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
+
+  // 임시 주소 저장 state - 모달 내에서만 사용
+  const [tempAddressData, setTempAddressData] = useState<AddressRegisterRequestType>({
+    addressName: '',
+    recipient: '',
+    phoneNumber: '',
+    postalCode: '',
+    streetAddress: '',
+    detailAddress: '',
+    default: false,
+  })
 
   // 컴포넌트 내부에서
   const isFormValid = useMemo(() => {
@@ -162,20 +177,16 @@ export default function RegisterCompanyPage() {
       }
       fullAddress += `${extraAddress !== '' ? ` ${extraAddress}` : ''}`
     }
-    setState({
-      ...registerCompanyInfoData,
-      registerCompanyInfoData: {
-        ...registerCompanyInfoData,
-        addressRegisterRequest: { postalCode: zonecode, streetAddress: fullAddress },
-      },
-    })
-
-    setModalState({ isSearchAddressModalOpen: false })
+    setTempAddressData({ ...tempAddressData, postalCode: zonecode, streetAddress: fullAddress })
+    setModalState({ isAddAddressInfoModalOpen: true, isSearchAddressModalOpen: false })
   }
 
   return (
     <div className="flex flex-col items-center justify-center">
       {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
+      {isAddAddressInfoModalOpen && (
+        <RegisterCompanyAddAddressInfoModal tempAddressData={tempAddressData} setTempAddressData={setTempAddressData} />
+      )}
       {isModalOpen ? (
         <Modal>
           <Modal.Content>
@@ -240,7 +251,7 @@ export default function RegisterCompanyPage() {
           <BusinessItemField />
           <BusinessRegistrationUpload businessRegistrationFileRef={businessRegistrationFileRef} />
           <BankbookCopyUpload bankbookCopyFileRef={bankbookCopyFileRef} />
-          <CompanyAddressField />
+          <CompanyAddressField setTempAddressData={setTempAddressData} />
         </div>
         <div className="flex w-full gap-x-3 pb-[40px]">
           <Button1

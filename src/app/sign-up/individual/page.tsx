@@ -104,7 +104,7 @@ const IndividualSignUpPage = ({}: IndividualSignUpPageProps) => {
           <IndividualEmailField />
           <IndividualPasswordField />
           <IndividualPhoneNumberField />
-          <IndividualAddressField />
+          <IndividualAddressField setTempAddressData={setTempAddressData} />
         </section>
         <TermsOfServiceField />
         <Button1

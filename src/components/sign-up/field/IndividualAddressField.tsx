@@ -1,10 +1,15 @@
 import Button1 from '@/components/common/Button1'
 import { useModalStore } from '@/store/modalStore'
 import { useAuthStore } from '@/store/authStore'
-import { deleteAddress } from '@/lib/mypage'
 import AddressItem from '@/components/common/AddressItem'
+import { Dispatch, SetStateAction } from 'react'
+import { AddressRegisterRequestType } from '@/type/common'
 
-export default function IndividualAddressField() {
+interface IndividualAddressFieldProps {
+  setTempAddressData: Dispatch<SetStateAction<AddressRegisterRequestType>>
+}
+
+export default function IndividualAddressField({ setTempAddressData }: IndividualAddressFieldProps) {
   const setModalState = useModalStore((state) => state.setState)
   const individualSignUpData = useAuthStore((state) => state.individualSignUpData)
   const setState = useAuthStore((state) => state.setState)
@@ -32,10 +37,6 @@ export default function IndividualAddressField() {
           streetAddress={individualSignUpData?.addressRegisterRequest.streetAddress}
           isDefault={individualSignUpData?.addressRegisterRequest.default}
           onDelete={() => {
-            setModalState({ isAddAddressInfoModalOpen: true })
-          }}
-          detailAddress={individualSignUpData?.addressRegisterRequest.detailAddress}
-          onEdit={() => {
             setState({
               ...individualSignUpData,
               individualSignUpData: {
@@ -43,11 +44,24 @@ export default function IndividualAddressField() {
                 addressRegisterRequest: undefined,
               },
             })
+            setTempAddressData({
+              addressName: '',
+              recipient: '',
+              phoneNumber: '',
+              postalCode: '',
+              streetAddress: '',
+              detailAddress: '',
+              default: false,
+            })
+          }}
+          detailAddress={individualSignUpData?.addressRegisterRequest.detailAddress}
+          onEdit={() => {
+            setModalState({ isAddAddressInfoModalOpen: true })
           }}
           postalCode={individualSignUpData?.addressRegisterRequest.postalCode}
           phoneNumber={individualSignUpData?.addressRegisterRequest.phoneNumber}
           recipient={individualSignUpData?.addressRegisterRequest.recipient}
-        ></AddressItem>
+        />
       ) : null}
     </div>
   )

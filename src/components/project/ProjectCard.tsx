@@ -1,8 +1,8 @@
-import { ChatIcon, GrayFavoriteIcon } from '@/assets/svgComponents'
+import { ChatIcon, GrayFavoriteIcon, ImgUploadIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
 import { ProjectResponseType } from '@/type/project'
 import { useRouter } from 'next/navigation'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { useModalStore } from '@/store/modalStore'
 
 interface ProjectCardProps extends ProjectResponseType {
@@ -19,6 +19,8 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter()
   const setState = useModalStore((state) => state.setState)
+  const [imageError, setImageError] = useState(false)
+
   return (
     <div
       onClick={(e) => {
@@ -35,11 +37,27 @@ export default function ProjectCard({
       <h3 className="h3">{projectRegisterRequest.projectTitle}</h3>
       <section className="gap-x-2xs flex">
         {drawingUrls && drawingUrls.length > 0 ? (
-          <div className="relative h-[110px] w-[110px] flex-shrink-0">
-            <Image src={drawingUrls[0]} alt={'사진'} className="rounded-[16px] object-cover" fill></Image>
-          </div>
+          <>
+            {imageError ? (
+              <div className="flex-shrink-0">
+                <ImgUploadIcon width={110} height={110} />
+              </div>
+            ) : (
+              <div className="relative h-[110px] w-[110px] flex-shrink-0">
+                <Image
+                  onError={() => setImageError(true)}
+                  src={drawingUrls[0]}
+                  alt={'사진'}
+                  className="rounded-[16px] object-cover"
+                  fill
+                />
+              </div>
+            )}
+          </>
         ) : (
-          <div className="bg-gray-20 h-[110px] w-[110px] flex-shrink-0 rounded-[16px]" />
+          <div className="flex-shrink-0">
+            <ImgUploadIcon width={110} height={110} />
+          </div>
         )}
 
         <div className="flex w-full flex-col gap-y-2">
@@ -68,7 +86,13 @@ export default function ProjectCard({
         </div>
       </section>
       <section className="flex justify-between">
-        <div className="gap-x-5xs flex items-center">
+        <div
+          onClick={(e) => {
+            e.stopPropagation() // 부모 클릭 이벤트 전파 중단
+            setState({ isServicePreparingModalOpen: true })
+          }}
+          className="gap-x-5xs flex items-center"
+        >
           <GrayFavoriteIcon width={20} height={18} />
           <p className="button-sm text-gray-30">123</p>
         </div>

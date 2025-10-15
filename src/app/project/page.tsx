@@ -10,6 +10,7 @@ import { getProject } from '@/lib/project'
 import { ProjectResponseType } from '@/type/project'
 import { ProposalStatusType } from '@/type/proposal'
 import CopyrightAgreementModal from '../../components/modal/CopyrightAgreementModal'
+import { useModalStore } from '@/store/modalStore'
 
 export default function ProjectPage() {
   const [status, setStatus] = useState<ProposalStatusType>('SUBMIT')
@@ -22,6 +23,8 @@ export default function ProjectPage() {
   const [isCopyrightAgreementModalOpen, setIsCopyrightAgreementModalOpen] = useState(false)
   const [agreement, setAgreement] = useState(false)
   const [selectedProjectId, setSelectedProjectId] = useState<number>()
+
+  const setModalState = useModalStore((state) => state.setState)
 
   // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
@@ -72,6 +75,7 @@ export default function ProjectPage() {
       <Header headerType={'DEFAULT'} />
       <section className="mt-[100px] flex w-[1218px] flex-col gap-y-[40px]">
         <Input
+          onClick={() => setModalState({ isServicePreparingModalOpen: true })}
           leftIcon={<SearchIcon />}
           value={''}
           inputBoxStyle={'default'}

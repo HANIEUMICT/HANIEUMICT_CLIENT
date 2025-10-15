@@ -13,10 +13,11 @@ import { useAuthStore } from '@/store/authStore'
 import { useModalStore } from '@/store/modalStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import SignUpSuccessModal from '@/components/modal/SignUpSuccessModal'
-import { postCompanySignUp } from '@/lib/auth'
+import { postAuthSignUp, postCompanySignUp } from '@/lib/auth'
 import CompanyMemberEmail from '@/components/sign-up/field/CompanyMemberEmail'
 import RegisterCompanyMemberAddAddressInfoModal from '@/components/modal/RegisterCompanyMemberAddAddressInfoModal'
 import { AddressRegisterRequestType } from '@/type/common'
+import Cookies from 'js-cookie'
 
 export default function CompanyMemberSignUpPage() {
   const setState = useAuthStore((state) => state.setState)
@@ -26,6 +27,7 @@ export default function CompanyMemberSignUpPage() {
   const setModalState = useModalStore((state) => state.setState)
   const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
+  const [isLoading, setIsLoading] = useState(false)
 
   // 임시 주소 저장 state - 모달 내에서만 사용
   const [tempAddressData, setTempAddressData] = useState<AddressRegisterRequestType>({
@@ -37,6 +39,25 @@ export default function CompanyMemberSignUpPage() {
     detailAddress: '',
     default: false,
   })
+
+  // 페이지 언마운트 시 상태 초기화
+  useEffect(() => {
+    return () => {
+      // cleanup 함수: 컴포넌트가 언마운트될 때 실행
+      setState({
+        companySignUpData: undefined,
+      })
+      setTempAddressData({
+        addressName: '',
+        recipient: '',
+        phoneNumber: '',
+        postalCode: '',
+        streetAddress: '',
+        detailAddress: '',
+        default: false,
+      })
+    }
+  }, []) // 빈 의존성 배열로 마운트/언마운트 시에만 실행
 
   const [isSignUpSuccessModalOpen, setIsSignUpSuccessModalOpen] = useState(false)
 
@@ -125,12 +146,48 @@ export default function CompanyMemberSignUpPage() {
             disabled={!isFormValid}
             styleStatus={isFormValid ? 'default' : 'disabled'}
             onClick={async () => {
-              if (isFormValid) {
-                const result = await postCompanySignUp(companySignUpData, summaryCompanyInfoData?.companyId)
-                console.log('result', result)
-                if (result.result === 'SUCCESS') {
-                  setIsSignUpSuccessModalOpen(true)
+              try {
+                setIsLoading(true)
+                if (isFormValid) {
+                  const response = await postCompanySignUp(companySignUpData, summaryCompanyInfoData?.companyId)
+                  console.log('회원가입', response)
+                  if (response.result === 'SUCCESS') {
+                    if (response.data) {
+                      Cookies.set('accessToken', response.data.tokenInfo.accessToken)
+                      Cookies.set('refreshToken', response.data.tokenInfo.accessToken)
+
+                      const userData: {
+                        memberId: number
+                        memberName: string
+                        memberRole: 'INDIVIDUAL' | 'OWNER'
+                        companyId?: number
+                      } = {
+                        memberId: response.data.memberInfo.memberId,
+                        memberName: response.data.memberInfo.memberName,
+                        memberRole: response.data.memberInfo.memberRole,
+                        companyId: response.data.companyId,
+                      }
+                      // localStorage 는 브라우저 환경에서만 접근 가능
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('userData', JSON.stringify(userData))
+                      }
+                    }
+                    setIsSignUpSuccessModalOpen(true)
+
+                    setState({
+                      companySignUpData: {
+                        ...companySignUpData,
+                        addressRegisterRequest: undefined,
+                      },
+                    })
+                  } else if (response.result === 'ERROR') {
+                    alert(response.error.message)
+                  }
                 }
+              } catch (e) {
+                console.log('error', e)
+              } finally {
+                setIsLoading(false)
               }
             }}
           >

@@ -1,5 +1,4 @@
 import Modal from '@/components/common/Modal'
-import UploadItem from '@/components/common/UploadItem'
 import Pagination from '@/components/common/Pagination'
 import Button1 from '@/components/common/Button1'
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -10,6 +9,7 @@ import { useProjectStore } from '@/store/projectStore'
 import { useModalStore } from '@/store/modalStore'
 import { extractImageInfo, formatDate } from '@/utils/project'
 import DownloadItem from '@/components/common/DownloadItem'
+import { cleanup } from 'axe-core'
 
 interface ProjectLoadModalProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -38,13 +38,14 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
       }
     }
   }, [])
+
   // 기존에 저장된 견적서 불러오기
   const [status, setStatus] = useState<'TEMPORARY_SAVE' | 'INITIALIZE' | 'SUBMIT' | null>('TEMPORARY_SAVE')
   const [currentPage, setCurrentPage] = useState<number>(0)
   const [totalPages, setTotalPages] = useState<number>(0)
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+    setCurrentPage(page - 1)
     console.log(`페이지 ${page}로 이동`)
     // 실제로는 여기서 API 호출이나 라우팅 처리
   }
@@ -75,7 +76,7 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
           setProjectData([])
         })
     }
-  }, [userData, status])
+  }, [userData, status, currentPage])
 
   // 선택된 프로젝트 데이터 계산
   const selectedProject = useMemo(() => {
@@ -116,8 +117,9 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                 onClick={() => {
                   setStatus('TEMPORARY_SAVE')
                   setSelectedProjectId(null)
+                  setCurrentPage(0) // 페이지네이션 초기화
                 }}
-                className={`${status === 'TEMPORARY_SAVE' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
+                className={`${status === 'TEMPORARY_SAVE' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-conic-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
               >
                 임시 저장된 견적 요청서
               </button>
@@ -125,15 +127,16 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                 onClick={() => {
                   setStatus('SUBMIT')
                   setSelectedProjectId(null)
+                  setCurrentPage(0) // 페이지네이션 초기화
                 }}
-                className={`${status === 'SUBMIT' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
+                className={`${status === 'SUBMIT' ? 'gap-x-4xs h3 text-conic-red-30 p-5xs border-conic-red-30 flex border-b-[2px]' : 'gap-x-4xs h3 text-gray-30 p-5xs flex'}`}
               >
                 작성 완료된 견적 요청서
               </button>
             </section>
           </section>
           <section className="gap-x-s flex">
-            <section className="gap-y-3xs flex w-full flex-col">
+            <section className="gap-y-3xs flex w-[323px] w-full flex-col">
               {projectData
                 ? projectData.map((project) => {
                     const isSelected = selectedProjectId === project.projectId
@@ -153,38 +156,36 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
                   })
                 : null}
             </section>
-            <section className="p-xs bg-gray-10 flex h-fit flex-col gap-y-[19px] rounded-[20px]">
-              {selectedProject ? (
-                <>
-                  <p className="sub1">{selectedProject.projectRegisterRequest.projectTitle}</p>
-                  <div className="flex w-full justify-between">
-                    <p className="body1 text-gray-50">제조 서비스 카테고리</p>
-                    <p className="sub2">{selectedProject.projectRegisterRequest.category}</p>
-                  </div>
-                  <div className="flex w-full justify-between">
-                    <p className="body1 text-gray-50">제조 분류</p>
-                    <p className="sub2">{selectedProject.projectRegisterRequest.categoryDetail}</p>
-                  </div>
-                  <div className="flex w-full justify-between">
-                    <p className="body1 text-gray-50">제조 용도</p>
-                    <p className="sub2">{selectedProject.projectRegisterRequest.purpose}</p>
-                  </div>
-                  <div className="flex flex-col gap-y-2">
-                    <p className="body1 text-gray-50">도면</p>
-                    {selectedProject.drawingUrls.map((drawingUrl, index) => {
-                      return (
-                        <DownloadItem
-                          key={index}
-                          customClassName={'w-[440px]'}
-                          ImageUrlName={extractImageInfo(drawingUrl).imageName}
-                          ImageUrl={drawingUrl}
-                        />
-                      )
-                    })}
-                  </div>
-                </>
-              ) : null}
-            </section>
+            {selectedProject ? (
+              <section className="p-xs bg-gray-10 flex h-fit w-full flex-col gap-y-[19px] rounded-[20px]">
+                <p className="sub1">{selectedProject.projectRegisterRequest.projectTitle}</p>
+                <div className="flex w-full justify-between">
+                  <p className="body1 text-gray-50">제조 서비스 카테고리</p>
+                  <p className="sub2">{selectedProject.projectRegisterRequest.category}</p>
+                </div>
+                <div className="flex w-full justify-between">
+                  <p className="body1 text-gray-50">제조 분류</p>
+                  <p className="sub2">{selectedProject.projectRegisterRequest.categoryDetail}</p>
+                </div>
+                <div className="flex w-full justify-between">
+                  <p className="body1 text-gray-50">제조 용도</p>
+                  <p className="sub2">{selectedProject.projectRegisterRequest.purpose}</p>
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <p className="body1 text-gray-50">도면</p>
+                  {selectedProject.drawingUrls.map((drawingUrl, index) => {
+                    return (
+                      <DownloadItem
+                        key={index}
+                        customClassName={'w-[440px] bg-white'}
+                        ImageUrlName={extractImageInfo(drawingUrl).imageName}
+                        ImageUrl={drawingUrl}
+                      />
+                    )
+                  })}
+                </div>
+              </section>
+            ) : null}
           </section>
           <Pagination
             currentPage={currentPage + 1}

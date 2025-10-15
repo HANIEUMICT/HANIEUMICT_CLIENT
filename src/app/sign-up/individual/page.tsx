@@ -22,6 +22,8 @@ interface IndividualSignUpPageProps {}
 
 const IndividualSignUpPage = ({}: IndividualSignUpPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const setAuthState = useAuthStore((state) => state.setState)
+
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
   const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
   const [isLoading, setIsLoading] = useState(false)
@@ -140,6 +142,12 @@ const IndividualSignUpPage = ({}: IndividualSignUpPageProps) => {
                     }
                   }
                   setIsModalOpen(true)
+                  setAuthState({
+                    individualSignUpData: {
+                      ...individualSignUpData,
+                      addressRegisterRequest: undefined,
+                    },
+                  })
                 } else if (response.result === 'ERROR') {
                   alert(response.error.message)
                 }

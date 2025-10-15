@@ -1,12 +1,22 @@
 import Image from 'next/image'
-import { DownloadIcon } from '@/assets/svgComponents'
+import { useEffect, useState } from 'react'
+import { DownloadIcon, ImgUploadIcon } from '@/assets/svgComponents'
 
 interface DownloadItemProps {
   ImageUrl: string | ArrayBuffer | null
   ImageUrlName: string
   customClassName?: string
 }
+
 export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }: DownloadItemProps) {
+  // 이미지 로드 에러 상태 관리
+  const [imageError, setImageError] = useState(false)
+
+  // ImageUrl이 변경될 때마다 에러 상태 초기화
+  useEffect(() => {
+    setImageError(false)
+  }, [ImageUrl])
+
   /**
    * 이미지 URL을 로컬에 다운로드
    * @param imageUrl - 다운로드할 이미지 URL
@@ -47,8 +57,9 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
       throw error
     }
   }
+
   /**
-   * URL에서 파일명 추출 (이전에 만든 함수 활용)
+   * URL에서 파일명 추출
    */
   const extractFileNameFromUrl = (url: string): string => {
     try {
@@ -86,7 +97,7 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
 
   // 이미지가 없으면 렌더링하지 않거나 placeholder 표시
   if (!imageSrc) {
-    return null // 또는 placeholder 컴포넌트
+    return null
   }
 
   return (
@@ -94,14 +105,25 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
       className={`${customClassName} border-gray-20 flex h-[80px] items-center justify-between rounded-[16px] border px-5`}
     >
       <div className="flex items-center gap-x-2">
-        <div className="relative h-[44px] w-[44px]">
-          <Image alt={imageSrc} src={imageSrc} fill className="rounded-[3px] object-cover" />
-        </div>
+        {imageSrc && !imageError ? (
+          <div className="relative h-[44px] w-[44px]">
+            <Image
+              alt={ImageUrlName}
+              src={imageSrc}
+              fill
+              className="rounded-[3px] object-cover"
+              onError={() => setImageError(true)}
+            />
+          </div>
+        ) : (
+          <ImgUploadIcon width={44} height={44} />
+        )}
+
         <div className="flex flex-col gap-y-2">
           <p className="body1">{ImageUrlName}</p>
         </div>
       </div>
-      <DownloadIcon onClick={handleDownload} width={20} height={20} />
+      <DownloadIcon className="cursor-pointer" onClick={handleDownload} width={20} height={20} />
     </div>
   )
 }

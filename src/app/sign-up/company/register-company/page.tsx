@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Header from '@/components/common/Header'
 import CompanyName from '@/components/sign-up/field/CompanyName'
 import BusinessNumber from '@/components/sign-up/field/BusinessNumber'
@@ -21,14 +21,12 @@ import SearchAddressModal from '@/components/common/SearchAddressModal'
 import { useModalStore } from '@/store/modalStore'
 import { postRegisterCompanyInfo } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
-import RegisterCompanyMemberAddAddressInfoModal from '@/components/modal/RegisterCompanyMemberAddAddressInfoModal'
 import RegisterCompanyAddAddressInfoModal from '@/components/modal/RegisterCompanyAddAddressInfoModal'
 import { AddressRegisterRequestType } from '@/type/common'
 
 export default function RegisterCompanyPage() {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [userData, setUserData] = useState()
   const companyLogoImageRef = useRef<HTMLInputElement | null>(null)
   const businessRegistrationFileRef = useRef<HTMLInputElement | null>(null)
   const bankbookCopyFileRef = useRef<HTMLInputElement | null>(null)
@@ -55,6 +53,25 @@ export default function RegisterCompanyPage() {
     detailAddress: '',
     default: false,
   })
+
+  // 페이지 언마운트 시 상태 초기화
+  useEffect(() => {
+    return () => {
+      // cleanup 함수: 컴포넌트가 언마운트될 때 실행
+      setState({
+        registerCompanyInfoData: undefined,
+      })
+      setTempAddressData({
+        addressName: '',
+        recipient: '',
+        phoneNumber: '',
+        postalCode: '',
+        streetAddress: '',
+        detailAddress: '',
+        default: false,
+      })
+    }
+  }, []) // 빈 의존성 배열로 마운트/언마운트 시에만 실행
 
   // 컴포넌트 내부에서
   const isFormValid = useMemo(() => {
@@ -88,10 +105,6 @@ export default function RegisterCompanyPage() {
       profileUrl?.trim() &&
       addressRegisterRequest
     )
-  }, [registerCompanyInfoData])
-
-  useEffect(() => {
-    console.log('registerCompanyInfoData', registerCompanyInfoData)
   }, [registerCompanyInfoData])
 
   const { uploadFiles } = useFileUpload()

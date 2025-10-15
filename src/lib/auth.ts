@@ -58,7 +58,7 @@ export const postRegisterCompanyInfo = async (data: CompanyInfoType): Promise<Ap
 export const postCompanySignUp = async (
   data: CompanySignUpType | undefined,
   companyId: number | undefined
-): Promise<ApiResponse<number>> => {
+): Promise<ApiResponse<SignUpResponseType>> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/auth/signup/company/${companyId}`, {
     method: 'POST',
     headers: {

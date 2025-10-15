@@ -12,8 +12,20 @@ export default function CompanyMemberEmail() {
   const [isCodeVerified, setIsCodeVerified] = useState<undefined | boolean>(undefined) // 인증번호 인증이 완료되었는지 확인하는 state
   const [code, setCode] = useState<string>()
 
+  // 이메일을 이미 사용중이라면 error
+  const [emailDuplicateError, setEmailDuplicateError] = useState<boolean | undefined>(undefined)
+
   // 로딩 상태 추가
   const [isEmailVerificationLoading, setIsEmailVerificationLoading] = useState<boolean>(false)
+
+  // 이메일 형식 검증 함수
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // 이메일이 유효한지 확인
+  const isEmailValid = companySignUpData?.email && validateEmail(companySignUpData.email)
 
   return (
     <div className="gap-y-4xs flex flex-col">
@@ -31,15 +43,19 @@ export default function CompanyMemberEmail() {
               },
             })
             setIsCodeVerified(undefined)
+            setHasCheckedCode(false) // 입력이 변경되면 인증코드 입력창 초기화
+            setEmailDuplicateError(undefined) // 입력이 변경되면 이메일 중복 에러 메시지 초기화
           }}
           inputBoxStyle={'default'}
           placeholder={'이메일을 입력해주세요.'}
           customClassName={'w-full'}
         />
+
         <Button1
           onClick={async () => {
             setIsCodeVerified(undefined)
-
+            setEmailDuplicateError(undefined)
+            setCode(undefined)
             if (companySignUpData && companySignUpData.email) {
               try {
                 // API 호출 전에 로딩 시작
@@ -47,8 +63,10 @@ export default function CompanyMemberEmail() {
                 const response = await postSendEmailCode(companySignUpData.email)
                 console.log('response', response)
 
-                if (response && response.data === '이메일 전송 성공') {
+                if (response.result === 'SUCCESS') {
                   setHasCheckedCode(true)
+                } else if (response.result === 'ERROR') {
+                  setEmailDuplicateError(true)
                 }
               } catch (error) {
                 console.error('이메일 전송 실패:', error)
@@ -60,7 +78,8 @@ export default function CompanyMemberEmail() {
             }
           }}
           styleSize={'lg'}
-          styleStatus={companySignUpData?.email?.length !== 0 ? 'default' : 'disabled'}
+          disabled={!isEmailValid}
+          styleStatus={isEmailValid ? 'default' : 'disabled'}
           styleType={'secondary'}
           customClassName={'whitespace-nowrap w-[120px]'}
         >
@@ -74,6 +93,7 @@ export default function CompanyMemberEmail() {
           )}
         </Button1>
       </section>
+      {emailDuplicateError ? <p className="body1 text-conic-red-40">이미 사용중인 이메일입니다.</p> : null}
       {hasCheckedCode && !isCodeVerified ? (
         <section className="gap-x-4xs flex">
           <Input
@@ -87,14 +107,30 @@ export default function CompanyMemberEmail() {
           />
           <Button1
             onClick={async () => {
+              setIsCodeVerified(undefined)
+              setEmailDuplicateError(undefined)
               if (companySignUpData && companySignUpData.email && code) {
-                const response = await postEmailValidation({
-                  email: companySignUpData.email,
-                  authCode: code,
-                })
-                console.log('response2', response)
-                if (response && response.data) {
-                  setIsCodeVerified(true)
+                try {
+                  // API 호출 전에 로딩 시작
+                  setIsEmailVerificationLoading(true)
+                  const response = await postEmailValidation({
+                    email: companySignUpData.email,
+                    authCode: code,
+                  })
+                  console.log('response', response)
+
+                  if (response.result === 'SUCCESS') {
+                    setHasCheckedCode(true)
+                    setIsCodeVerified(true)
+                  } else if (response.result === 'ERROR') {
+                    setEmailDuplicateError(true)
+                  }
+                } catch (error) {
+                  console.error('이메일 전송 실패:', error)
+                  // 에러 처리 (토스트 메시지 등)
+                } finally {
+                  // 성공/실패 관계없이 로딩 종료
+                  setIsEmailVerificationLoading(false)
                 }
               }
             }}

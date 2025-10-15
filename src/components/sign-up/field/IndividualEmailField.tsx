@@ -53,6 +53,7 @@ export default function IndividualEmailField() {
           onClick={async () => {
             setIsCodeVerified(undefined)
             setEmailDuplicateError(undefined)
+            setCode(undefined)
             if (individualSignUpData && individualSignUpData.email) {
               try {
                 // API 호출 전에 로딩 시작

@@ -49,7 +49,7 @@ export default function SignUpSuccessModal({ setIsModalOpen, role = 'INDIVIDUAL'
             onClick={() => {
               setIsModalOpen(false)
               if (role === 'INDIVIDUAL') {
-                router.push('/')
+                router.push('/create-project')
               } else {
                 router.push('/project')
               }

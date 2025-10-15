@@ -7,7 +7,7 @@ interface FinalBasicInfoProps {
 }
 
 export default function FinalBasicInfo({ setCurrentStep }: FinalBasicInfoProps) {
-  const finalProjectData = useProjectStore((state) => state.finalProjectData)
+  const projectData = useProjectStore((state) => state.projectData)
 
   return (
     <section className="border-gray-20 flex flex-col gap-y-[16px] rounded-[24px] border bg-white p-6">
@@ -15,31 +15,31 @@ export default function FinalBasicInfo({ setCurrentStep }: FinalBasicInfoProps) 
       <section className="flex flex-col gap-y-[16px]">
         <div className="flex flex-col gap-y-[12px]">
           <p className="sub2">프로젝트명</p>
-          <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.projectTitle}</p>
+          <p className="body1 text-gray-40">{projectData?.projectTitle}</p>
         </div>
         <div className="flex">
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">제조 분류 선택</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.category}</p>
+            <p className="body1 text-gray-40">{projectData?.category}</p>
           </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">제조 분류 - 세부 항목 선택</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.categoryDetail}</p>
+            <p className="body1 text-gray-40">{projectData?.categoryDetail}</p>
           </div>
         </div>
         <div className="flex w-[577px] flex-col gap-y-[12px]">
           <p className="sub2">제조 사항 상세 입력</p>
-          <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.categoryDetailEtc}</p>
+          <p className="body1 text-gray-40">{projectData?.categoryDetailEtc}</p>
         </div>
 
         <div className="flex">
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">제품 용도 선택</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.purpose}</p>
+            <p className="body1 text-gray-40">{projectData?.purpose}</p>
           </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">상세 제품 용도 입력</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.purposeEtc}</p>
+            <p className="body1 text-gray-40">{projectData?.purposeEtc}</p>
           </div>
         </div>
       </section>

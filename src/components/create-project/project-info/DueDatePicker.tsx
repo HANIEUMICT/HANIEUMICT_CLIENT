@@ -7,7 +7,9 @@ export default function DueDatePicker() {
   const setState = useProjectStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">납기일 선택</p>
+      <p className="sub2 flex gap-x-1">
+        납기일 선택<span className="text-conic-red-30">*</span>
+      </p>
       <Input
         type={'date'}
         value={projectData?.deadline ?? ''}

@@ -10,6 +10,8 @@ interface DrawingUploadFieldProps {
 
 export default function DrawingUploadField({ posterImgRef }: DrawingUploadFieldProps) {
   const fileInfoList = useProjectStore((state) => state.fileInfoList)
+  const responseDrawingUrls = useProjectStore((state) => state.responseDrawingUrls)
+
   const setState = useProjectStore((state) => state.setState)
 
   /**
@@ -90,10 +92,18 @@ export default function DrawingUploadField({ posterImgRef }: DrawingUploadFieldP
             id={'input-file'}
             ref={posterImgRef}
             name="input-file"
+            multiple
             onChange={handleImagePreview}
             className="hidden"
           />
         </div>
+        {responseDrawingUrls && (
+          <div className="flex flex-col gap-y-2">
+            {responseDrawingUrls.map((responseDrawingUrl) => (
+              <UploadItem key={responseDrawingUrl} ImageUrl={responseDrawingUrl} ImageUrlName={responseDrawingUrl} />
+            ))}
+          </div>
+        )}
         {fileInfoList && fileInfoList.length > 0 ? (
           <div className="flex flex-col gap-y-2">
             {fileInfoList.map((fileInfo) => (

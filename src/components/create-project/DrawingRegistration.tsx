@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import ProjectNameField from '@/components/create-project/drawing-registration/ProjectNameField'
 import ManufacturingCategorySelect from '@/components/create-project/drawing-registration/ManufacturingCategorySelect'
 import ProductPurposeSelect from '@/components/create-project/drawing-registration/ProductPurposeSelect'
@@ -9,6 +9,7 @@ import ManufacturingCategoryDetailSelect from '@/components/create-project/drawi
 import ManufacturingCategoryDetailEtcField from '@/components/create-project/drawing-registration/ManufacturingCategoryDetailEtcField'
 import { postProjectDraft } from '@/lib/project'
 import { UserDataType } from '@/type/common'
+import { useToast } from '@/provider/ToastProvider'
 
 interface DrawingRegistrationProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -32,6 +33,25 @@ export default function DrawingRegistration({ setCurrentStep }: DrawingRegistrat
       }
     }
   }, [])
+
+  const { showToast } = useToast()
+
+  const handleToastSuccess = () => {
+    showToast('성공적으로 저장되었습니다!', 'success')
+  }
+
+  const handleToastError = () => {
+    showToast('오류가 발생했습니다.', 'error')
+  }
+
+  const isFormValid = useMemo(() => {
+    return !!(
+      projectData.projectTitle?.trim() &&
+      projectData.category?.trim() &&
+      projectData.categoryDetail?.trim() &&
+      projectData.purpose?.trim()
+    )
+  }, [projectData.projectTitle, projectData.category, projectData.categoryDetail, projectData.purpose])
 
   useEffect(() => {
     console.log('projectId', projectId)
@@ -62,6 +82,7 @@ export default function DrawingRegistration({ setCurrentStep }: DrawingRegistrat
         </Button1>
         <div className="gap-x-2xs flex">
           <Button1
+            buttonType={'button'}
             onClick={async () => {
               if (projectId) {
                 const response = await postProjectDraft(projectId, {
@@ -69,11 +90,16 @@ export default function DrawingRegistration({ setCurrentStep }: DrawingRegistrat
                   submitStatus: 'TEMPORARY_SAVE',
                   memberId: userData?.memberId,
                 })
-                console.log('임시저장 성공', response)
+                if (response.result === 'SUCCESS') {
+                  handleToastSuccess()
+                } else if (response.result === 'ERROR') {
+                  handleToastError()
+                }
+                console.log('임시저장', response)
               }
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={'default'}
             styleSize={'lg'}
             styleType={'outline'}
           >
@@ -84,7 +110,8 @@ export default function DrawingRegistration({ setCurrentStep }: DrawingRegistrat
               setCurrentStep(4)
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            disabled={!isFormValid}
+            styleStatus={isFormValid ? 'default' : 'disabled'}
             styleType={'primary'}
             styleSize={'lg'}
           >

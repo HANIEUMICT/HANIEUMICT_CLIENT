@@ -95,7 +95,7 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
 
   const imageSrc = getImageSrc()
 
-  // 이미지가 없으면 렌더링하지 않거나 placeholder 표시
+  // 이미지가 없으면 렌더링하지 않음
   if (!imageSrc) {
     return null
   }
@@ -104,9 +104,11 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
     <div
       className={`${customClassName} border-gray-20 flex h-[80px] items-center justify-between rounded-[16px] border px-5`}
     >
-      <div className="flex items-center gap-x-2">
+      {/* 왼쪽 영역: 이미지 + 텍스트 */}
+      <div className="flex min-w-0 flex-1 items-center gap-x-2">
+        {/* 이미지 영역 */}
         {imageSrc && !imageError ? (
-          <div className="relative h-[44px] w-[44px]">
+          <div className="relative h-[44px] w-[44px] flex-shrink-0">
             <Image
               alt={ImageUrlName}
               src={imageSrc}
@@ -116,14 +118,21 @@ export default function DownloadItem({ ImageUrl, ImageUrlName, customClassName }
             />
           </div>
         ) : (
-          <ImgUploadIcon width={44} height={44} />
+          <div className="flex-shrink-0">
+            <ImgUploadIcon width={44} height={44} />
+          </div>
         )}
 
-        <div className="flex flex-col gap-y-2">
-          <p className="body1">{ImageUrlName}</p>
+        {/* 텍스트 영역 - 말줄임 처리 */}
+        <div className="flex min-w-0 flex-1 flex-col gap-y-2">
+          <p className="body1 truncate" title={ImageUrlName}>
+            {ImageUrlName}
+          </p>
         </div>
       </div>
-      <DownloadIcon className="cursor-pointer" onClick={handleDownload} width={20} height={20} />
+
+      {/* 다운로드 버튼 */}
+      <DownloadIcon className="ml-2 flex-shrink-0 cursor-pointer" onClick={handleDownload} width={20} height={20} />
     </div>
   )
 }

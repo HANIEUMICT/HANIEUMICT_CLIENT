@@ -13,12 +13,8 @@ import { useProjectStore } from '@/store/projectStore'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import ProjectLoadModal from '@/components/modal/ProjectLoadModal'
 import Button1 from '@/components/common/Button1'
-import Modal from '@/components/common/Modal'
-import Input from '@/components/common/Input'
-import { StarIcon, UploadIcon } from '@/assets/svgComponents'
-import UploadItem from '@/components/common/UploadItem'
 import { FileInfoType } from '@/type/common'
-import Image from 'next/image'
+import PriorityModal from '@/components/modal/PriorityModal'
 
 const steps = ['로그인', '기본정보', '도면등록', '프로젝트 정보', '배송 정보 입력', '견적서 생성']
 
@@ -33,12 +29,25 @@ export default function CreateProjectPage() {
 
   const setModalState = useModalStore((state) => state.setState)
   const projectData = useProjectStore((state) => state.projectData)
+  const responseDrawingUrls = useProjectStore((state) => state.responseDrawingUrls)
+
   const setState = useProjectStore((state) => state.setState)
 
-  //테스트용 modal
-  const [step, setStep] = useState(undefined)
+  const [isPriorityModalOpen, setIsPriorityModalOpen] = useState<boolean>(false)
 
   const fileInfoList = useProjectStore((state) => state.fileInfoList)
+
+  useEffect(() => {
+    if (responseDrawingUrls) {
+      setHasDrawingSelected(true)
+    }
+  }, [responseDrawingUrls])
+
+  useEffect(() => {
+    return () => {
+      setState({ projectData: undefined, fileInfoList: undefined, responseDrawingUrls: undefined })
+    }
+  }, [])
 
   /**
    * 파일 크기를 읽기 쉬운 형태로 변환
@@ -134,6 +143,7 @@ export default function CreateProjectPage() {
 
   return (
     <main className="flex flex-col items-center justify-center">
+      {isPriorityModalOpen && <PriorityModal />}
       {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
       {isEstimateModalOpen && <ProjectLoadModal setCurrentStep={setCurrentStep} />}
       <Header headerType={'DEFAULT'} />
@@ -162,7 +172,9 @@ export default function CreateProjectPage() {
           />
         )}
         {currentStep === 5 && <ShippingInfo setCurrentStep={setCurrentStep} />}
-        {currentStep === 6 && <EstimateCreator setCurrentStep={setCurrentStep} />}
+        {currentStep === 6 && (
+          <EstimateCreator setCurrentStep={setCurrentStep} setIsPriorityModalOpen={setIsPriorityModalOpen} />
+        )}
       </div>
     </main>
   )

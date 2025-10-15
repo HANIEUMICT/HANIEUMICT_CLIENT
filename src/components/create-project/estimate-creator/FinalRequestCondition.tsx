@@ -1,5 +1,4 @@
 import Button1 from '@/components/common/Button1'
-import UploadItem from '@/components/common/UploadItem'
 import { useProjectStore } from '@/store/projectStore'
 import { Dispatch, SetStateAction } from 'react'
 import DownloadItem from '@/components/common/DownloadItem'
@@ -10,7 +9,9 @@ interface FinalRequestConditionProps {
 }
 
 export default function FinalRequestCondition({ setCurrentStep }: FinalRequestConditionProps) {
-  const finalProjectData = useProjectStore((state) => state.finalProjectData)
+  const projectData = useProjectStore((state) => state.projectData)
+  const responseDrawingUrls = useProjectStore((state) => state.responseDrawingUrls)
+  const fileInfoList = useProjectStore((state) => state.fileInfoList)
 
   return (
     <section className="border-gray-20 flex flex-col gap-y-[16px] rounded-[24px] border bg-white p-6">
@@ -22,7 +23,7 @@ export default function FinalRequestCondition({ setCurrentStep }: FinalRequestCo
             <p className="body1 text-gray-40">프로젝트명</p>
           </div>
           <div className="flex flex-col gap-y-2">
-            {finalProjectData?.drawingUrls.map((drawingUrl) => {
+            {responseDrawingUrls?.map((drawingUrl) => {
               return (
                 <DownloadItem
                   key={drawingUrl}
@@ -31,32 +32,33 @@ export default function FinalRequestCondition({ setCurrentStep }: FinalRequestCo
                 />
               )
             })}
+            {fileInfoList?.map((fileInfo) => {
+              return <DownloadItem key={fileInfo.id} ImageUrlName={fileInfo.name} ImageUrl={fileInfo.url} />
+            })}
           </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">제조 수량</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.projectQuantity}</p>
+            <p className="body1 text-gray-40">{projectData?.projectQuantity}</p>
           </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">세부 요청사항</p>
-            <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.requests}</p>
+            <p className="body1 text-gray-40">{projectData?.requests}</p>
           </div>
           <div className="flex">
             <div className="flex w-[380px] w-[577px] flex-col gap-y-[12px]">
               <p className="sub2">납기일</p>
               <div className="flex flex-col gap-y-1">
-                <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.deadline}</p>
-                <p className="body1 text-gray-40">
-                  {finalProjectData?.projectRegisterRequest.canDeadlineChange ? '협의가능' : null}
-                </p>
+                <p className="body1 text-gray-40">{projectData?.deadline}</p>
+                <p className="body1 text-gray-40">{projectData?.canDeadlineChange ? '협의가능' : null}</p>
               </div>
             </div>
             <div className="flex w-[380px] w-[577px] flex-col gap-y-[12px]">
               <p className="sub2">추정 예산</p>
-              <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.requestEstimate}</p>
+              <p className="body1 text-gray-40">{projectData?.requestEstimate}</p>
             </div>
             <div className="flex w-[380px] w-[577px] flex-col gap-y-[12px]">
               <p className="sub2">입찰 마감일</p>
-              <p className="body1 text-gray-40">{finalProjectData?.projectRegisterRequest.publicUntil}</p>
+              <p className="body1 text-gray-40">{projectData?.publicUntil}</p>
             </div>
           </div>
         </div>

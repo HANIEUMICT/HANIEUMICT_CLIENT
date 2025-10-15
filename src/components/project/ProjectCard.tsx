@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { ProjectResponseType } from '@/type/project'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
+import { useModalStore } from '@/store/modalStore'
 
 interface ProjectCardProps extends ProjectResponseType {
   setSelectedProjectId?: Dispatch<SetStateAction<number | undefined>>
@@ -13,11 +14,11 @@ export default function ProjectCard({
   projectRegisterRequest,
   projectId,
   drawingUrls,
-  modifiedAt,
   setSelectedProjectId,
   setIsCopyrightAgreementModalOpen,
 }: ProjectCardProps) {
   const router = useRouter()
+  const setState = useModalStore((state) => state.setState)
   return (
     <div
       onClick={(e) => {
@@ -29,7 +30,7 @@ export default function ProjectCard({
         }
         e.stopPropagation()
       }}
-      className="gap-y-4xs py-xs flex cursor-pointer flex-col rounded-[24px] bg-white px-5 transition hover:scale-105"
+      className="gap-y-4xs py-xs hover:border-conic-red-30 flex cursor-pointer flex-col rounded-[24px] bg-white px-5 transition hover:border"
     >
       <h3 className="h3">{projectRegisterRequest.projectTitle}</h3>
       <section className="gap-x-2xs flex">
@@ -53,7 +54,7 @@ export default function ProjectCard({
             </section>
             <div className="flex w-full items-center justify-between">
               <p className="body2 text-gray-40">납기일</p>
-              <p className="button-sm text-gray-50">2025. 08. 01(화)</p>
+              <p className="button-sm text-gray-50">{projectRegisterRequest.deadline}</p>
             </div>
             <div className="flex w-full items-center justify-between">
               <p className="body2 text-gray-40">추정액</p>
@@ -71,7 +72,13 @@ export default function ProjectCard({
           <GrayFavoriteIcon width={20} height={18} />
           <p className="button-sm text-gray-30">123</p>
         </div>
-        <button className="px-2xs border-gray-20 button-sm text-gray-40 flex h-[36px] w-fit items-center justify-center gap-x-2 rounded-full border">
+        <button
+          onClick={(e) => {
+            e.stopPropagation() // 부모 클릭 이벤트 전파 중단
+            setState({ isServicePreparingModalOpen: true })
+          }}
+          className="px-2xs border-gray-20 button-sm text-gray-40 flex h-[36px] w-fit cursor-pointer items-center justify-center gap-x-2 rounded-full border"
+        >
           <ChatIcon width={24} height={19} />
           <p>채팅하기</p>
         </button>

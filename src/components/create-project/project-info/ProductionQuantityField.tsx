@@ -8,7 +8,9 @@ export default function ProductionQuantityField({}: ProductionQuantityFieldProps
   const setState = useProjectStore((state) => state.setState)
   return (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">제조 수량</p>
+      <p className="sub2">
+        제조 수량 <span className="text-conic-red-30">*</span>
+      </p>
       <Input
         type="number"
         value={String(projectData?.projectQuantity) ?? ''}

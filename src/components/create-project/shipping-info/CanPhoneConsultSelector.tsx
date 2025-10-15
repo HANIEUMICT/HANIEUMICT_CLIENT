@@ -6,7 +6,9 @@ export default function CanPhoneConsultSelector() {
   const setState = useProjectStore((state) => state.setState)
   return (
     <section className="flex flex-col gap-y-2">
-      <p className="sub2">전화 상담 여부</p>
+      <p className="sub2 flex gap-x-1">
+        전화 상담 여부 <span className="text-conic-red-30">*</span>
+      </p>
       <div className="gap-x-3xs flex">
         <Button1
           onClick={() => {

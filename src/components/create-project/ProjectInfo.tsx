@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useProjectStore } from '@/store/projectStore'
 import Button1 from '@/components/common/Button1'
 import HasDrawingSelector from '@/components/create-project/project-info/HasDrawingSelector'
@@ -12,6 +12,7 @@ import { postProjectDraft } from '@/lib/project'
 import { UserDataType } from '@/type/common'
 import { useFileUpload } from '@/hooks/useFileUpload'
 import { useProjectImageUpload } from '@/hooks/useProjectImageUpload'
+import { useToast } from '@/provider/ToastProvider'
 
 interface ProjectInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -28,6 +29,7 @@ export default function ProjectInfo({
   const projectData = useProjectStore((state) => state.projectData)
   const fileInfoList = useProjectStore((state) => state.fileInfoList)
   const projectId = useProjectStore((state) => state.projectId)
+  const responseDrawingUrls = useProjectStore((state) => state.responseDrawingUrls)
 
   const [userData, setUserData] = useState<UserDataType | null>(null)
   const { uploadFiles } = useFileUpload()
@@ -41,6 +43,25 @@ export default function ProjectInfo({
       console.log('업로드된 URL들:', result.uploadedUrls)
     }
   }
+
+  const { showToast } = useToast()
+
+  const handleToastSuccess = () => {
+    showToast('성공적으로 저장되었습니다!', 'success')
+  }
+
+  const handleToastError = () => {
+    showToast('오류가 발생했습니다.', 'error')
+  }
+
+  const isFormValid = useMemo(() => {
+    return !!(
+      projectData.projectQuantity != 0 &&
+      projectData.deadline?.trim() &&
+      projectData.requestEstimate != 0 &&
+      projectData.publicUntil?.trim()
+    )
+  }, [projectData.projectQuantity, projectData.deadline, projectData.requestEstimate, projectData.publicUntil])
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -97,7 +118,12 @@ export default function ProjectInfo({
                   submitStatus: 'TEMPORARY_SAVE',
                   memberId: userData?.memberId,
                 })
-                console.log('임시저장 성공', response)
+                if (response.result === 'SUCCESS') {
+                  handleToastSuccess()
+                } else if (response.result === 'ERROR') {
+                  handleToastError()
+                }
+                console.log('임시저장', response)
 
                 // 3. 파일 업로드 실행
                 const uploadSuccess = await handleUpload()
@@ -105,7 +131,7 @@ export default function ProjectInfo({
               }
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={'default'}
             styleSize={'lg'}
             styleType={'outline'}
           >
@@ -116,7 +142,8 @@ export default function ProjectInfo({
               setCurrentStep(5)
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            disabled={!isFormValid}
+            styleStatus={isFormValid ? 'default' : 'disabled'}
             styleType={'primary'}
             styleSize={'lg'}
           >

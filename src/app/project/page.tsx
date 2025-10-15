@@ -8,7 +8,7 @@ import { SearchIcon } from '@/assets/svgComponents'
 import { useEffect, useState } from 'react'
 import { getProject } from '@/lib/project'
 import { ProjectResponseType } from '@/type/project'
-import { ProposalStatusType } from '../../type/proposal'
+import { ProposalStatusType } from '@/type/proposal'
 import CopyrightAgreementModal from '../../components/modal/CopyrightAgreementModal'
 
 export default function ProjectPage() {
@@ -32,7 +32,7 @@ export default function ProjectPage() {
   useEffect(() => {
     const loadArchiveData = async () => {
       try {
-        const response = await getProject(null, status, currentPage, 10)
+        const response = await getProject(null, status, currentPage, 9)
 
         console.log('API 전체 응답:', response)
 

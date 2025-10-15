@@ -99,6 +99,7 @@ export default function ProjectLoadModal({ setCurrentStep }: ProjectLoadModalPro
       projectData: selectedProject.projectRegisterRequest,
       finalProjectData: selectedProject,
       projectId: selectedProject.projectId,
+      responseDrawingUrls: selectedProject.drawingUrls,
     })
 
     console.log('견적서 불러오기:', selectedProject)

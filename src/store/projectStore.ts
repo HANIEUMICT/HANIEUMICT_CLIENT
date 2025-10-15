@@ -7,13 +7,15 @@ interface SetProjectStoreType {
   finalProjectData?: ProjectResponseType | undefined
   projectId?: number | undefined
   fileInfoList?: FileInfoType[] | undefined
+  responseDrawingUrls?: string[] | undefined
 }
 
 interface ProjectStoreType {
   projectData: ProjectType
-  fileInfoList: FileInfoType[] | undefined
   finalProjectData: ProjectResponseType | undefined
   projectId: number | undefined
+  fileInfoList: FileInfoType[] | undefined
+  responseDrawingUrls: string[] | undefined
   setState: (params: SetProjectStoreType) => void
 }
 
@@ -38,9 +40,10 @@ export const useProjectStore = create<ProjectStoreType>((set) => ({
     projectBidStatus: 'PRE_BID',
     canDeadlineChange: false,
   },
-  fileInfoList: undefined,
   finalProjectData: undefined,
   projectId: undefined,
+  fileInfoList: undefined,
+  responseDrawingUrls: undefined,
   setState: (params: SetProjectStoreType) => {
     set((state) => ({
       ...state,

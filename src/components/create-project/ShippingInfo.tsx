@@ -1,31 +1,19 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useProjectStore } from '@/store/projectStore'
 import Button1 from '@/components/common/Button1'
 import VisibilitySelect from '@/components/create-project/shipping-info/VisibilitySelect'
 import CanPhoneConsultSelector from '@/components/create-project/shipping-info/CanPhoneConsultSelector'
 import DeliveryAddressField from '@/components/create-project/shipping-info/DeliveryAddressField'
-import { postProjectDraft, postProjectFinal, postProjectInit } from '@/lib/project'
+import { postProjectDraft } from '@/lib/project'
 import { UserDataType } from '@/type/common'
-import { useFileUpload } from '@/hooks/useFileUpload'
 
 interface ShippingInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
 }
 export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
   const projectData = useProjectStore((state) => state.projectData)
-  const fileInfoList = useProjectStore((state) => state.fileInfoList)
-  const finalProjectData = useProjectStore((state) => state.finalProjectData)
   const projectId = useProjectStore((state) => state.projectId)
-
-  const setState = useProjectStore((state) => state.setState)
-
   const [userData, setUserData] = useState<UserDataType | null>(null)
-
-  const { uploadFiles } = useFileUpload()
-
-  useEffect(() => {
-    console.log('projectId', projectId)
-  }, [])
 
   // localStorage에서 userData 가져오기 (클라이언트 사이드에서만)
   useEffect(() => {
@@ -42,47 +30,13 @@ export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
     }
   }, [])
 
-  const handleProjectSubmit = async () => {
-    if (!userData?.memberId) {
-      console.error('사용자 정보가 없습니다.')
-      return
-    }
-    if (!projectId) {
-      console.error('프로젝트 아이디가 없습니다.')
-      return
-    }
-
-    try {
-      // 2. 프로젝트 최종 생성 (finalProjectData가 없을 때만 요청)
-      if (!finalProjectData) {
-        const res = await postProjectFinal(projectId, {
-          ...projectData,
-          memberId: userData.memberId,
-          projectBidStatus: 'PRE_BID',
-        })
-        console.log('완성된 견적서', res)
-        setState({ finalProjectData: res.data })
-        console.log('프로젝트(공고) 생성 완료', res)
-      } else {
-        console.log('이미 최종 프로젝트 데이터가 존재합니다. 다시 생성하지 않습니다.')
-      }
-
-      // 3. 파일 업로드 실행
-      const uploadSuccess = await uploadFiles(projectId, fileInfoList)
-
-      if (uploadSuccess) {
-        console.log('모든 파일 업로드 완료!')
-      } else {
-        console.log('일부 파일 업로드 실패')
-        // 파일 업로드 실패해도 다음 단계로 진행할지 결정
-      }
-
-      // 4. 다음 단계로 이동
-      setCurrentStep(6)
-    } catch (error) {
-      console.error('프로젝트 생성 및 파일 업로드 실패:', error)
-    }
-  }
+  const isFormValid = useMemo(() => {
+    return !!(
+      projectData.projectStatus?.trim() &&
+      projectData.deliveryAddress?.trim() &&
+      projectData.canPhoneConsult !== undefined
+    )
+  }, [projectData.projectStatus, projectData.deliveryAddress, projectData.canPhoneConsult])
 
   return (
     <div className="gap-y-l flex flex-col">
@@ -124,16 +78,19 @@ export default function ShippingInfo({ setCurrentStep }: ShippingInfoProps) {
               }
             }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={'default'}
             styleSize={'lg'}
             styleType={'outline'}
           >
             임시저장
           </Button1>
           <Button1
-            onClick={handleProjectSubmit}
+            onClick={() => {
+              setCurrentStep(6)
+            }}
             customClassName={'h-[52px] w-[260px]'}
-            styleStatus={'disabled'}
+            styleStatus={isFormValid ? 'default' : 'disabled'}
+            disabled={!isFormValid}
             styleType={'primary'}
             styleSize={'lg'}
           >

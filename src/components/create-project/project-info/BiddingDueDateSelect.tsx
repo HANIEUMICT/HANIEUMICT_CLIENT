@@ -10,7 +10,9 @@ export default function BiddingDueDateSelect({}: BiddingDueDateSelectProps) {
   const [noPublicUntil, setNoPublicUntil] = useState(false)
   return (
     <div className="gap-y-4xs flex flex-col">
-      <p className="sub2">입찰 마감일 선택</p>
+      <p className="sub2 flex gap-x-1">
+        입찰 마감일 선택<span className="text-conic-red-30">*</span>
+      </p>
       {!noPublicUntil && (
         <Input
           value={projectData?.publicUntil ?? ''}

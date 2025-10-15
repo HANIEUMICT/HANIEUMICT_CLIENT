@@ -13,7 +13,7 @@ export interface ProjectType {
   requestEstimate?: number | null
   publicUntil?: string | null
   projectStatus?: string | null
-  canPhoneConsult?: boolean
+  canPhoneConsult?: boolean | undefined
   deliveryAddress?: string | null
   projectBidStatus: 'PRE_BID' | 'BID_CLOSED' | 'BIDDING' | null
   submitStatus?: string | null

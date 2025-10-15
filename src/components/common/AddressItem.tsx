@@ -3,8 +3,8 @@ import { AddressRegisterRequestType } from '@/type/common'
 
 interface AddressItemProps extends AddressRegisterRequestType {
   isDefault: boolean | undefined
-  onDelete: () => void
-  onEdit: () => void
+  onDelete?: () => void
+  onEdit?: () => void
 }
 
 export default function AddressItem({
@@ -29,24 +29,28 @@ export default function AddressItem({
             ) : null}
           </div>
           <div className="flex h-fit gap-x-3">
-            <Button1
-              onClick={onDelete}
-              styleType={'secondary'}
-              styleSize={'sm'}
-              styleStatus={'disabled'}
-              customClassName={'text-gray-40 w-[80px] rounded-full h-[36px]'}
-            >
-              삭제
-            </Button1>
-            <Button1
-              onClick={onEdit}
-              styleType={'outline'}
-              styleSize={'sm'}
-              styleStatus={'disabled'}
-              customClassName={'text-gray-40 w-[80px] rounded-full h-[36px]'}
-            >
-              수정
-            </Button1>
+            {onDelete ? (
+              <Button1
+                onClick={onDelete}
+                styleType={'secondary'}
+                styleSize={'sm'}
+                styleStatus={'disabled'}
+                customClassName={'text-gray-40 w-[80px] rounded-full h-[36px]'}
+              >
+                삭제
+              </Button1>
+            ) : null}
+            {onEdit ? (
+              <Button1
+                onClick={onEdit}
+                styleType={'outline'}
+                styleSize={'sm'}
+                styleStatus={'disabled'}
+                customClassName={'text-gray-40 w-[80px] rounded-full h-[36px]'}
+              >
+                수정
+              </Button1>
+            ) : null}
           </div>
         </div>
 

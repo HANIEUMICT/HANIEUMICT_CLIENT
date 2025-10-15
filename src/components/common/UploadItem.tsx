@@ -1,5 +1,6 @@
 import Image from 'next/image'
-import { AshbnIcon, DownloadIcon } from '@/assets/svgComponents'
+import { useState, useEffect } from 'react'
+import { AshbnIcon, DownloadIcon, ImgUploadIcon } from '@/assets/svgComponents'
 
 interface UploadItemProps {
   ImageUrl: string | ArrayBuffer | null
@@ -16,6 +17,13 @@ export default function UploadItem({
   onRemove,
   customClassName = 'w-[624px]',
 }: UploadItemProps) {
+  const [imageError, setImageError] = useState(false)
+
+  // ImageUrl이 변경될 때마다 에러 상태 초기화
+  useEffect(() => {
+    setImageError(false)
+  }, [ImageUrl])
+
   const getImageSrc = (): string | null => {
     if (typeof ImageUrl === 'string') {
       return ImageUrl
@@ -30,25 +38,46 @@ export default function UploadItem({
 
   const imageSrc = getImageSrc()
 
-  // 이미지가 없으면 렌더링하지 않거나 placeholder 표시
+  // 이미지가 없으면 렌더링하지 않음
   if (!imageSrc) {
-    return null // 또는 placeholder 컴포넌트
+    return null
   }
 
   return (
     <div
       className={`${customClassName} border-gray-20 flex h-[80px] items-center justify-between rounded-[16px] border px-5`}
     >
-      <div className="flex items-center gap-x-2">
-        <div className="relative h-[44px] w-[44px]">
-          <Image alt={ImageUrlName || '업로드된 이미지'} src={imageSrc} fill className="rounded-[3px] object-cover" />
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <p className="body1">{ImageUrlName}</p>
+      <div className="flex min-w-0 flex-1 items-center gap-x-2">
+        {/* 이미지 영역 */}
+        {imageSrc && !imageError ? (
+          <div className="relative h-[44px] w-[44px] flex-shrink-0">
+            <Image
+              alt={ImageUrlName}
+              src={imageSrc}
+              fill
+              className="rounded-[3px] object-cover"
+              onError={() => setImageError(true)}
+            />
+          </div>
+        ) : (
+          <div className="flex-shrink-0">
+            <ImgUploadIcon width={44} height={44} />
+          </div>
+        )}
+
+        {/* 텍스트 영역 - 말줄임 처리 */}
+        <div className="flex min-w-0 flex-1 flex-col gap-y-2">
+          <p className="body1 truncate" title={ImageUrlName}>
+            {ImageUrlName}
+          </p>
           {imageSize ? <p className="caption text-gray-50">{imageSize}</p> : null}
         </div>
       </div>
-      <AshbnIcon onClick={onRemove} width={20} height={20} />
+
+      {/* 삭제 버튼 */}
+      {onRemove ? (
+        <AshbnIcon onClick={onRemove} width={20} height={20} className="flex-shrink-0 cursor-pointer" />
+      ) : null}
     </div>
   )
 }

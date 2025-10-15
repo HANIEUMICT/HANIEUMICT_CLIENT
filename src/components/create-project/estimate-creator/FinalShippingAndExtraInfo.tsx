@@ -7,7 +7,7 @@ interface FinalShippingAndExtraInfoProps {
 }
 
 export default function FinalShippingAndExtraInfo({ setCurrentStep }: FinalShippingAndExtraInfoProps) {
-  const finalProjectData = useProjectStore((state) => state.finalProjectData)
+  const projectData = useProjectStore((state) => state.projectData)
 
   const convertProjectStatus = (projectStatus: string | undefined | null | 'PUBLIC' | 'PRIVATE' | 'PROTECTED') => {
     switch (projectStatus) {
@@ -27,15 +27,11 @@ export default function FinalShippingAndExtraInfo({ setCurrentStep }: FinalShipp
         <div className="flex">
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">견적서 공개 여부</p>
-            <p className="body1 text-gray-40">
-              {convertProjectStatus(finalProjectData?.projectRegisterRequest.projectStatus)}
-            </p>
+            <p className="body1 text-gray-40">{convertProjectStatus(projectData?.projectStatus)}</p>
           </div>
           <div className="flex w-[577px] flex-col gap-y-[12px]">
             <p className="sub2">전화 상담 여부</p>
-            <p className="body1 text-gray-40">
-              {finalProjectData?.projectRegisterRequest.canPhoneConsult ? '가능' : '불가능'}
-            </p>
+            <p className="body1 text-gray-40">{projectData?.canPhoneConsult ? '가능' : '불가능'}</p>
           </div>
         </div>
         <div className="flex w-[577px] w-full flex-col gap-y-[12px]">
@@ -44,7 +40,7 @@ export default function FinalShippingAndExtraInfo({ setCurrentStep }: FinalShipp
             <p className="sub1">기업명</p>
             <div className="gap-x-4xs flex">
               <p className="text-gray-40 body1">주소</p>
-              <p className="sub2 text-gray-50">{finalProjectData?.projectRegisterRequest.deliveryAddress}</p>
+              <p className="sub2 text-gray-50">{projectData?.deliveryAddress}</p>
             </div>
           </div>
         </div>

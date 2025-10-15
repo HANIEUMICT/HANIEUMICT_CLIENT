@@ -3,15 +3,29 @@
 import Header from '@/components/common/Header'
 import SummaryCompanyCard from '@/components/factory/detail/SummaryCompanyCard'
 import CompanyInfo from '@/components/factory/detail/CompanyInfo'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import Review from '@/components/factory/detail/Review'
 import CompanyDetailCardModal from '@/components/modal/CompanyDetailCardModal'
 import { useModalStore } from '@/store/modalStore'
+import { getCompanyDetail } from '@/lib/company'
+import { CompanyDetailInfoType } from '@/type/company'
+import { usePathname } from 'next/navigation'
 
 export default function FactoryDetailPage() {
+  const pathName = usePathname()
   const [menuType, setMenuType] = useState<'공장 정보' | '리뷰'>('공장 정보')
   const [isCompanyDetailCardModalOpen, setIsCompanyDetailCardModalOpen] = useState(false)
+  const [companyDetailData, setCompanyDetailData] = useState<CompanyDetailInfoType | undefined>()
+
+  useEffect(() => {
+    getCompanyDetail(6).then((response) => {
+      if (response.result === 'SUCCESS') {
+        setCompanyDetailData(response.data)
+        console.log('기업 상세 정보 조회', response.data)
+      }
+    })
+  }, [])
 
   return (
     <main className="flex flex-col items-center justify-center">
@@ -20,9 +34,9 @@ export default function FactoryDetailPage() {
       )}
       <Header headerType={'DEFAULT'} />
       <div className="mt-[123px] flex w-[1218px] flex-col items-center justify-center gap-y-[40px]">
-        <SummaryCompanyCard />
+        <SummaryCompanyCard companyDetailData={companyDetailData} />
         <Menu setMenuType={setMenuType} menuType={menuType} />
-        {menuType === '공장 정보' ? <CompanyInfo /> : null}
+        {menuType === '공장 정보' ? <CompanyInfo companyDetailData={companyDetailData} /> : null}
         {menuType === '리뷰' ? <Review /> : null}
       </div>
     </main>
@@ -44,6 +58,7 @@ function Menu({
         {menuList.map((menu) => {
           return (
             <button
+              key={menu}
               onClick={() => {
                 setMenuType(menu)
               }}

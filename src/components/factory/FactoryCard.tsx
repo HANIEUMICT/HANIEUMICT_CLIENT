@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { FavoriteIcon } from '@/assets/svgComponents'
+import { useRouter } from 'next/navigation'
 
 interface FactoryCardProps {
   imageUrl: string
@@ -22,8 +23,15 @@ export default function FactoryCard({
   responseTime,
   likeCount,
 }: FactoryCardProps) {
+  const router = useRouter()
+
   return (
-    <div className="border-gray-20 h-[318px] w-[290px] rounded-[16px] border">
+    <div
+      onClick={() => {
+        router.push('/1')
+      }}
+      className="border-gray-20 h-[318px] w-[290px] cursor-pointer rounded-[16px] border"
+    >
       <section className="relative h-[120px] w-[290px] rounded-[16px]">
         <Image src={imageUrl} alt="사진" fill className="rounded-t-[16px] object-cover"></Image>
         {/* 아이콘, 좋아요 갯수 */}

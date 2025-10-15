@@ -59,9 +59,15 @@ const Header = ({ headerType = 'DEFAULT' }: HeaderProps) => {
                 <Link href={'/project'} className={pathName === '/project' ? 'text-conic-red-30' : 'text-gray-30'}>
                   견적서
                 </Link>
-                <Link href={'/chat'} className={pathName === '/chat' ? 'text-conic-red-30' : 'text-gray-30'}>
+                <button
+                  onClick={() => {
+                    setState({ isServicePreparingModalOpen: true })
+                    // router.push('/chat')
+                  }}
+                  className={pathName === '/chat' ? 'text-conic-red-30' : 'text-gray-30'}
+                >
                   채팅
-                </Link>
+                </button>
               </div>
             </section>
             <section className="gap-x-l flex items-center">

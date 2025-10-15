@@ -6,6 +6,8 @@ interface SetModalStoreType {
   isAddAddressInfoModalOpen?: boolean //주소 모달
   isServicePreparingModalOpen?: boolean
   isTranslationModalOpen?: boolean
+  //로그인 만료되어있을 때 띄우는 state
+  isTokenExpiredModalOpen?: boolean
 }
 
 interface ModalStoreType {
@@ -14,6 +16,7 @@ interface ModalStoreType {
   isAddAddressInfoModalOpen?: boolean //주소 모달
   isServicePreparingModalOpen: boolean
   isTranslationModalOpen: boolean
+  isTokenExpiredModalOpen: boolean
   setState: (params: SetModalStoreType) => void
 }
 
@@ -23,6 +26,7 @@ export const useModalStore = create<ModalStoreType>((set) => ({
   isAddAddressInfoModalOpen: false, //주소 모달
   isServicePreparingModalOpen: false,
   isTranslationModalOpen: false,
+  isTokenExpiredModalOpen: false,
   setState: (params: SetModalStoreType) => {
     set((state) => ({
       ...state,

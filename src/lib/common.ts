@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 
 import { ApiResponse } from '@/type/common'
 import { LoginResponseType } from '@/type/auth'
+import { useModalStore } from '@/store/modalStore'
 
 /**
  * 이메일 코드 전송
@@ -56,6 +57,7 @@ export const authorizedFetch = async (input: RequestInfo, init: RequestInit = {}
     credentials: 'include',
   })
 
+  // 401 에러: 인증 실패 (토큰 만료)
   if (response.status === 401 && retry) {
     const refreshed = await refreshAccessToken()
     if (refreshed) {
@@ -63,19 +65,36 @@ export const authorizedFetch = async (input: RequestInfo, init: RequestInit = {}
     }
   }
 
+  // 403 에러: 권한 없음 (토큰 유효하지 않음)
+  if (response.status === 403) {
+    console.warn('🔐 403 Forbidden: 접근 권한이 없습니다')
+    useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
+    Cookies.remove('accessToken')
+    Cookies.remove('refreshToken')
+  }
+
   return response
 }
+
 /**
  * refreshToken을 이용해 accessToken 재발급
  */
 const refreshAccessToken = async (): Promise<boolean> => {
   try {
+    const refreshToken = Cookies.get('refreshToken')
+    if (!refreshToken) {
+      useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
+      console.warn('🔐 Refresh token이 없습니다')
+      return false
+    }
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/auth/refresh`, {
       method: 'POST',
-      credentials: 'include', // refreshToken이 쿠키에 있다고 가정
+      credentials: 'include',
     })
 
     if (!res.ok) {
+      useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
       console.warn('🔐 Refresh token 만료 또는 유효하지 않음')
       Cookies.remove('accessToken')
       Cookies.remove('refreshToken')
@@ -85,7 +104,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
     const response: ApiResponse<LoginResponseType> = await res.json()
 
     // API 응답이 성공이고 데이터가 있는 경우
-    if (response.result === 'success' && response.data) {
+    if (response.result === 'SUCCESS' && response.data) {
       const { accessToken, refreshToken } = response.data
 
       if (accessToken && refreshToken) {
@@ -93,15 +112,19 @@ const refreshAccessToken = async (): Promise<boolean> => {
         Cookies.set('refreshToken', refreshToken)
         return true
       }
+    } else if (response.result === 'ERROR') {
+      useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
     }
 
     // API 응답이 실패인 경우
     console.warn('🔐 토큰 갱신 API 응답 실패:', response.error?.message)
+    useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
     Cookies.remove('accessToken')
     Cookies.remove('refreshToken')
     return false
   } catch (e) {
     console.error('🚨 토큰 갱신 실패:', e)
+    useModalStore.getState().setState({ isTokenExpiredModalOpen: true })
     Cookies.remove('accessToken')
     Cookies.remove('refreshToken')
     return false

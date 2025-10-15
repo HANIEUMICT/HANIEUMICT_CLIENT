@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import Review from '@/components/factory/detail/Review'
 import CompanyDetailCardModal from '@/components/modal/CompanyDetailCardModal'
+import { useModalStore } from '@/store/modalStore'
 
 export default function FactoryDetailPage() {
   const [menuType, setMenuType] = useState<'공장 정보' | '리뷰'>('공장 정보')
@@ -36,6 +37,7 @@ function Menu({
   setMenuType: Dispatch<SetStateAction<'공장 정보' | '리뷰'>>
 }) {
   const menuList: ('공장 정보' | '리뷰')[] = ['공장 정보', '리뷰']
+  const setModalState = useModalStore((state) => state.setState)
   return (
     <div className="flex w-full items-center justify-between">
       <div className="gap-x-3xs flex">
@@ -53,7 +55,14 @@ function Menu({
         })}
       </div>
       <div className="flex gap-x-3">
-        <Button1 onClick={() => {}} styleType={'outline'} styleStatus={'default'} styleSize={'md'}>
+        <Button1
+          onClick={() => {
+            setModalState({ isServicePreparingModalOpen: true })
+          }}
+          styleType={'outline'}
+          styleStatus={'default'}
+          styleSize={'md'}
+        >
           CONIC AI 평가 상세 보기
         </Button1>
         <Button1 onClick={() => {}} styleType={'primary'} styleStatus={'default'} styleSize={'md'}>

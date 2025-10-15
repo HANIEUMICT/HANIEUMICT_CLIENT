@@ -3,6 +3,7 @@
 import Header from '@/components/common/Header'
 import FactoryCard from '@/components/factory/FactoryCard'
 import Tag from '@/components/common/Tag'
+import { useModalStore } from '@/store/modalStore'
 
 export default function Home() {
   return (
@@ -204,13 +205,21 @@ export default function Home() {
 }
 
 function RecommendedTag({}: {}) {
+  const setModalState = useModalStore((state) => state.setState)
   return (
     <div className="gap-x-4xs flex w-full">
       {/* TODO: 나중에 MAP */}
       <Tag tagContent={'신뢰도 있는 기업'} tagColor={'bg-conic-orange-40'} tagNumber={1}></Tag>
       <Tag tagContent={'빠른 답변 속도'} tagColor={'bg-conic-orange-30'} tagNumber={2}></Tag>
       <Tag tagContent={'합리적인 가격 거래'} tagColor={'bg-conic-orange-20'} tagNumber={3}></Tag>
-      <button className="text-gray-40 button-sm">추천 우선순위 변경</button>
+      <button
+        onClick={() => {
+          setModalState({ isServicePreparingModalOpen: true })
+        }}
+        className="text-gray-40 button-sm"
+      >
+        추천 우선순위 변경
+      </button>
     </div>
   )
 }

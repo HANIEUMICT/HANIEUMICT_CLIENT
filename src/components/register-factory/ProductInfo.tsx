@@ -1,15 +1,14 @@
-import Input from '@/components/common/Input'
 import Button1 from '@/components/common/Button1'
 import { useRegisterFactoryStore } from '@/store/register-factory'
 import { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
 import { RegisterFactoryPortfolioType } from '@/type/register-factory'
-import { generateId } from '@/utils/upload'
 import { FileInfoType } from '@/type/common'
-import { CancelIcon, ImgUploadIcon, PlusIcon } from '@/assets/svgComponents'
+import { CancelIcon, PlusIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
-import ImageUploadItem from '@/components/common/ImageUploadItem'
 import { uploadFiles } from '@/hooks/useFileUpload'
 import { postCompanyDetail } from '@/lib/company'
+import AddProductModal from '@/components/modal/AddProductModal'
+import { useToast } from '@/provider/ToastProvider'
 
 interface ProductInfoProps {
   portfolioImageRef: RefObject<HTMLInputElement | null>
@@ -17,6 +16,10 @@ interface ProductInfoProps {
   setPortfolioData: Dispatch<SetStateAction<RegisterFactoryPortfolioType>>
   portfolioData: RegisterFactoryPortfolioType
   setIsServiceCategoryModalOpen: Dispatch<SetStateAction<boolean>>
+  setIsProductFormOpen: Dispatch<SetStateAction<boolean>>
+  isProductFormOpen: boolean
+  editingIndex: number | null
+  setEditingIndex: Dispatch<SetStateAction<number | null>>
 }
 
 export default function ProductInfo({
@@ -25,6 +28,10 @@ export default function ProductInfo({
   setPortfolioData,
   portfolioData,
   setIsServiceCategoryModalOpen,
+  setIsProductFormOpen,
+  isProductFormOpen,
+  editingIndex,
+  setEditingIndex,
 }: ProductInfoProps) {
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
@@ -32,101 +39,11 @@ export default function ProductInfo({
   const companyLogoImageFile = useRegisterFactoryStore((state) => state.companyLogoImageFile)
   const equipmentImageFileList = useRegisterFactoryStore((state) => state.equipmentImageFileList)
 
-  const [isFormOpen, setIsFormOpen] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     console.log('registerFactoryData', registerFactoryData)
   }, [registerFactoryData])
-
-  /**
-   * 이미지 미리보기 설정 (여러 파일)
-   */
-  const handleImagePreview = async () => {
-    const files = portfolioImageRef.current?.files
-
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files)
-
-      // 모든 파일을 비동기로 읽기
-      const newFiles = await Promise.all(
-        fileArray.map((file) => {
-          return new Promise<{ id: string; name: string; size: number; url: string | ArrayBuffer | null }>(
-            (resolve) => {
-              const reader = new FileReader()
-
-              reader.onloadend = () => {
-                resolve({
-                  id: generateId(),
-                  name: file.name,
-                  size: file.size,
-                  url: reader.result,
-                })
-              }
-              reader.readAsDataURL(file)
-            }
-          )
-        })
-      )
-
-      // 기존 파일 리스트에 새 파일들 추가
-      setState({
-        portfolioImageFileList: [...(portfolioImageFileList || []), ...newFiles],
-      })
-    }
-  }
-
-  /**
-   * 특정 파일 삭제
-   */
-  const handleRemoveFile = (id: string) => {
-    setState({
-      portfolioImageFileList: portfolioImageFileList?.filter((file) => file.id !== id),
-    })
-  }
-
-  /**
-   * 포트폴리오 추가 완료
-   */
-  const handleCompletePortfolio = () => {
-    // 유효성 검사
-    if (
-      !portfolioData.quantity ||
-      !portfolioData.description ||
-      !portfolioImageFileList ||
-      portfolioImageFileList.length === 0
-    ) {
-      alert('모든 필수 항목을 입력해주세요.')
-      return
-    }
-
-    // 이미지 URL 배열 포함한 완성된 포트폴리오 데이터
-    const newPortfolio: RegisterFactoryPortfolioType = {
-      ...portfolioData,
-      imageUrls: portfolioImageFileList, // 배열로 저장
-    }
-
-    // 기존 portfolios 배열에 추가
-    const updatedPortfolios = [...(registerFactoryData?.portfolios || []), newPortfolio]
-
-    // Zustand store 업데이트
-    setState({
-      registerFactoryData: {
-        ...registerFactoryData,
-        portfolios: updatedPortfolios,
-      },
-      portfolioImageFileList: [], // 이미지 파일 리스트 초기화
-    })
-
-    // 폼 초기화 및 닫기
-    setPortfolioData({})
-    setIsFormOpen(false)
-
-    // file input 초기화
-    if (portfolioImageRef.current) {
-      portfolioImageRef.current.value = ''
-    }
-  }
 
   /**
    * imageUrls에서 첫 번째 URL 추출 (대표 이미지)
@@ -160,15 +77,12 @@ export default function ProductInfo({
    * 포트폴리오 삭제
    */
   const handleRemovePortfolio = (indexToRemove: number) => {
-    // 확인 대화상자 (선택사항)
     if (!confirm('이 포트폴리오를 삭제하시겠습니까?')) {
       return
     }
 
-    // 해당 index를 제외한 새 배열 생성
     const updatedPortfolios = registerFactoryData?.portfolios?.filter((_, index) => index !== indexToRemove)
 
-    // Zustand store 업데이트
     setState({
       registerFactoryData: {
         ...registerFactoryData,
@@ -176,6 +90,26 @@ export default function ProductInfo({
       },
     })
   }
+
+  /**
+   * 포트폴리오 추가 모달 열기
+   */
+  const handleAddPortfolio = () => {
+    setPortfolioData({}) // 빈 데이터
+    setEditingIndex(null) // 추가 모드
+    setIsProductFormOpen(true)
+  }
+
+  /**
+   * 포트폴리오 수정 모달 열기
+   */
+  const handleEditPortfolio = (portfolio: RegisterFactoryPortfolioType, index: number) => {
+    setPortfolioData(portfolio) // 기존 데이터
+    setEditingIndex(index) // 수정 모드
+    setIsProductFormOpen(true)
+  }
+
+  const { showToast } = useToast()
 
   const handleSubmit = async () => {
     try {
@@ -307,11 +241,11 @@ export default function ProductInfo({
       // 5. 최종 공장 정보 제출
       console.log('공장 정보 제출 시작...', updatedRegisterFactoryData)
       const result = await postCompanyDetail(updatedRegisterFactoryData)
-      console.log('공장 정보 제출 완료:', result)
-
-      // 6. 성공 메시지
-      alert('공장 등록이 완료되었습니다.')
-
+      if (result.result === 'SUCCESS') {
+        showToast('공장 등록 성공!', 'success')
+      } else if (result.result === 'ERROR') {
+        showToast('공장 등록 실패', 'error')
+      }
       // 필요시 다음 단계로 이동
       // router.push('/success-page')
     } catch (error) {
@@ -324,28 +258,40 @@ export default function ProductInfo({
 
   return (
     <div>
+      {isProductFormOpen && (
+        <AddProductModal
+          setIsFormOpen={setIsProductFormOpen}
+          setIsServiceCategoryModalOpen={setIsServiceCategoryModalOpen}
+          portfolioImageRef={portfolioImageRef}
+          portfolioData={portfolioData}
+          setPortfolioData={setPortfolioData}
+          editingIndex={editingIndex} // 🔥 수정 중인 인덱스 전달
+          setEditingIndex={setEditingIndex}
+        />
+      )}
+
       <div className="border-gray-20 flex flex-col gap-y-3 rounded-[24px] border bg-white p-6">
         <div className="flex items-center justify-between">
           <h2 className="sub1">완제품</h2>
           <Button1
-            onClick={() => {
-              setIsFormOpen(true)
-            }}
+            onClick={handleAddPortfolio}
             leftIcon={<PlusIcon width={16} height={16} />}
             styleSize={'md'}
             styleType={'secondary'}
           >
-            장비 추가
+            포트폴리오 추가
           </Button1>
         </div>
+
         {registerFactoryData?.portfolios?.map((portfolio, index) => {
           return (
             <section
+              onClick={() => handleEditPortfolio(portfolio, index)}
               key={`${portfolio.description}-${index}`}
-              className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
+              className="border-gray-20 p-xs gap-x-xs hover:bg-gray-10 flex cursor-pointer rounded-[20px] border transition-colors"
             >
-              {portfolio.imageUrls && (
-                <div className="relative h-[189px] w-[317px]">
+              {portfolio.imageUrls && portfolio.imageUrls.length > 0 ? (
+                <div className="relative h-[189px] w-[317px] flex-shrink-0">
                   <Image
                     src={getImageUrl(portfolio.imageUrls[0])}
                     alt={getImageAlt(portfolio.imageUrls[0])}
@@ -353,15 +299,22 @@ export default function ProductInfo({
                     className="rounded-[16px] object-cover"
                   />
                 </div>
+              ) : (
+                <div className="bg-gray-20 flex h-[189px] w-[317px] flex-shrink-0 items-center justify-center rounded-[16px]">
+                  <p className="body1 text-gray-40">이미지 없음</p>
+                </div>
               )}
 
               <div className="flex w-full flex-col gap-y-5">
                 <div className="flex items-center justify-between">
                   <h3 className="h3">{portfolio.category}</h3>
                   <button
-                    onClick={() => handleRemovePortfolio(index)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleRemovePortfolio(index)
+                    }}
                     className={
-                      'border-gray-20 flex h-[36px] w-[100px] items-center justify-center rounded-[8px] border transition-colors hover:bg-gray-50'
+                      'border-gray-20 hover:border-gray-30 flex h-[36px] w-[100px] items-center justify-center rounded-[8px] border transition-colors'
                     }
                     type={'button'}
                   >
@@ -383,85 +336,6 @@ export default function ProductInfo({
             </section>
           )
         })}
-        {isFormOpen ? (
-          <div className="gap-y-2xs flex flex-col">
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                제조 서비스 카테고리 선택 <span className="text-conic-red-30">*</span>
-              </p>
-              <Input
-                value={portfolioData.category ?? ''}
-                onClick={() => {
-                  setIsServiceCategoryModalOpen(true)
-                }}
-                inputBoxStyle={'default'}
-                placeholder={'프로젝트 카테고리를 선택해주세요.'}
-              />
-            </section>
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                제작 수량 <span className="text-conic-red-30">*</span>
-              </p>
-              <Input
-                onChange={(e) => {
-                  setPortfolioData(() => ({ ...portfolioData, quantity: parseInt(e.target.value) }))
-                }}
-                inputBoxStyle={'default'}
-                placeholder={'제작 수량을 입력해주세요.'}
-                type={'number'}
-              />
-            </section>
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                완제품 설명 <span className="text-conic-red-30">*</span>
-              </p>
-              <textarea
-                onChange={(e) => {
-                  setPortfolioData(() => ({ ...portfolioData, description: e.target.value }))
-                }}
-                className="p-2xs border-gray-20 h-[180px] w-full rounded-[16px] border outline-none"
-                placeholder="완제품 설명을 작성해주세요."
-              />
-            </section>
-
-            <div className="gap-y-4xs flex flex-col">
-              <div className="gap-x-5xs sub2 flex">
-                완제품 사진 업로드 <span className="text-conic-red-30">*</span>
-              </div>
-              <div onClick={() => portfolioImageRef.current?.click()} className="relative">
-                <div className="px-2xs py-3xs border-gray-20 flex w-fit gap-x-2 rounded-[12px] border">
-                  <ImgUploadIcon width={24} height={24} />
-                  <p className="button text-gray-50">사진 업로드</p>
-                </div>
-                <input
-                  multiple={true}
-                  type="file"
-                  id={'input-file'}
-                  ref={portfolioImageRef}
-                  name="input-file"
-                  onChange={handleImagePreview}
-                  className="hidden"
-                />
-              </div>
-              {portfolioImageFileList && portfolioImageFileList.length > 0 ? (
-                <div className="gap-x-2xs flex">
-                  {portfolioImageFileList.map((file) => (
-                    <ImageUploadItem
-                      key={file.id}
-                      ImageUrl={file.url}
-                      ImageUrlName={file.name}
-                      onRemove={() => handleRemoveFile(file.id)}
-                    />
-                  ))}
-                </div>
-              ) : null}
-              <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>
-            </div>
-            <Button1 onClick={handleCompletePortfolio} styleStatus={'default'} styleType={'secondary'}>
-              완료하기
-            </Button1>
-          </div>
-        ) : null}
       </div>
 
       <div className="mt-[40px] mb-[100px] flex justify-between">
@@ -480,6 +354,7 @@ export default function ProductInfo({
           styleStatus={'default'}
           styleType={'primary'}
           styleSize={'lg'}
+          disabled={isUploading}
         >
           {isUploading ? '업로드 중...' : '공장 정보 등록'}
         </Button1>

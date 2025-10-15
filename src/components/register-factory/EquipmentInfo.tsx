@@ -2,13 +2,11 @@ import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
 import { CancelIcon, ImgUploadIcon, PlusIcon, UploadIcon } from '@/assets/svgComponents'
 import { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
-import UploadItem from '@/components/common/UploadItem'
-import { formatFileSize, generateId } from '@/utils/upload'
 import { useRegisterFactoryStore } from '@/store/register-factory'
 import { RegisterFactoryEquipmentType } from '@/type/register-factory'
 import Image from 'next/image'
 import { FileInfoType } from '@/type/common'
-import ImageUploadItem from '@/components/common/ImageUploadItem'
+import AddEquipmentModal from '@/components/modal/AddEquipmentModal'
 
 interface EquipmentInfoProps {
   setCurrentStep: Dispatch<SetStateAction<number>>
@@ -18,102 +16,13 @@ interface EquipmentInfoProps {
 export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: EquipmentInfoProps) {
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
-  const equipmentImageFileList = useRegisterFactoryStore((state) => state.equipmentImageFileList)
   const [equipmentData, setEquipmentData] = useState<RegisterFactoryEquipmentType>({})
-  const [isFormOpen, setIsFormOpen] = useState(true)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null) // 🔥 수정 중인 인덱스
 
   useEffect(() => {
     console.log('registerFactoryData', registerFactoryData)
   }, [registerFactoryData])
-
-  /**
-   * 이미지 미리보기 설정 (여러 파일)
-   */
-  const handleImagePreview = async () => {
-    const files = equipmentImageRef.current?.files
-
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files)
-
-      // 모든 파일을 비동기로 읽기
-      const newFiles = await Promise.all(
-        fileArray.map((file) => {
-          return new Promise<{ id: string; name: string; size: number; url: string | ArrayBuffer | null }>(
-            (resolve) => {
-              const reader = new FileReader()
-
-              reader.onloadend = () => {
-                resolve({
-                  id: generateId(),
-                  name: file.name,
-                  size: file.size,
-                  url: reader.result,
-                })
-              }
-              reader.readAsDataURL(file)
-            }
-          )
-        })
-      )
-
-      // 기존 파일 리스트에 새 파일들 추가
-      setState({
-        equipmentImageFileList: [...(equipmentImageFileList || []), ...newFiles],
-      })
-    }
-  }
-
-  /**
-   * 특정 파일 삭제
-   */
-  const handleRemoveFile = (id: string) => {
-    setState({
-      equipmentImageFileList: equipmentImageFileList?.filter((file) => file.id !== id),
-    })
-  }
-
-  /**
-   * 장비 추가 완료
-   */
-  const handleCompleteEquipment = () => {
-    // 유효성 검사
-    if (
-      !equipmentData.quantity ||
-      !equipmentData.description ||
-      !equipmentImageFileList ||
-      equipmentImageFileList.length === 0
-    ) {
-      alert('모든 필수 항목을 입력해주세요.')
-      return
-    }
-
-    // 이미지 URL 배열 포함한 완성된 장비 데이터
-    const newEquipment: RegisterFactoryEquipmentType = {
-      ...equipmentData,
-      imageUrls: equipmentImageFileList, // 배열로 저장
-    }
-
-    // 기존 equipments 배열에 추가
-    const updatedEquipments = [...(registerFactoryData?.equipments || []), newEquipment]
-
-    // Zustand store 업데이트
-    setState({
-      registerFactoryData: {
-        ...registerFactoryData,
-        equipments: updatedEquipments,
-      },
-      equipmentImageFileList: [], // 이미지 파일 리스트 초기화
-    })
-
-    // 폼 초기화 및 닫기
-    setEquipmentData({})
-    setIsFormOpen(false)
-
-    // file input 초기화
-    if (equipmentImageRef.current) {
-      equipmentImageRef.current.value = ''
-    }
-  }
 
   /**
    * imageUrls에서 첫 번째 URL 추출 (대표 이미지)
@@ -147,15 +56,12 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
    * 장비 삭제
    */
   const handleRemoveEquipment = (indexToRemove: number) => {
-    // 확인 대화상자 (선택사항)
     if (!confirm('이 장비를 삭제하시겠습니까?')) {
       return
     }
 
-    // 해당 index를 제외한 새 배열 생성
     const updatedEquipments = registerFactoryData?.equipments?.filter((_, index) => index !== indexToRemove)
 
-    // Zustand store 업데이트
     setState({
       registerFactoryData: {
         ...registerFactoryData,
@@ -164,15 +70,41 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
     })
   }
 
+  /**
+   * 장비 추가 모달 열기
+   */
+  const handleAddEquipment = () => {
+    setEquipmentData({}) // 빈 데이터
+    setEditingIndex(null) // 추가 모드
+    setIsFormOpen(true)
+  }
+
+  /**
+   * 장비 수정 모달 열기
+   */
+  const handleEditEquipment = (equipment: RegisterFactoryEquipmentType, index: number) => {
+    setEquipmentData(equipment) // 기존 데이터
+    setEditingIndex(index) // 수정 모드
+    setIsFormOpen(true)
+  }
+
   return (
     <div>
+      {isFormOpen && (
+        <AddEquipmentModal
+          equipmentData={equipmentData}
+          setEquipmentData={setEquipmentData}
+          equipmentImageRef={equipmentImageRef}
+          setIsFormOpen={setIsFormOpen}
+          editingIndex={editingIndex} // 🔥 수정 중인 인덱스 전달
+          setEditingIndex={setEditingIndex}
+        />
+      )}
       <div className="border-gray-20 flex flex-col gap-y-3 rounded-[24px] border bg-white p-6">
         <div className="flex items-center justify-between">
           <h2 className="sub1">보유 장비 추가</h2>
           <Button1
-            onClick={() => {
-              setIsFormOpen(true)
-            }}
+            onClick={handleAddEquipment}
             leftIcon={<PlusIcon width={16} height={16} />}
             styleSize={'md'}
             styleType={'secondary'}
@@ -183,8 +115,9 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
         {registerFactoryData?.equipments?.map((equipment, index) => {
           return (
             <section
+              onClick={() => handleEditEquipment(equipment, index)}
               key={`${equipment.name}-${index}`}
-              className="border-gray-20 p-xs gap-x-xs flex rounded-[20px] border"
+              className="border-gray-20 p-xs gap-x-xs hover:bg-gray-10 flex cursor-pointer rounded-[20px] border transition-colors"
             >
               {equipment.imageUrls && (
                 <div className="relative h-[189px] w-[317px]">
@@ -201,9 +134,12 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
                 <div className="flex items-center justify-between">
                   <h3 className="h3">{equipment.name}</h3>
                   <button
-                    onClick={() => handleRemoveEquipment(index)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleRemoveEquipment(index)
+                    }}
                     className={
-                      'border-gray-20 flex h-[36px] w-[100px] items-center justify-center rounded-[8px] border transition-colors hover:bg-gray-50'
+                      'border-gray-20 hover:border-gray-30 flex h-[36px] w-[100px] items-center justify-center rounded-[8px] border transition-colors'
                     }
                     type={'button'}
                   >
@@ -225,84 +161,6 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
             </section>
           )
         })}
-        {isFormOpen ? (
-          <div className="gap-y-2xs flex flex-col">
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                장비 이름 <span className="text-conic-red-30">*</span>
-              </p>
-              <Input
-                onChange={(e) => {
-                  setEquipmentData(() => ({ ...equipmentData, name: e.target.value }))
-                }}
-                inputBoxStyle={'default'}
-                placeholder={'장비 이름을 입력해주세요.'}
-              />
-            </section>
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                보유 개수 <span className="text-conic-red-30">*</span>
-              </p>
-              <Input
-                onChange={(e) => {
-                  setEquipmentData(() => ({ ...equipmentData, quantity: parseInt(e.target.value) }))
-                }}
-                inputBoxStyle={'default'}
-                placeholder={'장비 보유 개수를 입력해주세요.'}
-                type={'number'}
-              />
-            </section>
-            <section className="flex flex-col gap-y-2">
-              <p className="gap-x-5xs sub2 flex">
-                장비 설명 <span className="text-conic-red-30">*</span>
-              </p>
-              <textarea
-                onChange={(e) => {
-                  setEquipmentData(() => ({ ...equipmentData, description: e.target.value }))
-                }}
-                className="p-2xs border-gray-20 h-[180px] w-full rounded-[16px] border outline-none"
-                placeholder="장비 설명을 작성해주세요."
-              />
-            </section>
-
-            <div className="gap-y-4xs flex flex-col">
-              <div className="gap-x-5xs sub2 flex">
-                장비 사진 업로드 <span className="text-conic-red-30">*</span>
-              </div>
-              <div onClick={() => equipmentImageRef.current?.click()} className="relative">
-                <div className="px-2xs py-3xs border-gray-20 flex w-fit gap-x-2 rounded-[12px] border">
-                  <ImgUploadIcon width={24} height={24} />
-                  <p className="button text-gray-50">사진 업로드</p>
-                </div>
-                <input
-                  multiple={true}
-                  type="file"
-                  id={'input-file'}
-                  ref={equipmentImageRef}
-                  name="input-file"
-                  onChange={handleImagePreview}
-                  className="hidden"
-                />
-              </div>
-              {equipmentImageFileList && equipmentImageFileList.length > 0 ? (
-                <div className="gap-x-2xs flex">
-                  {equipmentImageFileList.map((file) => (
-                    <ImageUploadItem
-                      key={file.id}
-                      ImageUrl={file.url}
-                      ImageUrlName={file.name}
-                      onRemove={() => handleRemoveFile(file.id)}
-                    />
-                  ))}
-                </div>
-              ) : null}
-              <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>
-            </div>
-            <Button1 onClick={handleCompleteEquipment} styleStatus={'default'} styleType={'secondary'}>
-              완료하기
-            </Button1>
-          </div>
-        ) : null}
       </div>
 
       <div className="mt-[40px] mb-[100px] flex justify-between">

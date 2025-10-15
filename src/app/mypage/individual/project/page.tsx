@@ -37,7 +37,7 @@ export default function IndividualMyProjectPage({}: MyProjectPageProps) {
     const loadArchiveData = async () => {
       try {
         if (memberId) {
-          const response = await getProject(memberId, status, currentPage, 10)
+          const response = await getProject(memberId, status, currentPage, 9)
 
           console.log('API 전체 응답:', response)
 

@@ -2,7 +2,8 @@ import Modal from '@/components/common/Modal'
 import Button1 from '@/components/common/Button1'
 import Input from '@/components/common/Input'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { patchMemberProfile } from '@/lib/mypage'
+import { patchMemberMeName, patchMemberProfile } from '@/lib/mypage'
+import { useToast } from '@/provider/ToastProvider'
 
 interface NameChangeModalProps {
   setIsNameChangeModalOpen: Dispatch<SetStateAction<boolean>>
@@ -10,6 +11,16 @@ interface NameChangeModalProps {
 
 export default function IndividualNameChangeModal({ setIsNameChangeModalOpen }: NameChangeModalProps) {
   const [newName, setNewName] = useState<string>('')
+  const { showToast } = useToast()
+
+  const handleToastSuccess = () => {
+    showToast('성공적으로 저장되었습니다!', 'success')
+  }
+
+  const handleToastError = () => {
+    showToast('오류가 발생했습니다.', 'error')
+  }
+
   return (
     <Modal>
       <Modal.Content>
@@ -47,10 +58,12 @@ export default function IndividualNameChangeModal({ setIsNameChangeModalOpen }: 
           <Button1
             styleType={'primary'}
             onClick={async () => {
-              const result = await patchMemberProfile({ name: newName })
+              const result = await patchMemberMeName(newName)
               if (result.result === 'SUCCESS') {
-                console.log('이름 변경 성공', result)
+                handleToastSuccess()
                 setIsNameChangeModalOpen(false)
+              } else {
+                handleToastError()
               }
             }}
             styleSize={'lg'}

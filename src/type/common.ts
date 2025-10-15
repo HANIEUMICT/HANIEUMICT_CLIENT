@@ -61,6 +61,7 @@ export interface PaginationResultType<T> {
 }
 
 export interface AddressRegisterRequestType {
+  id?: number
   addressName?: string
   recipient?: string
   phoneNumber?: string
@@ -68,4 +69,5 @@ export interface AddressRegisterRequestType {
   streetAddress?: string
   detailAddress?: string
   default?: boolean
+  isDefault?: boolean
 }

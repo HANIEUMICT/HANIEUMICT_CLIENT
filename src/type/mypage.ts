@@ -1,3 +1,5 @@
+import { AddressRegisterRequestType } from '@/type/common'
+
 export type IndividualSideBarType = '내 정보' | '배송 정보' | '견적서' | '주문 정보' | '관심 공급업체'
 export type CompanySideBarType = '내 정보' | '견적서' | '주문 정보'
 
@@ -20,4 +22,18 @@ export interface AddressType {
   streetAddress?: string
   detailAddress?: string
   default?: boolean
+}
+
+export interface MemberInfoType {
+  id: number
+  email: {
+    address: string
+  }
+  name: string
+  phoneNumber: string
+  termsOfServiceAgreed: boolean
+  emailMarketingAgreed: boolean | null
+  smsMarketingAgreed: boolean | null
+  memberType: 'INDIVIDUAL' | 'OWNER'
+  addresses: AddressRegisterRequestType[]
 }

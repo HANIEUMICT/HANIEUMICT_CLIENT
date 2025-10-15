@@ -2,10 +2,10 @@ import Modal from '@/components/common/Modal'
 import Input from '@/components/common/Input'
 import Button1 from '@/components/common/Button1'
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { patchMemberProfile, postMemberPassword } from '@/lib/mypage'
+import { patchMemberMePassword, postMemberPassword } from '@/lib/mypage'
 import { EyeIcon, NonEyeIcon } from '@/assets/svgComponents'
 import { useAuthStore } from '@/store/authStore'
-import { underline } from 'next/dist/lib/picocolors'
+import { useToast } from '@/provider/ToastProvider'
 
 interface IndividualPasswordChangeModalProps {
   setIsPasswordChangeModalOpen: Dispatch<SetStateAction<boolean>>
@@ -19,7 +19,6 @@ export default function IndividualPasswordChangeModal({
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [isVerified, setIsVerified] = useState<boolean | undefined>(undefined)
 
-  const setState = useAuthStore((state) => state.setState)
   const [isIndividualPasswordMatch, setIsIndividualPasswordMatch] = useState<boolean | undefined>(undefined)
   const [isIndividualPasswordValid, setIsIndividualPasswordValid] = useState<boolean | undefined>(undefined)
   const [newPassword, setNewPassword] = useState<string | undefined>(undefined)
@@ -55,6 +54,16 @@ export default function IndividualPasswordChangeModal({
       setIsIndividualPasswordMatch(false)
     }
   }, [checkPassWord])
+
+  const { showToast } = useToast()
+
+  const handleToastSuccess = () => {
+    showToast('성공적으로 저장되었습니다!', 'success')
+  }
+
+  const handleToastError = () => {
+    showToast('오류가 발생했습니다.', 'error')
+  }
 
   return (
     <Modal>
@@ -239,10 +248,14 @@ export default function IndividualPasswordChangeModal({
           <Button1
             styleType={'primary'}
             onClick={async () => {
-              const result = await patchMemberProfile({ newPassword: newPassword })
-              if (result.result === 'SUCCESS') {
-                console.log('비밀번호 변경 성공', result)
-                setIsPasswordChangeModalOpen(false)
+              if (newPassword) {
+                const result = await patchMemberMePassword(currentPassword, newPassword)
+                if (result.result === 'SUCCESS') {
+                  handleToastSuccess()
+                  setIsPasswordChangeModalOpen(false)
+                } else {
+                  handleToastError()
+                }
               }
             }}
             styleSize={'lg'}

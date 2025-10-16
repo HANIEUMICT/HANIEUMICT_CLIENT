@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { AshbnIcon, DownloadIcon, ImgUploadIcon } from '@/assets/svgComponents'
@@ -43,6 +45,10 @@ export default function UploadItem({
     return null
   }
 
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
   return (
     <div
       className={`${customClassName} border-gray-20 flex h-[80px] items-center justify-between rounded-[16px] border px-5`}
@@ -56,7 +62,8 @@ export default function UploadItem({
               src={imageSrc}
               fill
               className="rounded-[3px] object-cover"
-              onError={() => setImageError(true)}
+              onError={handleImageError}
+              unoptimized={typeof ImageUrl === 'string'} // 👈 외부 URL일 경우 최적화 비활성화
             />
           </div>
         ) : (

@@ -5,12 +5,14 @@ import { FileInfoType } from '@/type/common'
 import { RefObject } from 'react'
 import { formatFileSize, generateId } from '@/utils/upload'
 import { useAuthStore } from '@/store/authStore'
+import DownloadItem from '@/components/common/DownloadItem'
 
 interface CompanyLogoImageUploadProps {
+  url?: string | undefined
   companyLogoImageRef: RefObject<HTMLInputElement | null>
 }
 
-export default function CompanyLogoImageUpload({ companyLogoImageRef }: CompanyLogoImageUploadProps) {
+export default function CompanyLogoImageUpload({ url, companyLogoImageRef }: CompanyLogoImageUploadProps) {
   const companyLogoFile = useAuthStore((state) => state.companyLogoFile)
   const setState = useAuthStore((state) => state.setState)
 
@@ -77,6 +79,10 @@ export default function CompanyLogoImageUpload({ companyLogoImageRef }: CompanyL
             ImageUrlName={companyLogoFile.name}
             onRemove={() => handleRemoveFile()} // 삭제 기능 추가
           />
+        </div>
+      ) : url ? (
+        <div className="flex flex-col gap-y-2">
+          <DownloadItem customClassName={'bg-white'} key={url} ImageUrl={url} ImageUrlName={url} />
         </div>
       ) : null}
       <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>

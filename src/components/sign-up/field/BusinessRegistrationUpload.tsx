@@ -3,12 +3,17 @@ import UploadItem from '@/components/common/UploadItem'
 import { RefObject } from 'react'
 import { formatFileSize, generateId } from '@/utils/upload'
 import { useAuthStore } from '@/store/authStore'
+import DownloadItem from '@/components/common/DownloadItem'
 
 interface BusinessRegistrationUploadProps {
+  url?: string | undefined
   businessRegistrationFileRef: RefObject<HTMLInputElement | null>
 }
 
-export default function BusinessRegistrationUpload({ businessRegistrationFileRef }: BusinessRegistrationUploadProps) {
+export default function BusinessRegistrationUpload({
+  url,
+  businessRegistrationFileRef,
+}: BusinessRegistrationUploadProps) {
   const businessRegistrationFile = useAuthStore((state) => state.businessRegistrationFile)
   const setState = useAuthStore((state) => state.setState)
 
@@ -75,6 +80,10 @@ export default function BusinessRegistrationUpload({ businessRegistrationFileRef
             ImageUrlName={businessRegistrationFile.name}
             onRemove={() => handleRemoveFile()} // 삭제 기능 추가
           />
+        </div>
+      ) : url ? (
+        <div className="flex flex-col gap-y-2">
+          <DownloadItem customClassName={'bg-white'} key={url} ImageUrl={url} ImageUrlName={url} />
         </div>
       ) : null}
       <p className="body1 text-gray-50">5MB이하 파일(jpg, jpeg, png)만 가능합니다.</p>

@@ -15,7 +15,7 @@ const SelectRole = ({ selectedRole, setSelectedRole, onClick }: SelectRoleProps)
 
   const roleContents: { title: string; type: 'person' | 'company'; img: string }[] = [
     { title: '개인 회원', type: 'person', img: '/person-graphic.svg' },
-    { title: '기업 회원', type: 'company', img: '/company-graphic.svg' },
+    { title: '기업 회원', type: 'company', img: '/company.ts-graphic.svg' },
   ]
   return (
     <main className="bg-gray-10 flex min-h-screen flex-col items-center justify-center">

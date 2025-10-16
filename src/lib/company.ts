@@ -1,7 +1,7 @@
 import { ApiResponse } from '@/type/common'
-import { authorizedFetch } from '@/lib/common'
 import { CompanyDetailInfoType, CompanyType } from '@/type/company'
 import { RegisterFactoryDataType } from '@/type/register-factory'
+import { authorizedFetch } from '@/lib/common'
 
 /**
  * 특정 기업 정보 조회

@@ -1,5 +1,4 @@
 import { UserDataType } from '@/type/common'
-
 export const getUserData = (): UserDataType | null => {
   try {
     const userDataString = localStorage.getItem('userData')

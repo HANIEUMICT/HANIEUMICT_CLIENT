@@ -1,7 +1,6 @@
-import { authorizedFetch } from '@/lib/common'
 import { ApiResponse } from '@/type/common'
 import { ProposalResponseType, ProposalType } from '@/type/proposal'
-import { ProjectResponseType, ProjectType } from '@/type/project'
+import { authorizedFetch } from '@/lib/common'
 
 /**
  * 초기 견적서 생성 API

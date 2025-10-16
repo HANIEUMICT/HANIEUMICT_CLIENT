@@ -1,8 +1,8 @@
-import Cookies from 'js-cookie'
-
 import { ApiResponse } from '@/type/common'
-import { LoginResponseType } from '@/type/auth'
+import { serverAuthorizedFetch } from '@/lib/utils/http'
 import { useModalStore } from '@/store/modalStore'
+import Cookies from 'js-cookie'
+import { LoginResponseType } from '@/type/auth'
 
 /**
  * 이메일 코드 전송
@@ -14,20 +14,6 @@ export const postSendEmailCode = async (email: string): Promise<ApiResponse<stri
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email }),
-  })
-  return await response.json()
-}
-
-/**
- * 이메일 인증
- */
-export const postEmailValidation = async (data: { email: string; authCode: string }): Promise<ApiResponse<boolean>> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/email/certificate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
   })
   return await response.json()
 }
@@ -129,6 +115,20 @@ const refreshAccessToken = async (): Promise<boolean> => {
     Cookies.remove('refreshToken')
     return false
   }
+}
+
+/**
+ * 이메일 인증
+ */
+export const postEmailValidation = async (data: { email: string; authCode: string }): Promise<ApiResponse<boolean>> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/email/certificate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  return await response.json()
 }
 
 /**

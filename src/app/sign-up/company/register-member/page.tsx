@@ -169,7 +169,7 @@ export default function CompanyMemberSignUpPage() {
                       }
                       // localStorage 는 브라우저 환경에서만 접근 가능
                       if (typeof window !== 'undefined') {
-                        localStorage.setItem('userData', JSON.stringify(userData))
+                        Cookies.set('userData', JSON.stringify(userData))
                       }
                     }
                     setIsSignUpSuccessModalOpen(true)

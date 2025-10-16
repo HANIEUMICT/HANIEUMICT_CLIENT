@@ -7,8 +7,6 @@ import {
   SummaryCompanyInfoResponseDataType,
 } from '@/type/auth'
 import { ApiResponse, PaginationResultType } from '@/type/common'
-import { ProjectResponseType } from '@/type/project'
-import { authorizedFetch } from '@/lib/common'
 
 /**
  * 소상공인 회원가입

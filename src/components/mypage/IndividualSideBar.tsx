@@ -62,7 +62,7 @@ export default function IndividualSideBar() {
       selectedIcon: <SelectedFactoryIcon width={24} height={24} />,
       unselectedIcon: <UnselectedFactoryIcon width={24} height={24} />,
       title: '관심 공급업체',
-      router: '/mypage/individual/favorite',
+      router: '/mypage/individual/favorite.ts',
     },
   ]
   return (

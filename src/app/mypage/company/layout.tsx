@@ -15,7 +15,10 @@ export default async function IndividualLayout({
   return (
     <div className="">
       <CompanySideBar />
-      <main className="">{children}</main>
+      <div className="flex">
+        <div className="w-[425px]" />
+        <main className="flex w-full items-center justify-center">{children}</main>
+      </div>
     </div>
   )
 }

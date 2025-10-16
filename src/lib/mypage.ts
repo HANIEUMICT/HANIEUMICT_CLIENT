@@ -1,7 +1,7 @@
 import { ApiResponse, PaginationResultType } from '@/type/common'
 import { AddressResponseType, AddressType, MemberInfoType } from '@/type/mypage'
 import { authorizedFetch } from '@/lib/common'
-
+import { serverAuthorizedFetch } from '@/lib/utils/http'
 /**
  * 비밀번호 확인
  */
@@ -56,7 +56,6 @@ export const getMemberInfo = async (): Promise<ApiResponse<MemberInfoType>> => {
   })
   return await response.json()
 }
-
 /**
  * 회원정보 수정
  */

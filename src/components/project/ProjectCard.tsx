@@ -4,6 +4,8 @@ import { ProjectResponseType } from '@/type/project'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useModalStore } from '@/store/modalStore'
+import { postFavoriteProject } from '@/lib/project'
+import { useToast } from '@/provider/ToastProvider'
 
 interface ProjectCardProps extends ProjectResponseType {
   setSelectedProjectId?: Dispatch<SetStateAction<number | undefined>>
@@ -20,6 +22,8 @@ export default function ProjectCard({
   const router = useRouter()
   const setState = useModalStore((state) => state.setState)
   const [imageError, setImageError] = useState(false)
+
+  const { showToast } = useToast()
 
   return (
     <div
@@ -87,9 +91,15 @@ export default function ProjectCard({
       </section>
       <section className="flex justify-between">
         <div
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation() // 부모 클릭 이벤트 전파 중단
-            setState({ isServicePreparingModalOpen: true })
+            const result = await postFavoriteProject(projectId)
+            if (result.result === 'SUCCESS') {
+              showToast('찜하기 성공', 'success')
+            } else if (result.result === 'ERROR') {
+              showToast('찜하기 실패', 'error')
+            }
+            // setState({ isServicePreparingModalOpen: true })
           }}
           className="gap-x-5xs flex items-center"
         >

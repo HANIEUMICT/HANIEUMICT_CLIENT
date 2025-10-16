@@ -26,19 +26,19 @@ export default function CompanySideBar() {
       selectedIcon: <SelectedMyprofileIcon width={19} height={19} />,
       unselectedIcon: <UnselectedMyprofileIcon width={19} height={19} />,
       title: '내 정보',
-      router: '/mypage/company.ts',
+      router: '/mypage/company',
     },
     {
       selectedIcon: <SelectedProposalIcon width={20} height={24} />,
       unselectedIcon: <UnselectedProposalIcon width={20} height={24} />,
       title: '견적서',
-      router: '/mypage/company.ts/proposal',
+      router: '/mypage/company/proposal',
     },
     {
       selectedIcon: <SelectedOrderInformationIcon width={28} height={25} />,
       unselectedIcon: <UnselectedOrderInformationIcon width={28} height={25} />,
       title: '주문 정보',
-      router: '/mypage/company.ts/order',
+      router: '/mypage/company/order',
     },
   ]
   return (

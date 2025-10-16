@@ -1,6 +1,16 @@
 'use client'
 
+import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { CompanyType } from '@/type/company'
+import { AddressRegisterRequestType } from '@/type/common'
+import { useAuthStore } from '@/store/authStore'
+import { useModalStore } from '@/store/modalStore'
+import { useFileUpload } from '@/hooks/useFileUpload'
+import { useToast } from '@/provider/ToastProvider'
+import { patchCompanyInfo } from '@/lib/api/client/company'
+
+// 필드 컴포넌트들
 import CompanyName from '@/components/sign-up/field/CompanyName'
 import CompanyLogoImageUpload from '@/components/sign-up/field/CompanyLogoImageUpload'
 import RepresentativeNameField from '@/components/sign-up/field/RepresentativeNameField'
@@ -12,129 +22,143 @@ import BusinessItemField from '@/components/sign-up/field/BusinessItemField'
 import BusinessRegistrationUpload from '@/components/sign-up/field/BusinessRegistrationUpload'
 import BankbookCopyUpload from '@/components/sign-up/field/BankbookCopyUpload'
 import CompanyAddressField from '@/components/sign-up/field/CompanyAddressField'
+
+// UI 컴포넌트들
 import Button1 from '@/components/common/Button1'
-import { useFileUpload } from '@/hooks/useFileUpload'
-import { postRegisterCompanyInfo } from '@/lib/auth'
-import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useAuthStore } from '@/store/authStore'
-import { useModalStore } from '@/store/modalStore'
-import { AddressRegisterRequestType } from '@/type/common'
 import SearchAddressModal from '@/components/common/SearchAddressModal'
 import RegisterCompanyAddAddressInfoModal from '@/components/modal/RegisterCompanyAddAddressInfoModal'
-import { patchCompanyInfo } from '@/lib/api/client/company'
-import { useToast } from '@/provider/ToastProvider'
 
 interface MyPageBasicInfoProps {
   companyInfo: CompanyType | undefined
 }
+
+const INITIAL_ADDRESS_DATA: AddressRegisterRequestType = {
+  addressName: '',
+  recipient: '',
+  phoneNumber: '',
+  postalCode: '',
+  streetAddress: '',
+  detailAddress: '',
+  default: false,
+}
+
 export default function MyPageBusinessInfo({ companyInfo }: MyPageBasicInfoProps) {
   const router = useRouter()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { showToast } = useToast()
+  const { uploadFiles } = useFileUpload()
+
+  // Refs
   const companyLogoImageRef = useRef<HTMLInputElement | null>(null)
   const businessRegistrationFileRef = useRef<HTMLInputElement | null>(null)
   const bankbookCopyFileRef = useRef<HTMLInputElement | null>(null)
 
+  // Auth Store
   const businessRegistrationFile = useAuthStore((state) => state.businessRegistrationFile)
   const bankbookCopyFile = useAuthStore((state) => state.bankbookCopyFile)
   const companyLogoFile = useAuthStore((state) => state.companyLogoFile)
-
   const registerCompanyInfoData = useAuthStore((state) => state.registerCompanyInfoData)
   const setState = useAuthStore((state) => state.setState)
-  const summaryCompanyInfoData = useAuthStore((state) => state.summaryCompanyInfoData)
 
+  // Modal Store
   const setModalState = useModalStore((state) => state.setState)
   const isSearchAddressModalOpen = useModalStore((state) => state.isSearchAddressModalOpen)
   const isAddAddressInfoModalOpen = useModalStore((state) => state.isAddAddressInfoModalOpen)
 
-  const { showToast } = useToast()
+  // Local State
+  const [tempAddressData, setTempAddressData] = useState<AddressRegisterRequestType>(INITIAL_ADDRESS_DATA)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { uploadFiles } = useFileUpload()
-
+  // Initialize company data on mount
   useEffect(() => {
-    console.log('companyInfo', companyInfo)
+    if (!companyInfo) return
+
+    const addressData = {
+      ...companyInfo.address,
+      detailAddress: companyInfo.address.detail,
+      streetAddress: companyInfo.address.street,
+      postalCode: companyInfo.address.postal,
+    }
+
     setState({
       registerCompanyInfoData: {
         ...companyInfo,
-        addressRegisterRequest: {
-          ...companyInfo?.address,
-          detailAddress: companyInfo?.address.detail,
-          streetAddress: companyInfo?.address.street,
-          postalCode: companyInfo?.address.postal,
-        },
+        addressRegisterRequest: addressData,
       },
     })
-    setTempAddressData({
-      ...companyInfo?.address,
-      detailAddress: companyInfo?.address.detail,
-      streetAddress: companyInfo?.address.street,
-      postalCode: companyInfo?.address.postal,
-    })
-  }, [])
+    setTempAddressData(addressData)
+  }, [companyInfo, setState])
 
-  const handleProjectSubmitWithLoading = async () => {
-    try {
-      console.log('파일 업로드 시작...')
-
-      // 모든 파일을 병렬로 업로드
-      const [logoResult, registrationResult, bankbookResult] = await Promise.all([
-        companyLogoFile ? uploadFiles(companyLogoFile) : Promise.resolve({ success: true, uploadedUrls: [null] }),
-        businessRegistrationFile
-          ? uploadFiles(businessRegistrationFile)
-          : Promise.resolve({ success: true, uploadedUrls: [null] }),
-        bankbookCopyFile ? uploadFiles(bankbookCopyFile) : Promise.resolve({ success: true, uploadedUrls: [null] }),
-      ])
-
-      // 업로드 실패 체크
-      const uploadResults = [logoResult, registrationResult, bankbookResult]
-      const failedUploads = uploadResults.filter((result) => !result.success)
-
-      if (failedUploads.length > 0) {
-        throw new Error(`${failedUploads.length}개의 파일 업로드 실패`)
-      }
-
-      const companyLogoUrl = logoResult.uploadedUrls[0]
-      const businessRegistrationUrl = registrationResult.uploadedUrls[0]
-      const bankbookUrl = bankbookResult.uploadedUrls[0]
-
-      console.log('업로드된 URL:', {
-        profileUrl: companyLogoUrl,
-        registrationCertificateUrl: businessRegistrationUrl,
-        bankbookCopy: bankbookUrl,
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setState({
+        registerCompanyInfoData: undefined,
       })
+      setTempAddressData(INITIAL_ADDRESS_DATA)
+    }
+  }, [setState])
 
-      // 👇 기존 데이터에서 URL을 가져오고, 새로 업로드된 URL이 있으면 덮어쓰기
+  // 파일 업로드 처리
+  const uploadCompanyFiles = useCallback(async () => {
+    const [logoResult, registrationResult, bankbookResult] = await Promise.all([
+      companyLogoFile ? uploadFiles(companyLogoFile) : Promise.resolve({ success: true, uploadedUrls: [null] }),
+      businessRegistrationFile
+        ? uploadFiles(businessRegistrationFile)
+        : Promise.resolve({ success: true, uploadedUrls: [null] }),
+      bankbookCopyFile ? uploadFiles(bankbookCopyFile) : Promise.resolve({ success: true, uploadedUrls: [null] }),
+    ])
+
+    const uploadResults = [logoResult, registrationResult, bankbookResult]
+    const failedUploads = uploadResults.filter((result) => !result.success)
+
+    if (failedUploads.length > 0) {
+      throw new Error(`${failedUploads.length}개의 파일 업로드 실패`)
+    }
+
+    return {
+      profileUrl: logoResult.uploadedUrls[0],
+      registrationCertificateUrl: registrationResult.uploadedUrls[0],
+      bankbookCopy: bankbookResult.uploadedUrls[0],
+    }
+  }, [companyLogoFile, businessRegistrationFile, bankbookCopyFile, uploadFiles])
+
+  // 기업정보 수정 제출
+  const handleProjectSubmit = useCallback(async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
+    try {
+      // 파일 업로드
+      const uploadedUrls = await uploadCompanyFiles()
+
+      // 기존 데이터에 새로운 URL 병합
       const updatedCompanyData = {
         ...registerCompanyInfoData,
-        ...(companyLogoUrl && { profileUrl: companyLogoUrl }),
-        ...(businessRegistrationUrl && { registrationCertificateUrl: businessRegistrationUrl }),
-        ...(bankbookUrl && { bankbookCopy: bankbookUrl }),
+        ...(uploadedUrls.profileUrl && { profileUrl: uploadedUrls.profileUrl }),
+        ...(uploadedUrls.registrationCertificateUrl && {
+          registrationCertificateUrl: uploadedUrls.registrationCertificateUrl,
+        }),
+        ...(uploadedUrls.bankbookCopy && { bankbookCopy: uploadedUrls.bankbookCopy }),
       }
 
-      setState({
-        registerCompanyInfoData: updatedCompanyData,
-      })
-
-      // 기업 등록 API 요청
-      console.log('기업 등록 API 요청 중...')
+      // API 요청
       const res = await patchCompanyInfo(updatedCompanyData)
-      console.log('기업 수정 완료:', res)
 
-      // 성공 시 다음 단계로 이동
-      setIsModalOpen(true)
       if (res.result === 'SUCCESS') {
         showToast('기업 수정이 완료되었습니다.', 'success')
-      } else if (res.result === 'ERROR') {
+      } else {
         showToast('기업 수정이 실패하였습니다.', 'error')
       }
     } catch (error) {
+      console.error('Error:', error)
       showToast('파일 업로드 및 기업 수정 실패', 'error')
     } finally {
-      // setIsUploading(false)
+      setIsSubmitting(false)
     }
-  }
+  }, [isSubmitting, uploadCompanyFiles, registerCompanyInfoData, patchCompanyInfo, showToast])
 
-  const handleComplete = async (data: any) => {
+  // 주소 검색 완료 핸들러
+  const handleAddressComplete = async (data: any) => {
     let fullAddress = data.address
     let extraAddress = ''
 
@@ -154,42 +178,15 @@ export default function MyPageBusinessInfo({ companyInfo }: MyPageBasicInfoProps
     setModalState({ isAddAddressInfoModalOpen: true, isSearchAddressModalOpen: false })
   }
 
-  // 임시 주소 저장 state - 모달 내에서만 사용
-  const [tempAddressData, setTempAddressData] = useState<AddressRegisterRequestType>({
-    addressName: '',
-    recipient: '',
-    phoneNumber: '',
-    postalCode: '',
-    streetAddress: '',
-    detailAddress: '',
-    default: false,
-  })
-
-  // 페이지 언마운트 시 상태 초기화
-  useEffect(() => {
-    return () => {
-      // cleanup 함수: 컴포넌트가 언마운트될 때 실행
-      setState({
-        registerCompanyInfoData: undefined,
-      })
-      setTempAddressData({
-        addressName: '',
-        recipient: '',
-        phoneNumber: '',
-        postalCode: '',
-        streetAddress: '',
-        detailAddress: '',
-        default: false,
-      })
-    }
-  }, []) // 빈 의존성 배열로 마운트/언마운트 시에만 실행
-
   return (
     <div className="flex w-[1220px] flex-col items-center gap-y-[40px]">
-      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleComplete} />}
+      {/* 모달들 */}
+      {isSearchAddressModalOpen && <SearchAddressModal handleComplete={handleAddressComplete} />}
       {isAddAddressInfoModalOpen && (
         <RegisterCompanyAddAddressInfoModal tempAddressData={tempAddressData} setTempAddressData={setTempAddressData} />
       )}
+
+      {/* 폼 필드들 */}
       <div className="gap-y-2xs flex w-full flex-col">
         <CompanyName />
         <CompanyLogoImageUpload url={companyInfo?.profileUrl} companyLogoImageRef={companyLogoImageRef} />
@@ -206,30 +203,27 @@ export default function MyPageBusinessInfo({ companyInfo }: MyPageBasicInfoProps
         <BankbookCopyUpload url={companyInfo?.bankbookCopy} bankbookCopyFileRef={bankbookCopyFileRef} />
         <CompanyAddressField setTempAddressData={setTempAddressData} />
       </div>
+
+      {/* 버튼들 */}
       <div className="flex w-full gap-x-3 pb-[40px]">
         <Button1
-          onClick={() => {
-            router.back()
-          }}
-          styleSize={'lg'}
-          styleType={'outline'}
-          styleStatus={'default'}
-          customClassName={'w-full'}
+          onClick={() => router.back()}
+          styleSize="lg"
+          styleType="outline"
+          styleStatus="default"
+          customClassName="w-full"
         >
           이전
         </Button1>
         <Button1
-          onClick={async () => {
-            handleProjectSubmitWithLoading()
-            // console.log('result', result)
-          }}
-          // disabled={!isFormValid}
-          styleSize={'lg'}
-          styleType={'primary'}
-          styleStatus={'default'}
-          customClassName={'w-full'}
+          onClick={handleProjectSubmit}
+          disabled={isSubmitting}
+          styleSize="lg"
+          styleType="primary"
+          styleStatus="default"
+          customClassName="w-full"
         >
-          수정 완료
+          {isSubmitting ? '수정 중...' : '수정 완료'}
         </Button1>
       </div>
     </div>

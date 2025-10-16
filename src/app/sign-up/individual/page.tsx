@@ -139,6 +139,7 @@ const IndividualSignUpPage = ({}: IndividualSignUpPageProps) => {
                     // localStorage 는 브라우저 환경에서만 접근 가능
                     if (typeof window !== 'undefined') {
                       Cookies.set('userData', JSON.stringify(userData))
+                      localStorage.setItem('userData', JSON.stringify(userData))
                     }
                   }
                   setIsModalOpen(true)

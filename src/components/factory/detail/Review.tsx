@@ -1,3 +1,5 @@
+'use client'
+
 import SummaryReview from '@/components/factory/detail/review/SummaryReview'
 import ReviewFilter from '@/components/factory/detail/review/ReviewFilter'
 import ReviewItem from '@/components/factory/detail/review/ReviewItem'

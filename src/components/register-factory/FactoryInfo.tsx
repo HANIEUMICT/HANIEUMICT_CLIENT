@@ -1,19 +1,20 @@
 import Input from '@/components/common/Input'
 import Button1 from '@/components/common/Button1'
 import { useRegisterFactoryStore } from '@/store/register-factory'
-import { Dispatch, RefObject, SetStateAction, useState } from 'react'
+import { RefObject, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { formatFileSize, generateId } from '@/utils/upload'
-import { ImgUploadIcon, UploadIcon } from '@/assets/svgComponents'
+import { generateId } from '@/utils/upload'
+import { UploadIcon } from '@/assets/svgComponents'
 import UploadItem from '@/components/common/UploadItem'
-import ImageUploadItem from '@/components/common/ImageUploadItem'
+
+type StepType = '1' | '2' | '3'
 
 interface FactoryInfoProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
   companyLogoImageRef: RefObject<HTMLInputElement | null>
 }
 
-export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: FactoryInfoProps) {
+export default function FactoryInfo({ handleStepClick, companyLogoImageRef }: FactoryInfoProps) {
   const router = useRouter()
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
@@ -72,7 +73,7 @@ export default function FactoryInfo({ setCurrentStep, companyLogoImageRef }: Fac
       },
     })
 
-    setCurrentStep(2)
+    handleStepClick('2')
   }
 
   return (

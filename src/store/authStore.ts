@@ -13,6 +13,7 @@ interface SetAuthStoreType {
   companySignUpData?: CompanySignUpType | undefined
   registerCompanyInfoData?: CompanyInfoType | undefined
   summaryCompanyInfoData?: SummaryCompanyInfoDataType | undefined
+  selectedUserRole?: 'person' | 'company' | undefined
   companyLogoFile?: FileInfoType | undefined
   businessRegistrationFile?: FileInfoType | undefined
   bankbookCopyFile?: FileInfoType | undefined
@@ -30,6 +31,7 @@ interface AuthStoreType {
   companySignUpData: CompanySignUpType | undefined
   registerCompanyInfoData: CompanyInfoType | undefined
   summaryCompanyInfoData: SummaryCompanyInfoDataType | undefined
+  selectedUserRole?: 'person' | 'company' | undefined
   companyLogoFile: FileInfoType | undefined
   businessRegistrationFile: FileInfoType | undefined
   bankbookCopyFile: FileInfoType | undefined
@@ -48,6 +50,7 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
   companySignUpData: undefined,
   registerCompanyInfoData: undefined,
   summaryCompanyInfoData: undefined,
+  selectedUserRole: undefined,
   companyLogoFile: undefined,
   businessRegistrationFile: undefined,
   bankbookCopyFile: undefined,

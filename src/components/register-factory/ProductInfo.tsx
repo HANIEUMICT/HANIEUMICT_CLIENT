@@ -10,9 +10,11 @@ import { postCompanyDetail } from '@/lib/company'
 import AddProductModal from '@/components/modal/AddProductModal'
 import { useToast } from '@/provider/ToastProvider'
 
+type StepType = '1' | '2' | '3'
+
 interface ProductInfoProps {
   portfolioImageRef: RefObject<HTMLInputElement | null>
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
   setPortfolioData: Dispatch<SetStateAction<RegisterFactoryPortfolioType>>
   portfolioData: RegisterFactoryPortfolioType
   setIsServiceCategoryModalOpen: Dispatch<SetStateAction<boolean>>
@@ -24,7 +26,7 @@ interface ProductInfoProps {
 
 export default function ProductInfo({
   portfolioImageRef,
-  setCurrentStep,
+  handleStepClick,
   setPortfolioData,
   portfolioData,
   setIsServiceCategoryModalOpen,
@@ -341,7 +343,7 @@ export default function ProductInfo({
       <div className="mt-[40px] mb-[100px] flex justify-between">
         <Button1
           onClick={() => {
-            setCurrentStep(2)
+            handleStepClick('2')
           }}
           customClassName={'w-[260px]'}
           styleType={'outline'}

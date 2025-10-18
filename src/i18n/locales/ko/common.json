@@ -1,0 +1,9 @@
+{
+  "navigation": {
+    "company": "공급업체",
+    "project": "견적서",
+    "chat": "채팅",
+    "login": "로그인",
+    "signup": "회원가입"
+  }
+}

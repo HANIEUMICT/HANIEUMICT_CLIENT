@@ -1,24 +1,30 @@
+'use client'
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import BusinessNumberField from '@/components/create-proposal/business-info/BusinessNumberField'
 import RepresentativeNameField from '@/components/create-proposal/business-info/RepresentativeNameField'
 import BusinessNameField from '@/components/create-proposal/business-info/BusinessNameField'
 import BusinessAddressField from '@/components/create-proposal/business-info/BusinessAddressField'
 import BusinessTypeField from '@/components/create-proposal/business-info/BusinessTypeField'
 import BusinessItemField from '@/components/create-proposal/business-info/BusinessItemField'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { getCompany } from '@/lib/company'
 import { getUserData } from '@/utils/common'
 import { CompanyType } from '@/type/company'
 import { postProposalInit } from '@/lib/proposal'
 import { useProposalStore } from '@/store/proposalStore'
 
-interface BusinessInfoProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
-}
+type StepType = '1' | '2' | '3' | '4' | '5'
 
-export default function BusinessInfo({ setCurrentStep }: BusinessInfoProps) {
+export default function BusinessInfo() {
   const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStepClick = (step: StepType) => {
+    // URL 업데이트 → 서버 컴포넌트 재렌더링
+    router.push(`${pathname}?step=${encodeURIComponent(step)}`)
+  }
+
   const [companyData, setCompanyData] = useState<CompanyType>()
   const setState = useProposalStore((state) => state.setState)
   const selectedProjectId = useProposalStore((state) => state.selectedProjectId)
@@ -57,7 +63,7 @@ export default function BusinessInfo({ setCurrentStep }: BusinessInfoProps) {
         <div className="gap-x-2xs flex">
           <Button1
             onClick={async () => {
-              setCurrentStep(2)
+              handleStepClick('2')
               const response = await postProposalInit(getUserData()?.memberId, selectedProjectId)
               if (response.result === 'SUCCESS') {
                 setState({ resultProposalId: response.data?.proposalId })

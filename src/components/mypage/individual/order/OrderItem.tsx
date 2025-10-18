@@ -1,3 +1,4 @@
+'use client'
 import ProcessingBar from '@/components/create-project/ProcessingBar'
 import { ChatIcon, GrayDistanceIcon, GrayFactoryIcon } from '@/assets/svgComponents'
 import Button1 from '@/components/common/Button1'

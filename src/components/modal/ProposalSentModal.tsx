@@ -1,15 +1,15 @@
+'use client'
+
 import Modal from '@/components/common/Modal'
 import Button1 from '@/components/common/Button1'
 import Image from 'next/image'
-import { Dispatch, SetStateAction } from 'react'
 import { useRouter } from 'next/navigation'
+import { useModalStore } from '@/store/modalStore'
 
-interface ProposalSentModalProps {
-  setIsProposalSentModalOpen: Dispatch<SetStateAction<boolean>>
-}
-
-export default function ProposalSentModal({ setIsProposalSentModalOpen }: ProposalSentModalProps) {
+export default function ProposalSentModal() {
   const router = useRouter()
+  const setState = useModalStore((state) => state.setState)
+
   return (
     <Modal>
       <Modal.Content>
@@ -27,7 +27,7 @@ export default function ProposalSentModal({ setIsProposalSentModalOpen }: Propos
             styleStatus={'default'}
             onClick={() => {
               router.push('/project')
-              setIsProposalSentModalOpen(false)
+              setState({ isProposalSentModalOpen: false })
             }}
           >
             목록으로
@@ -39,7 +39,7 @@ export default function ProposalSentModal({ setIsProposalSentModalOpen }: Propos
             styleStatus={'default'}
             onClick={() => {
               router.push('/mypage')
-              setIsProposalSentModalOpen(false)
+              setState({ isProposalSentModalOpen: false })
             }}
           >
             견적서 보기

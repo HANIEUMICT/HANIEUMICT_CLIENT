@@ -3,21 +3,19 @@ import Button1 from '@/components/common/Button1'
 import { CheckboxFillIcon, UnCheckboxIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
+import { useModalStore } from '@/store/modalStore'
+import { useProjectStore } from '@/store/projectStore'
 
 interface CopyrightAgreementModalProps {
   agreement: boolean
   setAgreement: Dispatch<SetStateAction<boolean>>
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>
-  projectId: number | undefined
 }
 
-export default function CopyrightAgreementModal({
-  agreement,
-  setAgreement,
-  setIsModalOpen,
-  projectId,
-}: CopyrightAgreementModalProps) {
+export default function CopyrightAgreementModal({ agreement, setAgreement }: CopyrightAgreementModalProps) {
   const router = useRouter()
+  const setModalState = useModalStore((state) => state.setState)
+  const projectId = useProjectStore((state) => state.projectId)
+
   return (
     <Modal>
       <Modal.Content>
@@ -44,7 +42,7 @@ export default function CopyrightAgreementModal({
         <div className="flex gap-x-3">
           <Button1
             onClick={() => {
-              setIsModalOpen(false)
+              setModalState({ isCopyrightAgreementModalOpen: false })
             }}
             styleSize="lg"
             styleType="outline"
@@ -55,7 +53,7 @@ export default function CopyrightAgreementModal({
           <Button1
             disabled={!agreement}
             onClick={() => {
-              setIsModalOpen(false)
+              setModalState({ isCopyrightAgreementModalOpen: false })
               router.push(`/project/${projectId}`)
             }}
             styleSize="lg"

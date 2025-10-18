@@ -8,6 +8,10 @@ interface SetModalStoreType {
   isTranslationModalOpen?: boolean
   //로그인 만료되어있을 때 띄우는 state
   isTokenExpiredModalOpen?: boolean
+  //저작권 동의 모달 state
+  isCopyrightAgreementModalOpen?: boolean
+  //기업 견적서 제출 완료 모달 state
+  isProposalSentModalOpen?: boolean
 }
 
 interface ModalStoreType {
@@ -17,6 +21,8 @@ interface ModalStoreType {
   isServicePreparingModalOpen: boolean
   isTranslationModalOpen: boolean
   isTokenExpiredModalOpen: boolean
+  isCopyrightAgreementModalOpen: boolean
+  isProposalSentModalOpen: boolean
   setState: (params: SetModalStoreType) => void
 }
 
@@ -27,6 +33,8 @@ export const useModalStore = create<ModalStoreType>((set) => ({
   isServicePreparingModalOpen: false,
   isTranslationModalOpen: false,
   isTokenExpiredModalOpen: false,
+  isCopyrightAgreementModalOpen: false,
+  isProposalSentModalOpen: false,
   setState: (params: SetModalStoreType) => {
     set((state) => ({
       ...state,

@@ -1,3 +1,5 @@
+'use client'
+
 import { useProposalStore } from '@/store/proposalStore'
 import Image from 'next/image'
 

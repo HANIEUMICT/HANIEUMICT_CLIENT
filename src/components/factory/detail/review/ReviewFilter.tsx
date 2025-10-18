@@ -27,6 +27,7 @@ export default function ReviewFilter({ filterType, setFilterType }: ReviewFilter
         {filterMenuList.map((filterMenu) => {
           return (
             <button
+              key={filterMenu}
               onClick={() => {
                 setFilterType(filterMenu)
               }}

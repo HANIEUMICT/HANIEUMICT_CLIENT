@@ -8,12 +8,14 @@ import Image from 'next/image'
 import { FileInfoType } from '@/type/common'
 import AddEquipmentModal from '@/components/modal/AddEquipmentModal'
 
+type StepType = '1' | '2' | '3'
+
 interface EquipmentInfoProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
   equipmentImageRef: RefObject<HTMLInputElement | null>
 }
 
-export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: EquipmentInfoProps) {
+export default function EquipmentInfo({ handleStepClick, equipmentImageRef }: EquipmentInfoProps) {
   const setState = useRegisterFactoryStore((state) => state.setState)
   const registerFactoryData = useRegisterFactoryStore((state) => state.registerFactoryData)
   const [equipmentData, setEquipmentData] = useState<RegisterFactoryEquipmentType>({})
@@ -166,7 +168,7 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
       <div className="mt-[40px] mb-[100px] flex justify-between">
         <Button1
           onClick={() => {
-            setCurrentStep(1)
+            handleStepClick('1')
           }}
           customClassName={'w-[260px]'}
           styleType={'outline'}
@@ -175,7 +177,7 @@ export default function EquipmentInfo({ setCurrentStep, equipmentImageRef }: Equ
         </Button1>
         <Button1
           onClick={() => {
-            setCurrentStep(3)
+            handleStepClick('3')
           }}
           customClassName={'w-[260px]'}
           styleType={'primary'}

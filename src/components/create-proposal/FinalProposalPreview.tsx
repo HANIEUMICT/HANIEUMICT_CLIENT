@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+'use client'
+
+import { useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import FinalBusinessInfoPreview from '@/components/create-proposal/final-proposal-preview/FinalBusinessInfoPreview'
 import FinalProposalContentPreview from '@/components/create-proposal/final-proposal-preview/FinalProposalContentPreview'
@@ -9,15 +11,20 @@ import { useFileUpload } from '@/hooks/useFileUpload'
 import { ProposalBidStatusType, ProposalStatusType } from '@/type/proposal'
 import { getUserData } from '@/utils/common'
 import { postProposalDraft, postProposalFinal, postProposalImageUpload } from '@/lib/proposal'
+import { useModalStore } from '@/store/modalStore'
+import { usePathname, useRouter } from 'next/navigation'
 
-interface FinalProposalPreviewProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
-  setIsProposalSentModalOpen: Dispatch<SetStateAction<boolean>>
-}
-export default function FinalProposalPreview({
-  setIsProposalSentModalOpen,
-  setCurrentStep,
-}: FinalProposalPreviewProps) {
+type StepType = '1' | '2' | '3' | '4' | '5'
+
+export default function FinalProposalPreview() {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStepClick = (step: StepType) => {
+    // URL 업데이트 → 서버 컴포넌트 재렌더링
+    router.push(`${pathname}?step=${encodeURIComponent(step)}`)
+  }
+  const setModalState = useModalStore((state) => state.setState)
   const fileInfoList = useProposalStore((state) => state.fileInfoList)
   const setState = useProposalStore((state) => state.setState)
   const proposalData = useProposalStore((state) => state.proposalData)
@@ -80,34 +87,35 @@ export default function FinalProposalPreview({
       }
 
       // 3. proposalData에 상태값 추가
-      const updatedProposalData = {
-        ...proposalData,
-        proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
-        submitStatus: statusType,
-        projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
-        companyId: getUserData()?.companyId,
-      }
+      if (typeof selectedProjectId === 'string') {
+        const updatedProposalData = {
+          ...proposalData,
+          proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
+          submitStatus: statusType,
+          projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
+          companyId: getUserData()?.companyId,
+        }
+        // store 업데이트
+        setState({
+          proposalData: updatedProposalData,
+        })
 
-      // store 업데이트
-      setState({
-        proposalData: updatedProposalData,
-      })
+        // 4. 최종 제안서 제출
+        console.log('최종 제안서 제출 시작...', statusType)
+        if (statusType === 'TEMPORARY_SAVE') {
+          const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
+          console.log('최종 제안서 제출 완료:', draftResult)
+        } else if (statusType === 'SUBMIT') {
+          const finalResult = await postProposalFinal(resultProposalId, updatedProposalData)
+          console.log('최종 제안서 제출 완료:', finalResult)
+        }
 
-      // 4. 최종 제안서 제출
-      console.log('최종 제안서 제출 시작...', statusType)
-      if (statusType === 'TEMPORARY_SAVE') {
-        const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
-        console.log('최종 제안서 제출 완료:', draftResult)
-      } else if (statusType === 'SUBMIT') {
-        const finalResult = await postProposalFinal(resultProposalId, updatedProposalData)
-        console.log('최종 제안서 제출 완료:', finalResult)
-      }
-
-      // 5. 성공 메시지 및 다음 단계
-      if (statusType === 'TEMPORARY_SAVE') {
-        alert('임시저장이 완료되었습니다.')
-      } else {
-        setIsProposalSentModalOpen(true)
+        // 5. 성공 메시지 및 다음 단계
+        if (statusType === 'TEMPORARY_SAVE') {
+          alert('임시저장이 완료되었습니다.')
+        } else {
+          setModalState({ isProposalSentModalOpen: true })
+        }
       }
     } catch (error) {
       console.error('도면 업로드 또는 제안서 제출 실패:', error)
@@ -131,14 +139,14 @@ export default function FinalProposalPreview({
     <div className="flex flex-col gap-y-[40px]">
       <section className="flex flex-col gap-y-4">
         <FinalBusinessInfoPreview />
-        <FinalProposalContentPreview setCurrentStep={setCurrentStep} />
-        <FinalETCPreview setCurrentStep={setCurrentStep} />
-        <FinalDrawingPreview setCurrentStep={setCurrentStep} />
+        <FinalProposalContentPreview handleStepClick={handleStepClick} />
+        <FinalETCPreview handleStepClick={handleStepClick} />
+        <FinalDrawingPreview handleStepClick={handleStepClick} />
       </section>
       <section className="flex justify-between">
         <Button1
           onClick={() => {
-            setCurrentStep(4)
+            handleStepClick('4')
           }}
           customClassName={'h-[52px] w-[260px]'}
           styleStatus={'default'}

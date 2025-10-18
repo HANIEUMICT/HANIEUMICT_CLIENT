@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { CompanyDetailInfoType } from '@/type/company'
 import { useState } from 'react'

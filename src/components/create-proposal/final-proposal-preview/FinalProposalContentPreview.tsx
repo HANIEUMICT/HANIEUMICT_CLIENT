@@ -1,12 +1,13 @@
 import Button1 from '@/components/common/Button1'
 import { useProposalStore } from '@/store/proposalStore'
-import { Dispatch, SetStateAction } from 'react'
+
+type StepType = '1' | '2' | '3' | '4' | '5'
 
 interface FinalProposalContentPreviewProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
 }
 
-export default function FinalProposalContentPreview({ setCurrentStep }: FinalProposalContentPreviewProps) {
+export default function FinalProposalContentPreview({ handleStepClick }: FinalProposalContentPreviewProps) {
   const proposalData = useProposalStore((state) => state.proposalData)
 
   return (
@@ -66,7 +67,7 @@ export default function FinalProposalContentPreview({ setCurrentStep }: FinalPro
       <div className="flex w-full justify-end">
         <Button1
           onClick={() => {
-            setCurrentStep(2)
+            handleStepClick('2')
           }}
           styleSize={'md'}
           styleStatus={'default'}

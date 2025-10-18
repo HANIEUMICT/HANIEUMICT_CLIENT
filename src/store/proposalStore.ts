@@ -5,7 +5,7 @@ import { ProposalType } from '@/type/proposal'
 import { FileInfoType } from '@/type/common'
 
 interface SetProposalStoreType {
-  selectedProjectId?: string | undefined
+  selectedProjectId?: number | string | undefined
   resultProposalId?: number | undefined
   summaryProjectData?: ProjectResponseType | undefined
   fileInfoList?: FileInfoType[] | undefined
@@ -14,7 +14,7 @@ interface SetProposalStoreType {
 }
 
 interface ProposalStoreType {
-  selectedProjectId: string | undefined
+  selectedProjectId: number | string | undefined
   resultProposalId: number | undefined
   proposalData: ProposalType | null
   summaryProjectData: ProjectResponseType | undefined

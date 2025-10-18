@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { FavoriteIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'

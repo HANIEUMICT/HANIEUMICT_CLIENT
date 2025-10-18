@@ -42,7 +42,7 @@ export default function BasicInfo({ setCurrentStep }: BasicInfoProps) {
       title: '견적서 불러오기',
       content: '임시 저장된 견적요청서나, 발송했던 견적요청서를 불러올 수 있습니다.',
       type: 'before',
-      img: '/company.ts-graphic.svg',
+      img: '/company-graphic.svg',
     },
   ]
   return (

@@ -1,5 +1,7 @@
+'use client'
+
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Gray50ArrowDownIcon, Gray50ArrowUpIcon, WhitePlusIcon } from '@/assets/svgComponents'
 import ProductNameField from '@/components/create-proposal/proposal-content/ProductNameField'
 import SpecificationField from '@/components/create-proposal/proposal-content/SpecificationField'
@@ -12,12 +14,19 @@ import { useProposalStore } from '@/store/proposalStore'
 import { ItemType, ProposalBidStatusType, ProposalStatusType } from '@/type/proposal'
 import { getUserData } from '@/utils/common'
 import { postProposalDraft } from '@/lib/proposal'
+import { usePathname, useRouter } from 'next/navigation'
 
-interface ProposalContentProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
-}
+type StepType = '1' | '2' | '3' | '4' | '5'
 
-export default function ProposalContent({ setCurrentStep }: ProposalContentProps) {
+export default function ProposalContent() {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStepClick = (step: StepType) => {
+    // URL 업데이트 → 서버 컴포넌트 재렌더링
+    router.push(`${pathname}?step=${encodeURIComponent(step)}`)
+  }
+
   const setState = useProposalStore((state) => state.setState)
   const proposalData = useProposalStore((state) => state.proposalData)
   const selectedProjectId = useProposalStore((state) => state.selectedProjectId)
@@ -101,24 +110,25 @@ export default function ProposalContent({ setCurrentStep }: ProposalContentProps
       setIsUploading(true)
 
       // 3. proposalData에 상태값 추가
-      const updatedProposalData = {
-        ...proposalData,
-        proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
-        submitStatus: 'TEMPORARY_SAVE' as ProposalStatusType,
-        projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
-        companyId: getUserData()?.companyId,
-      }
+      if (typeof selectedProjectId === 'string') {
+        const updatedProposalData = {
+          ...proposalData,
+          proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
+          submitStatus: 'TEMPORARY_SAVE' as ProposalStatusType,
+          projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
+          companyId: getUserData()?.companyId,
+        }
+        // store 업데이트
+        setState({
+          proposalData: updatedProposalData,
+        })
 
-      // store 업데이트
-      setState({
-        proposalData: updatedProposalData,
-      })
+        const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
+        console.log('최종 제안서 임시 저장:', draftResult)
 
-      const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
-      console.log('최종 제안서 임시 저장:', draftResult)
-
-      if (draftResult) {
-        alert('임시저장이 완료되었습니다.')
+        if (draftResult) {
+          alert('임시저장이 완료되었습니다.')
+        }
       }
     } catch (error) {
       console.error('도면 업로드 또는 제안서 제출 실패:', error)
@@ -190,7 +200,7 @@ export default function ProposalContent({ setCurrentStep }: ProposalContentProps
 
       <section className="flex justify-between">
         <Button1
-          onClick={() => setCurrentStep(1)}
+          onClick={() => handleStepClick('1')}
           customClassName={'h-[52px] w-[260px]'}
           styleStatus={'default'}
           styleSize={'lg'}
@@ -210,7 +220,7 @@ export default function ProposalContent({ setCurrentStep }: ProposalContentProps
             {isUploading ? '저장 중...' : '임시저장'}
           </Button1>
           <Button1
-            onClick={() => setCurrentStep(3)}
+            onClick={() => handleStepClick('3')}
             customClassName={'h-[52px] w-[260px]'}
             styleStatus={isValid ? 'default' : 'disabled'}
             styleType={'primary'}

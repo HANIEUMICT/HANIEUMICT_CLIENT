@@ -7,7 +7,7 @@ import { authorizedFetch } from '@/lib/common'
  */
 export const postProposalInit = async (
   memberId: number | undefined,
-  projectId: string | undefined
+  projectId: string | number | undefined
 ): Promise<ApiResponse<ProposalResponseType>> => {
   const response = await authorizedFetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/v1/proposal/${projectId}/${memberId}/init`,

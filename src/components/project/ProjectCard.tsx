@@ -1,39 +1,28 @@
+'use client'
+
 import { ChatIcon, GrayFavoriteIcon, ImgUploadIcon } from '@/assets/svgComponents'
 import Image from 'next/image'
 import { ProjectResponseType } from '@/type/project'
-import { useRouter } from 'next/navigation'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { useModalStore } from '@/store/modalStore'
 import { postFavoriteProject } from '@/lib/project'
 import { useToast } from '@/provider/ToastProvider'
+import { useProjectStore } from '@/store/projectStore'
 
-interface ProjectCardProps extends ProjectResponseType {
-  setSelectedProjectId?: Dispatch<SetStateAction<number | undefined>>
-  setIsCopyrightAgreementModalOpen?: Dispatch<SetStateAction<boolean>>
-}
+interface ProjectCardProps extends ProjectResponseType {}
 
-export default function ProjectCard({
-  projectRegisterRequest,
-  projectId,
-  drawingUrls,
-  setSelectedProjectId,
-  setIsCopyrightAgreementModalOpen,
-}: ProjectCardProps) {
-  const router = useRouter()
+export default function ProjectCard({ projectRegisterRequest, projectId, drawingUrls }: ProjectCardProps) {
   const setState = useModalStore((state) => state.setState)
   const [imageError, setImageError] = useState(false)
-
+  const setModalState = useModalStore((state) => state.setState)
+  const setProjectState = useProjectStore((state) => state.setState)
   const { showToast } = useToast()
 
   return (
     <div
       onClick={(e) => {
-        if (setSelectedProjectId && setIsCopyrightAgreementModalOpen) {
-          setSelectedProjectId(projectId)
-          setIsCopyrightAgreementModalOpen(true)
-        } else {
-          router.push(`/project/${projectId}`)
-        }
+        setProjectState({ projectId: projectId })
+        setModalState({ isCopyrightAgreementModalOpen: true })
         e.stopPropagation()
       }}
       className="gap-y-4xs py-xs hover:border-conic-red-30 flex cursor-pointer flex-col rounded-[24px] bg-white px-5 transition hover:border"

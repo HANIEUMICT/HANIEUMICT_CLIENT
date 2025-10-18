@@ -1,15 +1,17 @@
+'use client'
+
 import Button1 from '@/components/common/Button1'
 import { ChatIcon, FavoriteIcon } from '@/assets/svgComponents'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ProjectDetailResponseType, ProjectResponseType, ProjectType, proposalThumbnailType } from '@/type/project'
+import { ProjectResponseType, proposalThumbnailType } from '@/type/project'
 import { getUserData } from '@/utils/common'
 import { postFavoriteProject } from '@/lib/project'
 import { useModalStore } from '@/store/modalStore'
 import { useProposalStore } from '@/store/proposalStore'
 
 interface BidderListProps {
-  projectId: string | undefined
+  projectId: number | string | undefined
   memberId: number | null | undefined
   proposalThumbnails: proposalThumbnailType[] | undefined
   publicUntil: string | null | undefined
@@ -67,6 +69,7 @@ export default function BidderList({
             proposalThumbnails.map((proposalThumbnail) => {
               return (
                 <section
+                  key={proposalThumbnail.proposalId}
                   onClick={() => setClick(!click)}
                   className={`${click ? 'border-conic-red-20 p-2xs gap-y-4xs flex w-full flex-col rounded-[16px] border' : 'border-gray-20 p-2xs gap-y-4xs flex w-full flex-col rounded-[16px] border'}`}
                 >

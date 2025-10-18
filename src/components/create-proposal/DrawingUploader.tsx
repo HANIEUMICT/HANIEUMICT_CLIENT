@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react'
+'use client'
+
+import { useRef, useState } from 'react'
 import Button1 from '@/components/common/Button1'
 import DrawingUploadField from '@/components/create-proposal/drawing-uploader/DrawingUploadField'
 import { useFileUpload } from '@/hooks/useFileUpload'
@@ -6,12 +8,18 @@ import { useProposalStore } from '@/store/proposalStore'
 import { postProposalImageUpload, postProposalDraft } from '@/lib/proposal'
 import { getUserData } from '@/utils/common'
 import { ProposalBidStatusType, ProposalStatusType } from '@/type/proposal'
+import { usePathname, useRouter } from 'next/navigation'
 
-interface DrawingUploaderProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
-}
+type StepType = '1' | '2' | '3' | '4' | '5'
 
-export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps) {
+export default function DrawingUploader() {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStepClick = (step: StepType) => {
+    // URL 업데이트 → 서버 컴포넌트 재렌더링
+    router.push(`${pathname}?step=${encodeURIComponent(step)}`)
+  }
   const drawingFileImgRef = useRef<HTMLInputElement | null>(null)
   const fileInfoList = useProposalStore((state) => state.fileInfoList)
   const setState = useProposalStore((state) => state.setState)
@@ -76,30 +84,31 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
       }
 
       // 3. proposalData에 상태값 추가
-      const updatedProposalData = {
-        ...proposalData,
-        proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
-        submitStatus: statusType,
-        projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
-        companyId: getUserData()?.companyId,
-      }
+      if (typeof selectedProjectId === 'string') {
+        const updatedProposalData = {
+          ...proposalData,
+          proposalBidStatus: 'BIDDING' as ProposalBidStatusType,
+          submitStatus: statusType,
+          projectId: parseInt(selectedProjectId), // 이제 안전하게 사용 가능
+          companyId: getUserData()?.companyId,
+        }
+        // store 업데이트
+        setState({
+          proposalData: updatedProposalData,
+        })
 
-      // store 업데이트
-      setState({
-        proposalData: updatedProposalData,
-      })
-
-      // 4. 최종 제안서 제출
-      console.log('최종 제안서 제출 시작...', statusType)
-      if (statusType === 'TEMPORARY_SAVE') {
-        const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
-        console.log('최종 제안서 임시 저장:', draftResult)
-      }
-      // 5. 성공 메시지 및 다음 단계
-      if (statusType === 'TEMPORARY_SAVE') {
-        alert('임시저장이 완료되었습니다.')
-      } else {
-        setCurrentStep(5)
+        // 4. 최종 제안서 제출
+        console.log('최종 제안서 제출 시작...', statusType)
+        if (statusType === 'TEMPORARY_SAVE') {
+          const draftResult = await postProposalDraft(resultProposalId, updatedProposalData)
+          console.log('최종 제안서 임시 저장:', draftResult)
+        }
+        // 5. 성공 메시지 및 다음 단계
+        if (statusType === 'TEMPORARY_SAVE') {
+          alert('임시저장이 완료되었습니다.')
+        } else {
+          handleStepClick('5')
+        }
       }
     } catch (error) {
       console.error('도면 업로드 또는 제안서 제출 실패:', error)
@@ -131,7 +140,7 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
 
       <section className="flex justify-between">
         <Button1
-          onClick={() => setCurrentStep(2)}
+          onClick={() => handleStepClick('2')}
           customClassName={'h-[52px] w-[260px]'}
           styleStatus={'default'}
           styleSize={'lg'}
@@ -153,7 +162,7 @@ export default function DrawingUploader({ setCurrentStep }: DrawingUploaderProps
           </Button1>
           <Button1
             onClick={() => {
-              setCurrentStep(5)
+              handleStepClick('5')
             }}
             customClassName={'h-[52px] w-[260px]'}
             styleStatus={isValid ? 'default' : 'disabled'}

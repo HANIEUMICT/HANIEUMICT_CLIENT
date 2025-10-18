@@ -1,13 +1,14 @@
 import { useProposalStore } from '@/store/proposalStore'
 import UploadItem from '@/components/common/UploadItem'
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction } from 'react'
+
+type StepType = '1' | '2' | '3' | '4' | '5'
 
 interface FinalProposalPreviewProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
 }
 
-export default function FinalDrawingPreview({ setCurrentStep }: FinalProposalPreviewProps) {
+export default function FinalDrawingPreview({ handleStepClick }: FinalProposalPreviewProps) {
   const fileInfoList = useProposalStore((state) => state.fileInfoList)
 
   return (
@@ -28,7 +29,7 @@ export default function FinalDrawingPreview({ setCurrentStep }: FinalProposalPre
       <div className="flex w-full justify-end">
         <Button1
           onClick={() => {
-            setCurrentStep(4)
+            handleStepClick('4')
           }}
           styleSize={'md'}
           styleStatus={'default'}

@@ -1,25 +1,24 @@
-import Header from '@/components/common/Header'
+'use client'
+
 import Image from 'next/image'
 import Button1 from '@/components/common/Button1'
 import { useRouter } from 'next/navigation'
-import { Dispatch, SetStateAction } from 'react'
+import { useAuthStore } from '@/store/authStore'
 
-interface SelectRoleProps {
-  selectedRole: 'person' | 'company' | undefined
-  setSelectedRole: Dispatch<SetStateAction<'person' | 'company' | undefined>>
-  onClick: () => void
-}
+interface SelectRoleProps {}
 
-const SelectRole = ({ selectedRole, setSelectedRole, onClick }: SelectRoleProps) => {
+const SelectRole = ({}: SelectRoleProps) => {
+  const selectedRole = useAuthStore((state) => state.selectedUserRole)
+  const setState = useAuthStore((state) => state.setState)
+
   const router = useRouter()
 
   const roleContents: { title: string; type: 'person' | 'company'; img: string }[] = [
     { title: '개인 회원', type: 'person', img: '/person-graphic.svg' },
-    { title: '기업 회원', type: 'company', img: '/company.ts-graphic.svg' },
+    { title: '기업 회원', type: 'company', img: '/company-graphic.svg' },
   ]
   return (
     <main className="bg-gray-10 flex min-h-screen flex-col items-center justify-center">
-      <Header headerType={'SIGNUP'} />
       <h1 className="h2">회원가입 유형</h1>
       <div className="gap-x-s mt-[32px] flex w-[600px]">
         {roleContents.map((roleContent) => {
@@ -27,7 +26,7 @@ const SelectRole = ({ selectedRole, setSelectedRole, onClick }: SelectRoleProps)
             <section
               key={roleContent.title}
               onClick={() => {
-                setSelectedRole(selectedRole === roleContent.type ? undefined : roleContent.type)
+                setState({ selectedUserRole: selectedRole === roleContent.type ? undefined : roleContent.type })
               }}
               className="cursor-pointer"
             >
@@ -61,7 +60,13 @@ const SelectRole = ({ selectedRole, setSelectedRole, onClick }: SelectRoleProps)
           styleSize={'lg'}
           styleStatus={selectedRole === undefined ? 'disabled' : 'default'}
           customClassName={'w-full'}
-          onClick={onClick}
+          onClick={() => {
+            if (selectedRole === 'person') {
+              router.push('/sign-up/individual')
+            } else {
+              router.push('/sign-up/company')
+            }
+          }}
         >
           다음
         </Button1>

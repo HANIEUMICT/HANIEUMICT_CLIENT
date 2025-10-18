@@ -1,7 +1,9 @@
 import Input from '@/components/common/Input'
 
 interface BusinessAddressFieldProps {
-  address: { zipCode: string; road: string; detail: string } | undefined
+  address:
+    | { postal: string; street: string; detail: string; addressName: string; recipient: string; phoneNumber: string }
+    | undefined
 }
 
 export default function BusinessAddressField({ address }: BusinessAddressFieldProps) {
@@ -10,7 +12,7 @@ export default function BusinessAddressField({ address }: BusinessAddressFieldPr
       <p className="sub2">소재지</p>
       <Input
         inputBoxStyle={'disabled'}
-        value={`${address?.road} ${address?.detail} `}
+        value={`${address?.street} ${address?.detail} `}
         placeholder={'소재지를 입력해주세요.'}
       />
     </div>

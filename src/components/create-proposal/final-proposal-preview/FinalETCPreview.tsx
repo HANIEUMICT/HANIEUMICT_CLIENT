@@ -1,12 +1,13 @@
 import Button1 from '@/components/common/Button1'
-import { Dispatch, SetStateAction } from 'react'
 import { useProposalStore } from '@/store/proposalStore'
 
+type StepType = '1' | '2' | '3' | '4' | '5'
+
 interface FinalETCPreviewProps {
-  setCurrentStep: Dispatch<SetStateAction<number>>
+  handleStepClick: (step: StepType) => void
 }
 
-export default function FinalETCPreview({ setCurrentStep }: FinalETCPreviewProps) {
+export default function FinalETCPreview({ handleStepClick }: FinalETCPreviewProps) {
   const proposalData = useProposalStore((state) => state.proposalData)
 
   return (
@@ -25,7 +26,7 @@ export default function FinalETCPreview({ setCurrentStep }: FinalETCPreviewProps
       <div className="flex w-full justify-end">
         <Button1
           onClick={() => {
-            setCurrentStep(3)
+            handleStepClick('3')
           }}
           styleSize={'md'}
           styleStatus={'default'}

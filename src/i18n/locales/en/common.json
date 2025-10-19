@@ -1,7 +1,37 @@
 {
   "navigation": {
-    "company": "company",
-    "project": "project",
-    "chat": "chat"
+    "company": "Suppliers",
+    "project": "Projects",
+    "chat": "Chat",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "registerCompany": "Register Your Factory",
+    "createProject": "Create Project",
+    "roleCompany": "Business",
+    "roleIndividual": "Individual"
+  },
+  "company": {
+    "h1": "Your Recommended Suppliers",
+    "recommendTag": {
+      "tag1": "Trusted Suppliers",
+      "tag2": "Fast Response Time",
+      "tag3": "Reasonable Pricing",
+      "changeTagButton": "Change Recommendation Priority"
+    },
+    "card": {
+      "avgProductionLeadHours": "Average Production Lead Time",
+      "totalOrderCount": "Total Orders",
+      "repeatOrderCount": "Repeat Customers",
+      "avgResponseMinutes": "Average Response Time"
+    }
+  },
+  "modal": {
+    "servicePreparingModal": {
+      "title": "Service in Preparation",
+      "content": "This service will be available soon."
+    },
+    "button": {
+      "close": "Close"
+    }
   }
 }

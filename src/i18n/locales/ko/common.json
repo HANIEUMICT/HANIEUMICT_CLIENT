@@ -4,6 +4,39 @@
     "project": "견적서",
     "chat": "채팅",
     "login": "로그인",
-    "signup": "회원가입"
+    "signup": "회원가입",
+    "registerCompany": "내 공장 등록하기",
+    "createProject": "견적서 작성하기",
+    "roleCompany": "기업",
+    "roleIndividual": "개인"
+  },
+  "company": {
+    "h1": "님의 추천 공급업체",
+    "recommendTag": {
+      "tag1": "신뢰도 있는 기업",
+      "tag2": "빠른 답변 속도",
+      "tag3": "합리적인 가격 거래",
+      "changeTagButton": "추천 우선순위 변경"
+    },
+    "card": {
+      "avgProductionLeadHours": "제작 평균 소요시간",
+      "totalOrderCount": "거래 건수",
+      "repeatOrderCount":"재거래 고객",
+      "avgResponseMinutes": "평균 응답 시간"
+    }
+  },
+  "modal": {
+    "servicePreparingModal": {
+      "title": "현재 서비스 준비중에 있습니다.",
+      "content": "빠른 시일 내에 찾아뵙겠습니다."
+    },
+    "button": {
+      "close": "닫기"
+    }
+  },
+  "error": {
+    "company": {
+      "upload": "데이터 불러오기에 실패하였습니다."
+    }
   }
 }

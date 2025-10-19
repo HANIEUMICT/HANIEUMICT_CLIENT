@@ -1,16 +1,17 @@
 import Modal from '@/components/common/Modal'
 import Button1 from '@/components/common/Button1'
 import { useModalStore } from '@/store/modalStore'
+import { useTranslation } from 'react-i18next'
 
 export default function ServicePreparingModal() {
   const setModalState = useModalStore((state) => state.setState)
-
+  const { t } = useTranslation()
   return (
     <Modal>
       <Modal.Content>
         <div className="gap-y-4xs flex flex-col">
-          <h2 className="h2">현재 서비스 준비중에 있습니다.</h2>
-          <p className="body1 text-gray-50">빠른 시일 내에 찾아뵙겠습니다.</p>
+          <h2 className="h2">{t('modal.servicePreparingModal.title')}</h2>
+          <p className="body1 text-gray-50">{t('modal.servicePreparingModal.content')}</p>
         </div>
       </Modal.Content>
       <Modal.BottomButton>
@@ -21,7 +22,7 @@ export default function ServicePreparingModal() {
           styleStatus={'default'}
           styleType={'outline'}
         >
-          닫기
+          {t('modal.button.close')}
         </Button1>
       </Modal.BottomButton>
     </Modal>

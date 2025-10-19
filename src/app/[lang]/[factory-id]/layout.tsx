@@ -14,12 +14,10 @@ export async function generateStaticParams() {
 export default async function FactoryDetailLayout({ children, params }: FactoryDetailLayoutProps) {
   const { lang } = await params
   return (
-    <html lang={lang}>
-      <body>
-        <Header headerType={'DEFAULT'} params={params} />
-        <div className="h-[123px]"></div>
-        {children}
-      </body>
-    </html>
+    <>
+      <Header headerType={'DEFAULT'} params={params} />
+      <div className="h-[123px]"></div>
+      {children}
+    </>
   )
 }

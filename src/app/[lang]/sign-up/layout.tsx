@@ -14,12 +14,10 @@ export async function generateStaticParams() {
 export default async function SignUpLayout({ children, params }: SignUpLayoutProps) {
   const { lang } = await params
   return (
-    <html lang={lang}>
-      <body>
-        <Header params={params} headerType={'SIGNUP'} />
-        <div className="h-[40px]" />
-        {children}
-      </body>
-    </html>
+    <>
+      <Header params={params} headerType={'SIGNUP'} />
+      <div className="h-[40px]" />
+      {children}
+    </>
   )
 }

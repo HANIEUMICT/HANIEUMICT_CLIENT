@@ -1,6 +1,6 @@
-import CompanyIntroCard from '@/components/factory/detail/company-info/CompanyIntroCard'
-import Equipment from '@/components/factory/detail/company-info/EquipmentCard'
-import Portfolio from '@/components/factory/detail/company-info/PortfolioCard'
+import CompanyIntroCard from '@/components/company/detail/company-info/CompanyIntroCard'
+import Equipment from '@/components/company/detail/company-info/EquipmentCard'
+import Portfolio from '@/components/company/detail/company-info/PortfolioCard'
 import { CompanyDetailInfoType } from '@/type/company'
 
 interface CompanyInfoProps {

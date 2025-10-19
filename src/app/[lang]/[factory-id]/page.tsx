@@ -1,8 +1,8 @@
-import SummaryCompanyCard from '@/components/factory/detail/SummaryCompanyCard'
-import CompanyInfo from '@/components/factory/detail/CompanyInfo'
-import Review from '@/components/factory/detail/Review'
+import SummaryCompanyCard from '@/components/company/detail/SummaryCompanyCard'
+import CompanyInfo from '@/components/company/detail/CompanyInfo'
+import Review from '@/components/company/detail/Review'
 import { getCompanyDetail } from '@/lib/api/server/company'
-import Menu from '@/components/factory/detail/Menu'
+import Menu from '@/components/company/detail/Menu'
 
 type MenuType = 'info' | 'review'
 

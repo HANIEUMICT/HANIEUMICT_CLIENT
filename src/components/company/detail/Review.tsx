@@ -1,8 +1,8 @@
 'use client'
 
-import SummaryReview from '@/components/factory/detail/review/SummaryReview'
-import ReviewFilter from '@/components/factory/detail/review/ReviewFilter'
-import ReviewItem from '@/components/factory/detail/review/ReviewItem'
+import SummaryReview from '@/components/company/detail/review/SummaryReview'
+import ReviewFilter from '@/components/company/detail/review/ReviewFilter'
+import ReviewItem from '@/components/company/detail/review/ReviewItem'
 import { useState } from 'react'
 import Pagination from '@/components/common/Pagination'
 

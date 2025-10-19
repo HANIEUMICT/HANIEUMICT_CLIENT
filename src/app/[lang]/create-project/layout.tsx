@@ -14,12 +14,10 @@ export async function generateStaticParams() {
 export default async function CreateProjectLayout({ children, params }: CreateProjectLayoutProps) {
   const { lang } = await params
   return (
-    <html lang={lang}>
-      <body>
-        <Header headerType={'DEFAULT'} params={params} />
-        <div className="h-[180px]" />
-        {children}
-      </body>
-    </html>
+    <>
+      <Header headerType={'DEFAULT'} params={params} />
+      <div className="h-[180px]" />
+      {children}
+    </>
   )
 }

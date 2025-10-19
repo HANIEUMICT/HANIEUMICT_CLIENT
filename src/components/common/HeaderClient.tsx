@@ -1,7 +1,6 @@
-// src/components/common/HeaderClient.tsx
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { UserDataType } from '@/type/common'
 import Button1 from '@/components/common/Button1'
@@ -9,7 +8,7 @@ import { AlarmIcon, ProfileIcon, TranslateIcon } from '@/assets/svgComponents'
 import TranslationModal from '@/components/modal/TranslationModal'
 import { useModalStore } from '@/store/modalStore'
 import { useTranslation } from 'react-i18next'
-import i18n from '@/config/i18n'
+import i18n from '@/lib/i18n-client'
 
 interface HeaderClientProps {
   currentLng: string
@@ -74,23 +73,23 @@ export default function HeaderClient({ currentLng }: HeaderClientProps) {
 
         {userData?.memberRole === 'INDIVIDUAL' ? (
           <Button1
-            onClick={() => router.push('/create-project')}
+            onClick={() => router.push(`/${currentLng}/create-project`)}
             styleType="primary"
             styleStatus="default"
             styleSize="sm"
             customClassName="rounded-full h-[36px]"
           >
-            견적서 작성하기
+            {t('navigation.createProject')}
           </Button1>
         ) : userData?.memberRole === 'OWNER' ? (
           <Button1
-            onClick={() => router.push('/register-factory')}
+            onClick={() => router.push(`/${currentLng}/register-factory`)}
             styleType="primary"
             styleStatus="default"
             styleSize="sm"
             customClassName="rounded-full h-[36px]"
           >
-            내 공장 등록하기
+            {t('navigation.registerCompany')}
           </Button1>
         ) : null}
 
@@ -107,7 +106,11 @@ export default function HeaderClient({ currentLng }: HeaderClientProps) {
         {userData ? (
           <div
             onClick={() => {
-              router.push(userData.memberRole === 'INDIVIDUAL' ? '/mypage/individual' : '/mypage/company')
+              router.push(
+                userData.memberRole === 'INDIVIDUAL'
+                  ? `/${currentLng}/mypage/individual`
+                  : `/${currentLng}/mypage/company`
+              )
             }}
             className="flex cursor-pointer items-center gap-x-2"
           >
@@ -122,18 +125,18 @@ export default function HeaderClient({ currentLng }: HeaderClientProps) {
                     : 'text-conic-orange-30 bg-conic-orange-10'
                 }`}
               >
-                {userData.memberRole === 'INDIVIDUAL' ? '개인' : '기업'}
+                {userData.memberRole === 'INDIVIDUAL' ? t('navigation.roleIndividual') : t('navigation.roleCompany')}
               </div>
               <p className="button-lg">{userData.memberName}</p>
             </div>
           </div>
         ) : (
           <div className="button-lg gap-x-4xs flex cursor-pointer items-center">
-            <button onClick={() => router.push('/login')} className="text-gray-40">
+            <button onClick={() => router.push(`/${currentLng}/login`)} className="text-gray-40">
               {t('navigation.login')}
             </button>
             <div className="text-gray-50">|</div>
-            <button onClick={() => router.push('/sign-up')} className="text-gray-40">
+            <button onClick={() => router.push(`/${currentLng}/sign-up`)} className="text-gray-40">
               {t('navigation.signup')}
             </button>
           </div>

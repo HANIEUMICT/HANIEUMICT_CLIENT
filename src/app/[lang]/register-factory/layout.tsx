@@ -14,11 +14,9 @@ export async function generateStaticParams() {
 export default async function RegisterFactoryLayout({ children, params }: RegisterFactoryLayoutProps) {
   const { lang } = await params
   return (
-    <html lang={lang}>
-      <body>
-        <Header headerType={'DEFAULT'} params={params} />
-        {children}
-      </body>
-    </html>
+    <>
+      <Header headerType={'DEFAULT'} params={params} />
+      {children}
+    </>
   )
 }

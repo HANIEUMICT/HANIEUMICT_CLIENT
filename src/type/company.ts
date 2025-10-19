@@ -59,3 +59,12 @@ export interface PortfolioType {
   description: string
   imageUrls: string[]
 }
+export interface RecommendCompanyType {
+  companyId: number
+  name: string
+  logoUrl: string
+  avgProductionLeadHours: number
+  totalOrderCount: number
+  repeatOrderCount: number
+  avgResponseMinutes: number
+}

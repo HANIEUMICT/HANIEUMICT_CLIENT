@@ -21,12 +21,9 @@ export default async function RecruitLayout({ children, params }: RecruitLayoutP
   const { lang } = await params
 
   return (
-    <html lang={lang}>
-      <body>
-        <Header headerType={'DEFAULT'} params={params} />
-        <div className="h-[80px]" />
-        {children}
-      </body>
-    </html>
+    <>
+      <Header headerType={'DEFAULT'} params={params} />
+      {children}
+    </>
   )
 }

@@ -1,4 +1,4 @@
-import Card from '@/components/factory/detail/Card'
+import Card from '@/components/company/detail/Card'
 
 export default function EquipmentCard() {
   return (

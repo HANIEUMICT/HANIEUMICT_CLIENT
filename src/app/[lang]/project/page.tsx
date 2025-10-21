@@ -40,8 +40,7 @@ export default async function ProjectPage({ searchParams, params }: ProjectPageP
       totalPages = response.data.totalPages
     }
   } catch (err) {
-    console.error('프로젝트 데이터 불러오기 실패:', err)
-    error = '데이터를 불러올 수 없습니다'
+    error = t('error.project.upload')
   }
 
   return (
@@ -51,11 +50,10 @@ export default async function ProjectPage({ searchParams, params }: ProjectPageP
           leftIcon={<SearchIcon />}
           value={''}
           inputBoxStyle={'default'}
-          placeholder={"'공급업체' 또는 '카테고리' 검색어를 입력해보세요."}
+          placeholder={t('project.searchPlaceHolder')}
         />
-
         <section className="flex flex-col gap-y-4">
-          <h1 className="h2">견적서 전체보기</h1>
+          <h1 className="h2">{t('project.h1')}</h1>
 
           {error ? (
             <div className="py-8 text-center text-red-500">{error}</div>
@@ -65,7 +63,7 @@ export default async function ProjectPage({ searchParams, params }: ProjectPageP
                 {projectList && projectList.length > 0 ? (
                   projectList.map((project) => <ProjectCard key={project.projectId} {...project} />)
                 ) : (
-                  <div className="text-gray-40 col-span-3 py-8 text-center">등록된 프로젝트가 없습니다</div>
+                  <div className="text-gray-40 col-span-3 py-8 text-center">{t('error.project.register')}</div>
                 )}
               </section>
 

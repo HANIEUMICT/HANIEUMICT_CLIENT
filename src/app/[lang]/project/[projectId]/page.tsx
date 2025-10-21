@@ -34,11 +34,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     if (response?.result === 'SUCCESS' && response.data) {
       project = response.data
     } else {
-      error = '프로젝트 데이터를 찾을 수 없습니다'
+      error = t('error.project.upload')
     }
   } catch (err) {
-    console.error(`프로젝트 ${projectId} 상세 조회 실패:`, err)
-    error = '프로젝트를 불러올 수 없습니다'
+    error = t('error.project.upload')
   }
 
   // 에러 또는 프로젝트 없음
@@ -52,13 +51,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     <main className="flex flex-col items-center justify-center">
       <div className="gap-y-l mx-auto mt-[20px] flex h-[80px] flex-col">
         <div className="flex w-full items-center justify-between">
-          <h2 className="h2">견적서 상세보기</h2>
+          <h2 className="h2">{t('project.detail.h1')}</h2>
         </div>
 
         <div className="flex gap-x-[24px]">
           {/* 왼쪽: 프로젝트 정보 */}
           <div className="flex flex-col gap-y-[16px]">
             <FinalBasicInfo
+              lang={lang}
               projectTitle={projectData.projectTitle}
               categoryDetail={projectData.categoryDetail}
               category={projectData.category}
@@ -68,6 +68,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             />
 
             <FinalRequestCondition
+              lang={lang}
               drawingUrls={project.projectDetailResponse.drawingUrls}
               requests={projectData.requests}
               requestEstimate={projectData.requestEstimate}
@@ -78,6 +79,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             />
 
             <FinalShippingAndExtraInfo
+              lang={lang}
               canPhoneConsult={projectData.canPhoneConsult}
               deliveryAddress={projectData.deliveryAddress}
               projectStatus={projectData.projectStatus}

@@ -1,8 +1,10 @@
 import DownloadItem from '@/components/common/DownloadItem'
 import { extractImageInfo } from '@/utils/project'
-import Button1 from '@/components/common/Button1'
+import { Locale } from '@/lib/i18n.types'
+import { useTranslationServer } from '@/lib/i18n'
 
 interface FinalRequestConditionProps {
+  lang: Locale
   drawingUrls: string[] | undefined
   projectQuantity?: number | null
   requests?: string | null
@@ -11,7 +13,8 @@ interface FinalRequestConditionProps {
   requestEstimate?: number | null
   publicUntil?: string | null
 }
-export default function FinalRequestCondition({
+export default async function FinalRequestCondition({
+  lang,
   drawingUrls,
   projectQuantity,
   requestEstimate,
@@ -20,14 +23,15 @@ export default function FinalRequestCondition({
   deadline,
   canDeadlineChange,
 }: FinalRequestConditionProps) {
+  const { t } = await useTranslationServer(lang, ['common'])
   return (
     <section className="border-gray-20 flex w-[1063px] flex-col gap-y-[16px] rounded-[24px] border bg-white p-6">
-      <h1 className="sub1">요청 조건입력</h1>
+      <h1 className="sub1">{t('project.detail.requestCondition.title')}</h1>
       <section className="flex flex-col gap-y-[16px]">
         <div className="flex flex-col gap-y-3">
           <div className="flex w-[577px] flex-col gap-y-[12px]">
-            <p className="sub2">도면 소유 여부</p>
-            <p className="body1 text-gray-40">예 (첨부된 CAD 파일 참조)</p>
+            <p className="sub2">{t('project.detail.requestCondition.drawingTitle')}</p>
+            <p className="body1 text-gray-40">{t('project.detail.requestCondition.drawingDescription')}</p>
           </div>
           <div className="flex flex-col gap-y-2">
             {drawingUrls
@@ -43,27 +47,29 @@ export default function FinalRequestCondition({
               : null}
           </div>
           <div className="flex flex-col gap-y-[12px]">
-            <p className="sub2">제조 수량</p>
-            <p className="body1 text-gray-40">{projectQuantity}개</p>
+            <p className="sub2">{t('project.detail.requestCondition.projectQuantity')}</p>
+            <p className="body1 text-gray-40">{projectQuantity}</p>
           </div>
           <div className="flex flex-col gap-y-[12px]">
-            <p className="sub2">세부 요청사항</p>
+            <p className="sub2">{t('project.detail.requestCondition.requests')}</p>
             <p className="body1 text-gray-40">{requests}</p>
           </div>
           <div className="flex justify-between">
             <div className="flex flex-col gap-y-[12px]">
-              <p className="sub2">납기일</p>
+              <p className="sub2">{t('project.detail.requestCondition.deadline')}</p>
               <div className="flex flex-col gap-y-1">
                 <p className="body1 text-gray-40">{deadline}</p>
-                <p className="body1 text-gray-40">{canDeadlineChange ? '협의가능' : null}</p>
+                <p className="body1 text-gray-40">
+                  {canDeadlineChange ? t('project.detail.requestCondition.canDeadlineChange') : null}
+                </p>
               </div>
             </div>
             <div className="flex flex-col gap-y-[12px]">
-              <p className="sub2">추정 예산</p>
+              <p className="sub2">{t('project.detail.requestCondition.requestEstimate')}</p>
               <p className="body1 text-gray-40">{requestEstimate?.toLocaleString()}원</p>
             </div>
             <div className="flex w-[200px] flex-col gap-y-[12px]">
-              <p className="sub2">입찰 마감일</p>
+              <p className="sub2">{t('project.detail.requestCondition.publicUntil')}</p>
               <p className="body1 text-gray-40">{publicUntil}</p>
             </div>
           </div>

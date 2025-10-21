@@ -25,18 +25,78 @@
       "avgResponseMinutes": "평균 응답 시간"
     }
   },
+  "project": {
+    "h1": "견적서 전체보기",
+    "searchPlaceHolder": "'공급업체' 또는 '카테고리' 검색어를 입력해보세요.",
+    "detail": {
+      "h1": "견적서 상세보기",
+      "basicInfo": {
+        "title": "기본 정보",
+        "projectTitle": "프로젝트명",
+        "category": "제조 분류 선택",
+        "categoryDetail": "제조 분류 - 세부 항목 선택",
+        "categoryDetailEtc": "제조 사항 상세 입력",
+        "purpose":"제품 용도 선택",
+        "purposeEtc": "상세 제품 용도 입력"
+      },
+      "requestCondition": {
+        "title": "요청 조건입력",
+        "drawingTitle": "도면 소유 여부",
+        "drawingDescription": "예 (첨부된 CAD 파일 참조)",
+        "projectQuantity": "제조 수량",
+        "requests":"세부 요청사항",
+        "deadline": "납기일",
+        "canDeadlineChange": "협의가능",
+        "requestEstimate": "추정 예산",
+        "publicUntil": "입찰 마감일"
+      },
+      "shippingAndExtraInfo": {
+        "title": "배송 및 추가 정보입력",
+        "projectStatus": {
+          "title": "견적서 공개 여부",
+          "public": "공개",
+          "private": "비공개",
+          "protected": "일부 공개"
+        },
+        "canPhoneConsult": {
+          "title": "전화 상담 여부",
+          "yes": "가능",
+          "no": "불가능"
+        },
+        "deliveryAddress": {
+          "title": "배송지",
+          "deliveryAddress": "주소"
+        }
+      },
+      "bidderList": {
+
+      }
+    }
+  },
   "modal": {
     "servicePreparingModal": {
       "title": "현재 서비스 준비중에 있습니다.",
       "content": "빠른 시일 내에 찾아뵙겠습니다."
     },
+    "copyrightAgreementModal": {
+      "title1": "견적서를 보기 위해선",
+      "title2": "저작권 동의",
+      "title3": "가 필요합니다.",
+      "content": "견적서 저작권 동의 내용",
+      "agreeButton": "저작권 관련된 법을 확인하였습니다. 문제 발생시 책임은 본인에게 있습니다."
+    },
     "button": {
-      "close": "닫기"
+      "close": "닫기",
+      "copyRightAgreeButton": "동의하고 견적서 보기"
     }
   },
   "error": {
     "company": {
       "upload": "데이터 불러오기에 실패하였습니다."
+    },
+    "project": {
+      "upload": "데이터 불러오기에 실패하였습니다.",
+      "register": "등록된 프로젝트가 없습니다."
     }
   }
 }

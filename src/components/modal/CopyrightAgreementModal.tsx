@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction } from 'react'
 import { useModalStore } from '@/store/modalStore'
 import { useProjectStore } from '@/store/projectStore'
+import { useTranslation } from 'react-i18next'
 
 interface CopyrightAgreementModalProps {
   agreement: boolean
@@ -15,6 +16,7 @@ export default function CopyrightAgreementModal({ agreement, setAgreement }: Cop
   const router = useRouter()
   const setModalState = useModalStore((state) => state.setState)
   const projectId = useProjectStore((state) => state.projectId)
+  const { t } = useTranslation()
 
   return (
     <Modal>
@@ -22,11 +24,15 @@ export default function CopyrightAgreementModal({ agreement, setAgreement }: Cop
         <div className="gap-y-s flex flex-col">
           <section className="flex flex-col gap-y-2">
             <h2 className="h2">
-              견적서를 보기 위해선 {` `}
-              <span className="text-conic-red-30">저작권 동의</span>가 필요합니다.
+              {t('modal.copyrightAgreementModal.title1')}
+              {` `}
+              <span className="text-conic-red-30">{t('modal.copyrightAgreementModal.title2')}</span>
+              {t('modal.copyrightAgreementModal.title3')}
             </h2>
           </section>
-          <section className="border-gray-20 p-2xs body2 rounded-[16px] border text-gray-50">sdfsdfsdfsdf</section>
+          <section className="border-gray-20 p-2xs body2 rounded-[16px] border text-gray-50">
+            {t('modal.copyrightAgreementModal.content')}
+          </section>
           <div
             onClick={() => {
               setAgreement(!agreement)
@@ -34,7 +40,7 @@ export default function CopyrightAgreementModal({ agreement, setAgreement }: Cop
             className="flex cursor-pointer items-center gap-x-2"
           >
             {agreement ? <CheckboxFillIcon width={24} height={24} /> : <UnCheckboxIcon width={24} height={24} />}
-            <p className="button-sm">저작권 관련된 법을 확인하였습니다. 문제 발생시 책임은 본인에게 있습니다.</p>
+            <p className="button-sm">{t('modal.copyrightAgreementModal.agreeButton')}</p>
           </div>
         </div>
       </Modal.Content>
@@ -48,7 +54,7 @@ export default function CopyrightAgreementModal({ agreement, setAgreement }: Cop
             styleType="outline"
             customClassName="w-full"
           >
-            닫기
+            {t('modal.button.close')}
           </Button1>
           <Button1
             disabled={!agreement}
@@ -61,7 +67,7 @@ export default function CopyrightAgreementModal({ agreement, setAgreement }: Cop
             styleStatus={agreement ? 'default' : 'disabled'}
             customClassName="w-full"
           >
-            동의하고 견적서 보기
+            {t('modal.button.copyRightAgreeButton')}
           </Button1>
         </div>
       </Modal.BottomButton>

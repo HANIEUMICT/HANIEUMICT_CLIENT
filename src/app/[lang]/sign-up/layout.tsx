@@ -16,7 +16,6 @@ export default async function SignUpLayout({ children, params }: SignUpLayoutPro
   return (
     <>
       <Header params={params} headerType={'SIGNUP'} />
-      <div className="h-[40px]" />
       {children}
     </>
   )
